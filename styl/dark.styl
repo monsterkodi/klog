@@ -5,8 +5,9 @@
 // 000   000  000   000  000   000  000  000   
 // 0000000    000   000  000   000  000   000  
 
-frameColor          = #222
-textFocusColor      = #fff
+frameColor     = #222
+textFocusColor = #fff
+textBlurColor  = #444
 
 // 000  000   000  00000000   000   000  000000000  
 // 000  0000  000  000   000  000   000     000     
@@ -14,10 +15,25 @@ textFocusColor      = #fff
 // 000  000  0000  000        000   000     000     
 // 000  000   000  000         0000000      000     
 
-.input-text 
+.input-text
     color               textFocusColor
     border              1px solid frameColor
     border-radius       10px
   
-
+.num
+    color               textBlurColor
+.icon
+    color               #ff0
+.id
+    color               #aaf
+.src
+    color               #66f
+    & .ln
+        color           #22f
+    & .col
+        color           #00a
+.name
+    color               #f80
+.log
+    color               textFocus
     

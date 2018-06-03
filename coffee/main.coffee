@@ -6,23 +6,40 @@
 000   000  000   000  000  000   000
 ###
 
-{ app, log } = require 'kxk'
+{ args, udp, app, log } = require 'kxk'
 
 new app
-    dir:    __dirname
-    pkg:    require '../package.json'
-    args:   """
-
-    noprefs     don't load preferences      false
-    DevTools    open developer tools        false
-    watch       watch sources for changes   false
-
-    """
-    shortcut:   'CmdOrCtrl+Alt+C'
+    dir:        __dirname
+    pkg:        require '../package.json'
+    shortcut:   'CmdOrCtrl+Alt+K'
     index:      'index.html'
     icon:       '../img/app.ico'
     tray:       '../img/menu.png'
     about:      '../img/about.png'
-    aboutDebug: false
-    single:     false
+    aboutDebug: false  
+    args: """
+        ping    send ping every ms   0
+        log     log every ms         0
+        """
+    
+if args.ping
+        
+    udpSend = new udp debug:true
+    n = 0
+    ping = -> 
+        n += 1
+        udpSend.send 'ping', n
+      
+    setInterval ping, args.ping
+    
+if args.log
+    
+    log.slog.id = 'klog-app'
+    
+    l = 0
+    logm = ->
+        l += 1
+        log 'log', l
+        
+    setInterval logm, args.log
     

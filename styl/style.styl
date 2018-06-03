@@ -34,10 +34,36 @@ body
 // 0000000  000  000   000  00000000  0000000   
 
 #lines
+    -webkit-user-select text
     flex                1 1 0
     overflow            auto
-    display             flex
-    flex-direction      row
+    padding-left        6px
+    & div
+        width           100%
+        white-space     nowrap
+        & span
+            padding-right    4px
+            display     inline-block
+
+.num
+    min-width           18px
+.icon
+    min-width           18px
+.id
+    min-width           60px
+.src
+    min-width           200px
+    & .ln
+        min-width           30px
+    & .col
+        min-width           30px
+.name
+    min-width           100px
+.log
+    padding-left        2px
+    &::before
+        color           #44f
+        content         "⯈ "
     
 // 000  000   000  00000000   000   000  000000000  
 // 000  0000  000  000   000  000   000     000     
