@@ -15,7 +15,7 @@ fontMono = "Meslo LG S", "Liberation Mono", "Menlo", "Cousine", "Andale Mono", m
 
 body
     font-family         fontMono
-    font-size           14px
+    font-size           15px
     
 // 00     00   0000000   000  000   000  
 // 000   000  000   000  000  0000  000  
@@ -45,25 +45,31 @@ body
             padding-right    4px
             display     inline-block
 
-.num
-    min-width           18px
-.icon
-    min-width           18px
-.id
-    min-width           60px
-.src
-    min-width           200px
-    & .ln
-        min-width           30px
-    & .col
-        min-width           30px
-.name
-    min-width           100px
-.log
-    padding-left        2px
-    &::before
-        color           #44f
-        content         "⯈ "
+            &.num
+                min-width           18px
+            &.icon
+                vertical-align      middle
+                min-width           22px
+                margin              0
+                & img
+                    margin-top      -2px
+                    margin-bottom   -2px
+                    height          22px
+            &.id
+                min-width           60px
+            &.src
+                min-width           400px
+                & .ln
+                    min-width           30px
+                & .col
+                    min-width           30px
+            &.name
+                min-width           100px
+            &.log
+                padding-left        2px
+                &::before
+                    color           #44f
+                    content         "⯈ "
     
 // 000  000   000  00000000   000   000  000000000  
 // 000  0000  000  000   000  000   000     000     

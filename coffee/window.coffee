@@ -26,18 +26,9 @@ lines =$ '#lines'
 
 koSend = null
 openFile = (f) ->
-    
-    if not koSend
-        koSend = new udp port:9779
+    if not koSend then koSend = new udp port:9779
     koSend.send slash.resolve f
     
-    # f = slash.resolve f
-    # if slash.win()
-        # log 'openFile', f, slash.unslash slash.resolve('~/s/ko/ko-win32-x64/ko.exe')
-        # childp.spawn slash.unslash(slash.resolve('~/s/ko/ko-win32-x64/ko.exe')), ['ko', slash.unslash slash.path f]
-    # else
-        # childp.spawn '/usr/local/bin/ko', [f]
-
 #  0000000  000      000   0000000  000   000  
 # 000       000      000  000       000  000   
 # 000       000      000  000       0000000    
@@ -84,18 +75,22 @@ onMenuAction = (action) ->
         
 post.on 'menuAction', onMenuAction
 
-# 000   000  000000000  00     00  000      
-# 000   000     000     000   000  000      
-# 000000000     000     000000000  000      
-# 000   000     000     000 0 000  000      
-# 000   000     000     000   000  0000000  
+# 000      000  000   000  00000000  
+# 000      000  0000  000  000       
+# 000      000  000 0 000  0000000   
+# 000      000  000  0000  000       
+# 0000000  000  000   000  00000000  
 
 num = 0
-htmlForLog = (info) ->
+lineForLog = (info) ->
+    
+    icon = if info.icon 
+            if info.icon.startsWith 'file://' then "<img src='#{info.icon}'/>" else info.icon
+        else '◻'
     
     num  += 1
     html  = "<span class='num'>#{num}</span>"
-    html += "<span class='icon'>#{info.icon ? ''}</span>"
+    html += "<span class='icon'>#{icon}</span>"
     html += "<span class='id'>#{info.id ? ''}</span>"
     html += "<span class='src'>#{info.source ? ''}"
     if info.line
@@ -106,7 +101,8 @@ htmlForLog = (info) ->
     if info.name?
         html += "<span class='name'>#{info.name}</span>"
     html += "<span class='log'>#{str info.str}</span>"
-    html
+    
+    elem class:"line #{info.type}", html:html
 
 # 00     00   0000000   0000000   
 # 000   000  000       000        
@@ -119,7 +115,7 @@ onMsg = (args) ->
     console.log 'onMsg', args
     atBot = lines.scrollTop > lines.scrollHeight - lines.clientHeight - 10
     
-    lines.appendChild elem class:'line', html:htmlForLog args
+    lines.appendChild lineForLog args
     
     if lines.children.length > 4000
         while lines.children.length > 3600
