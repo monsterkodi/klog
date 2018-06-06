@@ -111,7 +111,7 @@ lineForLog = (info) ->
 
 onMsg = (args) ->
     
-    console.log 'onMsg', args
+    log 'onMsg', args
     atBot = lines.scrollTop > lines.scrollHeight - lines.clientHeight - 10
     
     lines.appendChild lineForLog args

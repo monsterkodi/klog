@@ -11,7 +11,7 @@
 new app
     dir:        __dirname
     pkg:        require '../package.json'
-    shortcut:   'CmdOrCtrl+Alt+K'
+    shortcut:   'Alt+K'
     index:      'index.html'
     icon:       '../img/app.ico'
     tray:       '../img/menu.png'
@@ -33,8 +33,6 @@ if args.ping
     setInterval ping, args.ping
     
 if args.log
-    
-    log.slog.id = 'klog-app'
     
     l = 0
     logm = ->
