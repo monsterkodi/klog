@@ -89,7 +89,8 @@ lineForLog = (info) ->
         else '◻'
     
     num  += 1
-    html  = "<span class='num'>#{num}</span>"
+    html  = ""
+    html += "<span class='num'>#{num}</span>"
     html += "<span class='icon'>#{icon}</span>"
     html += "<span class='id'>#{info.id ? ''}</span>"
     html += "<span class='src'>#{info.source ? ''}"
@@ -98,8 +99,6 @@ lineForLog = (info) ->
         if info.column
             html += "<span class='col'>:#{info.column}</span>"
     html += "</span>"
-    if info.name?
-        html += "<span class='name'>#{info.name}</span>"
     html += "<span class='log'>#{str info.str}</span>"
     
     elem class:"line #{info.type}", html:html
