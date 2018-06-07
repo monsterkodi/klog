@@ -39,7 +39,7 @@ onClick = (event) ->
     
     if lineElem = elem.upElem event.target, class:'line'
         file =  lineElem.children[3].innerText
-        log 'click', file
+        # log 'click', file
         if not empty file
             openFile file
 
