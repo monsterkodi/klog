@@ -66,15 +66,13 @@ post.on 'combo', (combo, info) ->
 # 000 0 000  000       000  0000  000   000  000   000  000          000     000  000   000  000  0000  
 # 000   000  00000000  000   000   0000000   000   000   0000000     000     000   0000000   000   000  
 
-onMenuAction = (action) ->
+post.on 'menuAction', (action) ->
     
     switch action
         when 'Clear' 
             lines.innerHTML = ''
             lineNo = 0
         
-post.on 'menuAction', onMenuAction
-
 # 000      000  000   000  00000000  
 # 000      000  0000  000  000       
 # 000      000  000 0 000  0000000   
