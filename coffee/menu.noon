@@ -6,12 +6,28 @@
 # 000   000  00000000  000   000   0000000
 
 klog
-    About                   ctrl+,
-    -
     Clear                   ctrl+k k
     --
+    Visual Studio           ctrl+1
+    VS Code                 ctrl+2
+    ko                      ctrl+3
+    -
+    About                   ctrl+,
+    ---
     Quit                    ctrl+q
 
+# 000   000  000  00000000  000   000  
+# 000   000  000  000       000 0 000  
+#  000 000   000  0000000   000000000  
+#    000     000  000       000   000  
+#     0      000  00000000  00     00  
+
+View
+    Num                     ctrl+n
+    ID                      ctrl+i                 
+    Src                     ctrl+s
+    Icon
+    
 # 000   000  000  000   000  0000000     0000000   000   000
 # 000 0 000  000  0000  000  000   000  000   000  000 0 000
 # 000000000  000  000 0 000  000   000  000   000  000000000
@@ -22,7 +38,7 @@ Window
     Close                   ctrl+w w
     -
     Toggle Menu             alt+m m
-    Toggle Scheme           alt+i ctrl+i
+    Toggle Scheme           alt+i
     --
     Minimize                alt+ctrl+shift+m
     Maximize                alt+ctrl+m
