@@ -6,7 +6,8 @@
 00     00  000  000   000  0000000     0000000   00     00  
 ###
 
-{ post, win, tooltip, open, prefs, elem, setStyle, getStyle, empty, childp, slash, udp, str, fs, error, $ } = require 'kxk'
+{ post, win, tooltip, open, prefs, elem, setStyle, getStyle, 
+  valid, empty, childp, slash, udp, str, fs, error, $ } = require 'kxk'
 
 log = console.log
 
@@ -53,7 +54,15 @@ onClick = (event) ->
     
     if lineElem = elem.upElem event.target, class:'line'
         file =  $('.src', lineElem).innerText
-        if not empty file
+        if valid file
+            
+            file = file.replace /[\w\-]+\-x64\/resources\/app\//, ''
+            
+            if /\/node\_modules\//.test file
+                upFile = file.replace /[\w\-]+\/node\_modules\//, ''
+                if slash.exists upFile
+                    file = upFile
+                
             openFile file
 
 lines.addEventListener 'click', onClick
@@ -169,7 +178,7 @@ onMsg = (args) ->
     if atBot
         lines.scrollTop = lines.scrollHeight
 
-udpReceiver = new udp onMsg:onMsg, debug:true
+udpReceiver = new udp onMsg:onMsg #, debug:true
 
 setEditor prefs.get 'editor'
 
