@@ -6,7 +6,7 @@
 00     00  000  000   000  0000000     0000000   00     00  
 ###
 
-{ post, win, open, prefs, elem, setStyle, getStyle, empty, childp, slash, udp, str, fs, error, $ } = require 'kxk'
+{ post, win, tooltip, open, prefs, elem, setStyle, getStyle, empty, childp, slash, udp, str, fs, error, $ } = require 'kxk'
 
 log = console.log
 
@@ -82,7 +82,7 @@ post.on 'combo', (combo, info) ->
 setEditor = (editor) ->
     
     prefs.set 'editor', editor
-    require('kxk').log "using editor: #{prefs.get 'editor'}"
+    require('kxk').log "editor: #{prefs.get 'editor'}"
 
 post.on 'menuAction', (action) ->
     
@@ -93,7 +93,7 @@ post.on 'menuAction', (action) ->
         when 'Visual Studio', 'VS Code', 'ko'
             setEditor action
             
-        when 'ID', 'Num', 'Src', 'Icon'
+        when 'ID', 'Num', 'Src', 'Icon', 'File'
             toggleDisplay action.toLowerCase()
         
 # 000      000  000   000  00000000  
@@ -117,19 +117,27 @@ lineForLog = (info) ->
     
     num  += 1
     html  = ""
-    html += "<span class='num'>#{num}</span>"
-    html += "<span class='icon'>#{icon}</span>"
-    html += "<span class='id'>#{info.id ? ''}</span>"
+    
     html += "<span class='src'>#{info.source ? ''}"
     if info.line
         html += "<span class='ln'>:#{info.line}</span>"
         if info.column
             html += "<span class='col'>:#{info.column}</span>"
     html += "</span>"
+    
+    html += "<span class='num'>#{num}</span>"
+    html += "<span class='icon'>#{icon}</span>"
+    html += "<span class='id'>#{info.id ? ''}</span>"
+    html += "<span class='file'>#{slash.base(info.source) ? ''}</span>"
     html += "<span class='log'>#{str info.str}</span>"
     
-    elem class:"line #{info.type}", html:html
-
+    
+    line = elem class:"line #{info.type}", html:html
+    
+    icon =$ '.icon', line
+    new tooltip elem:icon, parent:line, html:slash.tilde(info.source)
+    
+    line
 
 toggleDisplay = (column) ->
     

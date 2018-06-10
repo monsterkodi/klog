@@ -5,7 +5,9 @@
 //      000     000        000     000    
 // 0000000      000        000     0000000
 
-fontMono = "Meslo LG S", "Liberation Mono", "Menlo", "Cousine", "Andale Mono", monospace
+frameWidth      = 6px
+fontMono        = "Meslo LG S", "Liberation Mono", "Menlo", "Cousine", "Andale Mono", monospace
+titlebarFont    = Bahnschrift Light, Ebrima, Varela Round, Arial Rounded MT Bold, Helvetica, Arial
 
 // 0000000     0000000   0000000    000   000
 // 000   000  000   000  000   000   000 000 
@@ -44,7 +46,7 @@ body
         & span
             padding-right    4px
             display     inline-block
-
+                
             &.icon
                 cursor              pointer
                 vertical-align      middle
@@ -64,20 +66,39 @@ body
                     content         "⯈ "
             &.num
                 min-width           18px
-                // display             none // <<<
             &.id
                 min-width           60px
-                // display             none // <<<
+            &.file
+                min-width           100px
             &.src
-                // display             none // <<<
-                min-width           200px
+                text-align          right
+                float               right
                 & .ln
                     min-width           30px
                 & .col
                     min-width           30px
             &.name
                 min-width           100px
-    
+
+// 000000000   0000000    0000000   000      000000000  000  00000000
+//    000     000   000  000   000  000         000     000  000   000
+//    000     000   000  000   000  000         000     000  00000000
+//    000     000   000  000   000  000         000     000  000
+//    000      0000000    0000000   0000000     000     000  000
+
+.tooltip
+    white-space         nowrap
+    padding             3px
+    padding-left        frameWidth
+    padding-right       frameWidth
+    border-bottom-left-radius  frameWidth
+    border-bottom-right-radius frameWidth
+    font-family         titlebarFont
+    font-size           14px
+    opacity             0
+    transform           scaleY(0)
+    transition          transform 0.2s ease-in, opacity 0.2s ease-in
+                
 // 000  000   000  00000000   000   000  000000000  
 // 000  0000  000  000   000  000   000     000     
 // 000  000 0 000  00000000   000   000     000     

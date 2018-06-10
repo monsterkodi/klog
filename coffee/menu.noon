@@ -25,6 +25,7 @@ klog
 View
     Num                     ctrl+n
     ID                      ctrl+i                 
+    File                    ctrl+f
     Src                     ctrl+s
     Icon
     

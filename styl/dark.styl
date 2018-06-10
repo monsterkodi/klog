@@ -5,9 +5,20 @@
 // 000   000  000   000  000   000  000  000   
 // 0000000    000   000  000   000  000   000  
 
+bgColor        = #181818
 frameColor     = #222
 textFocusColor = #fff
 textBlurColor  = #444
+
+// 000000000   0000000    0000000   000      000000000  000  00000000
+//    000     000   000  000   000  000         000     000  000   000
+//    000     000   000  000   000  000         000     000  00000000
+//    000     000   000  000   000  000         000     000  000
+//    000      0000000    0000000   0000000     000     000  000
+
+.tooltip
+    color               #aaa
+    background          frameColor
 
 // 000  000   000  00000000   000   000  000000000  
 // 000  0000  000  000   000  000   000     000     
@@ -26,6 +37,8 @@ textBlurColor  = #444
     color               #ff0
 .id
     color               #aaf
+.file
+    color               #aaf
 .src
     color               #66f
     & .ln
@@ -42,4 +55,9 @@ textBlurColor  = #444
 .line.main .id 
 .line.main .log::before
     color               #c04
+    
+#lines div span
+    background          bgColor
+    &::before
+        background      bgColor
     
