@@ -52,7 +52,7 @@ openFile = (f) ->
 onClick = (event) ->
     
     if lineElem = elem.upElem event.target, class:'line'
-        file =  lineElem.children[3].innerText
+        file =  $('.src', lineElem).innerText
         if not empty file
             openFile file
 
