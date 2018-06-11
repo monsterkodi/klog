@@ -1,1 +1,1 @@
-@openVS.vbs %1 %2 %3
+@.\openVS.vbs %1 %2 %3

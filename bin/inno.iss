@@ -1,6 +1,6 @@
 
 #define MyAppName "klog"
-#define MyAppVersion "0.7.0"
+#define MyAppVersion "0.16.0"
 #define MyAppPublisher "monsterkodi"
 #define MyAppURL "https://github.com/monsterkodi/klog"
 #define MyAppExeName "klog.exe"
@@ -18,7 +18,7 @@ DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 OutputDir=..\inno
-OutputBaseFilename=setup
+OutputBaseFilename={#MyAppName}-{#MyAppVersion}-setup
 SetupIconFile=..\img\app.ico
 Compression=lzma
 SolidCompression=yes

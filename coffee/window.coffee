@@ -36,9 +36,9 @@ openFile = (f) ->
             open "vscode://file/" + slash.resolve f
         when 'Visual Studio'
             [file, line] = slash.splitFileLine f
-            file = slash.resolve file
-            vb = slash.resolve slash.join __dirname, '../bin/openFile/openVS.bat'
-            childp.exec "#{vb} #{file} #{line} 0", { cwd:slash.dir vb }, (err) -> 
+            file = slash.unslash slash.resolve file
+            bat = slash.unslash slash.resolve slash.join __dirname, '../bin/openFile/openVS.bat'
+            childp.exec "\"#{bat}\" \"#{file}\" #{line} 0", { cwd:slash.dir(bat) }, (err) -> 
                 error 'vb', err if not empty err
         else
             if not koSend then koSend = new udp port:9779
