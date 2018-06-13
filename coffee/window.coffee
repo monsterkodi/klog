@@ -146,7 +146,7 @@ post.on 'menuAction', (action) ->
         when 'Visual Studio', 'VS Code', 'ko'
             setEditor action
             
-        when 'ID', 'Num', 'Src', 'Icon', 'File'
+        when 'ID', 'Num', 'Src', 'Icon', 'File', 'Time'
             toggleDisplay action.toLowerCase()
         
 # 000      000  000   000  00000000  
@@ -178,8 +178,14 @@ lineForLog = (info) ->
             html += "<span class='col'>:#{info.column}</span>"
     html += "</span>"
     
+    d = new Date()
+    time = ["#{_.padStart(String(d.getHours()),   2, '0')}"
+            "#{_.padStart(String(d.getMinutes()), 2, '0')}"
+            "#{_.padStart(String(d.getSeconds()), 2, '0')}"].join ':' 
+    
     html += "<span class='num'>#{num}</span>"
     html += "<span class='icon'>#{icon}</span>"
+    html += "<span class='time'>#{time}</span>"
     html += "<span class='id'>#{info.id ? ''}</span>"
     html += "<span class='file'>#{slash.base(info.source) ? ''}</span>"
     html += "<span class='log'>#{str info.str}</span>"

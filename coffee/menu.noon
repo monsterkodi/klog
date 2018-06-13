@@ -24,6 +24,7 @@ klog
 
 View
     Num                     ctrl+n
+    Time                    ctrl+t
     ID                      ctrl+i                 
     File                    ctrl+f
     Src                     ctrl+s
