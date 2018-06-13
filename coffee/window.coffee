@@ -7,7 +7,7 @@
 ###
 
 { post, win, tooltip, open, prefs, elem, setStyle, getStyle, 
-  valid, empty, childp, slash, udp, str, fs, error, $ } = require 'kxk'
+  valid, empty, childp, slash, clamp, udp, str, fs, error, $, _ } = require 'kxk'
 
 log = console.log
 
@@ -82,6 +82,43 @@ post.on 'combo', (combo, info) ->
         else
             log 'combo', combo
 
+# 00000000   0000000   000   000  000000000      0000000  000  0000000  00000000
+# 000       000   000  0000  000     000        000       000     000   000
+# 000000    000   000  000 0 000     000        0000000   000    000    0000000
+# 000       000   000  000  0000     000             000  000   000     000
+# 000        0000000   000   000     000        0000000   000  0000000  00000000
+
+defaultFontSize = 15
+
+getFontSize = -> prefs.get 'fontSize', defaultFontSize
+
+setFontSize = (s) ->
+        
+    s = getFontSize() if not _.isFinite s
+    s = clamp 4, 44, s
+
+    prefs.set "fontSize", s
+    $('#lines').style.fontSize = "#{s}px"
+    iconSize = clamp 4, 44, parseInt s
+    log iconSize
+    setStyle '.icon', 'height', "#{iconSize}px"
+    setStyle '.icon img', 'height', "#{iconSize}px"
+
+changeFontSize = (d) ->
+    
+    s = getFontSize()
+    if      s >= 30 then f = 4
+    else if s >= 50 then f = 10
+    else if s >= 20 then f = 2
+    else                 f = 1
+        
+    setFontSize s + f*d
+
+resetFontSize = ->
+    
+    prefs.set 'fontSize', defaultFontSize
+    setFontSize defaultFontSize
+            
 # 00     00  00000000  000   000  000   000   0000000    0000000  000000000  000   0000000   000   000  
 # 000   000  000       0000  000  000   000  000   000  000          000     000  000   000  0000  000  
 # 000000000  0000000   000 0 000  000   000  000000000  000          000     000  000   000  000 0 000  
@@ -95,10 +132,17 @@ setEditor = (editor) ->
 
 post.on 'menuAction', (action) ->
     
+    log 'menuAction', action
     switch action
+        
+        when 'Increase' then changeFontSize +1
+        when 'Decrease' then changeFontSize -1
+        when 'Reset'    then resetFontSize()
+        
         when 'Clear' 
             lines.innerHTML = ''
             lineNo = 0
+            
         when 'Visual Studio', 'VS Code', 'ko'
             setEditor action
             
@@ -180,7 +224,8 @@ onMsg = (args) ->
 
 udpReceiver = new udp onMsg:onMsg #, debug:true
 
-setEditor prefs.get 'editor'
+setEditor   prefs.get 'editor'
+setFontSize prefs.get 'fontSize', defaultFontSize
 
 for column in ['id', 'src', 'icon', 'num']
     if not prefs.get "display:#{column}", true

@@ -6,6 +6,7 @@
 // 0000000      000        000     0000000
 
 frameWidth      = 6px
+logFontSize     = 15px
 fontMono        = "Meslo LG S", "Liberation Mono", "Menlo", "Cousine", "Andale Mono", monospace
 titlebarFont    = Bahnschrift Light, Ebrima, Varela Round, Arial Rounded MT Bold, Helvetica, Arial
 
@@ -36,6 +37,7 @@ body
 // 0000000  000  000   000  00000000  0000000   
 
 #lines
+    font-size           logFontSize
     -webkit-user-select text
     flex                1 1 0
     overflow            auto
@@ -44,24 +46,24 @@ body
         width           100%
         white-space     nowrap
         & span
-            padding-right    4px
+            padding-right    12px
             display     inline-block
                 
             &.icon
                 cursor              pointer
-                vertical-align      middle
                 min-width           22px
                 margin              0
+                position            relative
                 & img
                     margin-top      -2px
                     margin-bottom   -2px
-                    height          22px
+                    height          100%
             &.log
                 margin-left         22px
                 white-space         pre
-                vertical-align      top
                 padding-left        2px
                 &::before
+                    vertical-align  top
                     margin-left     -22px
                     content         "⯈ "
             &.num
