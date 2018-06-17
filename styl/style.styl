@@ -46,40 +46,42 @@ body
         width           100%
         white-space     nowrap
         & span
-            padding-right    12px
-            display     inline-block
-            vertical-align top
+            padding-right   12px
+            display         inline-block
+            vertical-align  top
                 
             &.icon
                 cursor              pointer
                 min-width           22px
                 margin              0
                 position            relative
+                padding-right       0px
                 & img
                     margin-top      -2px
                     margin-bottom   -2px
                     height          100%
+            &.sep
+                text-align          center
+                min-width           2em
+                width               2em
+                padding-right       0px
             &.log
-                margin-left         22px
                 white-space         pre
                 padding-left        2px
-                &::before
-                    vertical-align  top
-                    margin-left     -22px
-                    content         "⯈ "
             &.num
                 min-width           18px
             &.id
                 min-width           60px
             &.file
                 min-width           100px
+                max-width           100px
             &.src
                 text-align          right
                 float               right
                 & .ln
-                    min-width           30px
+                    min-width       30px
                 & .col
-                    min-width           30px
+                    min-width       30px
             &.name
                 min-width           100px
 

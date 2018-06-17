@@ -188,6 +188,7 @@ lineForLog = (info) ->
     html += "<span class='time'>#{time}</span>"
     html += "<span class='id'>#{info.id ? ''}</span>"
     html += "<span class='file'>#{slash.base(info.source) ? ''}</span>"
+    html += "<span class='sep'>#{info.sep ? '⯈ '}</span>"
     html += "<span class='log'>#{str info.str}</span>"
     
     
@@ -233,6 +234,6 @@ udpReceiver = new udp onMsg:onMsg #, debug:true
 setEditor   prefs.get 'editor'
 setFontSize prefs.get 'fontSize', defaultFontSize
 
-for column in ['id', 'src', 'icon', 'num']
+for column in ['id', 'src', 'icon', 'num', 'time']
     if not prefs.get "display:#{column}", true
         toggleDisplay column
