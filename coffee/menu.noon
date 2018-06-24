@@ -7,13 +7,15 @@
 
 klog
     Clear                   ctrl+k k
-    --
+    -
     Visual Studio           ctrl+1
     VS Code                 ctrl+2
     ko                      ctrl+3
-    -
-    About                   ctrl+,
+    -- 
+    Open Log File
     ---
+    About                   ctrl+,
+    ----
     Quit                    ctrl+q
 
 # 000   000  000  00000000  000   000  
@@ -50,6 +52,7 @@ Window
     Minimize                alt+ctrl+shift+m
     Maximize                alt+ctrl+m
     ---
+    Screenshot              f3
     Reload                  alt+ctrl+l
     DevTools                alt+ctrl+i
 

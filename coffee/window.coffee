@@ -9,6 +9,8 @@
 { post, win, tooltip, open, prefs, elem, setStyle, getStyle, 
   valid, empty, childp, slash, clamp, udp, str, fs, error, $, _ } = require 'kxk'
 
+{ Tail } = require 'tail'
+  
 log = console.log
 
 w = new win 
@@ -20,6 +22,9 @@ w = new win
 lines =$ '#lines'
 icons = {}
 
+userData = w.userData
+logFile  = slash.join userData, 'log.txt' 
+
 #  0000000   00000000   00000000  000   000  
 # 000   000  000   000  000       0000  000  
 # 000   000  00000000   0000000   000 0 000  
@@ -29,13 +34,16 @@ icons = {}
 koSend = null
 openFile = (f) ->
   
+    
     [file, line] = slash.splitFileLine f
+    
+    log 'openFile', file, line
     
     switch prefs.get 'editor', 'Visual Studio'
         when 'VS Code'
             open "vscode://file/" + slash.resolve f
         when 'Visual Studio'
-            [file, line] = slash.splitFileLine f
+            # [file, line] = slash.splitFileLine f
             file = slash.unslash slash.resolve file
             bat = slash.unslash slash.resolve slash.join __dirname, '../bin/openFile/openVS.bat'
             childp.exec "\"#{bat}\" \"#{file}\" #{line} 0", { cwd:slash.dir(bat) }, (err) -> 
@@ -135,9 +143,10 @@ post.on 'menuAction', (action) ->
     log 'menuAction', action
     switch action
         
-        when 'Increase' then changeFontSize +1
-        when 'Decrease' then changeFontSize -1
-        when 'Reset'    then resetFontSize()
+        when 'Increase'      then changeFontSize +1
+        when 'Decrease'      then changeFontSize -1
+        when 'Reset'         then resetFontSize()
+        when 'Open Log File' then openFile logFile 
         
         when 'Clear' 
             lines.innerHTML = ''
@@ -229,7 +238,26 @@ onMsg = (args) ->
     if atBot
         lines.scrollTop = lines.scrollHeight
 
-udpReceiver = new udp onMsg:onMsg #, debug:true
+# udpReceiver = new udp onMsg:onMsg #, debug:true
+        
+#  0000000  000000000  00000000   00000000   0000000   00     00    
+# 000          000     000   000  000       000   000  000   000    
+# 0000000      000     0000000    0000000   000000000  000000000    
+#      000     000     000   000  000       000   000  000 0 000    
+# 0000000      000     000   000  00000000  000   000  000   000    
+
+log 'logFile:', logFile
+tail = new Tail logFile
+tail.on 'error', error
+tail.on 'line', (line) -> 
+    log "tail '#{line}'"
+    onMsg JSON.parse line
+    
+# 000  000   000  000  000000000    
+# 000  0000  000  000     000       
+# 000  000 0 000  000     000       
+# 000  000  0000  000     000       
+# 000  000   000  000     000       
 
 setEditor   prefs.get 'editor'
 setFontSize prefs.get 'fontSize', defaultFontSize
@@ -237,3 +265,4 @@ setFontSize prefs.get 'fontSize', defaultFontSize
 for column in ['id', 'src', 'icon', 'num', 'time']
     if not prefs.get "display:#{column}", true
         toggleDisplay column
+    

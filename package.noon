@@ -1,6 +1,6 @@
 name            klog
 productName     klog
-version         0.23.0
+version         0.26.0
 description     log tool
 main            js/main.js
 repository
@@ -17,7 +17,8 @@ license         Unlicense
 bugs
                 url  https://github.com/monsterkodi/klog/issues
 dependencies
-                kxk  https://github.com/monsterkodi/kxk.git
+                kxk   https://github.com/monsterkodi/kxk.git
+                tail  ^1.2.3
 devDependencies
                 electron        ^2.0.2
                 electron-packager  ^12.1.0

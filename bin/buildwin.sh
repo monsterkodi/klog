@@ -7,7 +7,7 @@ if rm -rf klog-win32-x64; then
 
     node_modules/.bin/electron-rebuild
 
-    node_modules/electron-packager/cli.js . --overwrite --icon=img/app.ico --win32metadata.FileDescription=klog
+    node_modules/electron-packager/cli.js . --overwrite --icon=img/app.ico
     
     rm -rf klog-win32-x64/resources/app/inno
 
