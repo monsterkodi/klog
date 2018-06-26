@@ -5,10 +5,11 @@
 //      000     000        000     000    
 // 0000000      000        000     0000000
 
-frameWidth      = 6px
-logFontSize     = 15px
-fontMono        = "Meslo LG S", "Liberation Mono", "Menlo", "Cousine", "Andale Mono", monospace
-titlebarFont    = Bahnschrift Light, Ebrima, Varela Round, Arial Rounded MT Bold, Helvetica, Arial
+frameWidth       = 6px
+logFontSize      = 15px
+titlebarFontSize = 15px
+fontMono         = "Meslo LG S", "Liberation Mono", "Menlo", "Cousine", "Andale Mono", monospace
+titlebarFont     = Bahnschrift Light, Ebrima, Varela Round, Arial Rounded MT Bold, Helvetica, Arial
 
 // 0000000     0000000   0000000    000   000
 // 000   000  000   000  000   000   000 000 
@@ -30,6 +31,18 @@ body
     display             flex
     flex-direction      column
 
+.input
+    flex                10 1 0
+    cursor              text
+    -webkit-user-select text
+    -webkit-app-region  no-drag
+    background          #222
+    border              none
+    pointer-events      all
+    color               #fff
+    font-size           titlebarFontSize
+    font-family         titlebarFont
+    
 // 000      000  000   000  00000000   0000000  
 // 000      000  0000  000  000       000       
 // 000      000  000 0 000  0000000   0000000   

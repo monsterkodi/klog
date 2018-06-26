@@ -11,7 +11,9 @@
 
 { Tail } = require 'tail'
 
-Lines = require './lines'
+Lines  = require './lines'
+Search = require './search'
+Filter = require './filter'
   
 log = console.log
 
@@ -24,7 +26,9 @@ w = new win
 userData = w.userData
 logFile  = slash.join userData, 'log.txt' 
 
-lines = new Lines
+lines  = new Lines
+search = new Search
+filter = new Filter
 
 #  0000000   00000000   00000000  000   000  
 # 000   000  000   000  000       0000  000  
