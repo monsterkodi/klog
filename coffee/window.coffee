@@ -6,10 +6,12 @@
 00     00  000  000   000  0000000     0000000   00     00  
 ###
 
-{ post, win, tooltip, open, prefs, elem, setStyle, getStyle, 
+{ post, win, open, prefs, elem, setStyle, getStyle, 
   valid, empty, childp, slash, clamp, udp, str, fs, error, $, _ } = require 'kxk'
 
 { Tail } = require 'tail'
+
+Lines = require './lines'
   
 log = console.log
 
@@ -19,11 +21,10 @@ w = new win
     menu:   '../coffee/menu.noon'
     icon:   '../img/menu@2x.png'
     
-lines =$ '#lines'
-icons = {}
-
 userData = w.userData
 logFile  = slash.join userData, 'log.txt' 
+
+lines = new Lines
 
 #  0000000   00000000   00000000  000   000  
 # 000   000  000   000  000       0000  000  
@@ -52,29 +53,8 @@ openFile = (f) ->
             if not koSend then koSend = new udp port:9779
             koSend.send slash.resolve f
     
-#  0000000  000      000   0000000  000   000  
-# 000       000      000  000       000  000   
-# 000       000      000  000       0000000    
-# 000       000      000  000       000  000   
-#  0000000  0000000  000   0000000  000   000  
-
-onClick = (event) ->
-    
-    if lineElem = elem.upElem event.target, class:'line'
-        file =  $('.src', lineElem).innerText
-        if valid file
+post.on 'openFile', openFile
             
-            file = file.replace /[\w\-]+\-x64\/resources\/app\//, ''
-            
-            if /\/node\_modules\//.test file
-                upFile = file.replace /[\w\-]+\/node\_modules\//, ''
-                if slash.exists upFile
-                    file = upFile
-                
-            openFile file
-
-lines.addEventListener 'click', onClick
-
 #  0000000   0000000   00     00  0000000     0000000   
 # 000       000   000  000   000  000   000  000   000  
 # 000       000   000  000000000  0000000    000   000  
@@ -83,10 +63,10 @@ lines.addEventListener 'click', onClick
 
 post.on 'combo', (combo, info) -> 
     switch combo
-        when 'home'      then lines.scrollTop = 0
-        when 'end'       then lines.scrollTop = lines.scrollHeight
-        when 'page up'   then lines.scrollTop -= 1000
-        when 'page down' then lines.scrollTop += 1000
+        when 'home'      then lines.lines.scrollTop = 0
+        when 'end'       then lines.lines.scrollTop = lines.scrollHeight
+        when 'page up'   then lines.lines.scrollTop -= 1000
+        when 'page down' then lines.lines.scrollTop += 1000
         else
             log 'combo', combo
 
@@ -106,9 +86,9 @@ setFontSize = (s) ->
     s = clamp 4, 44, s
 
     prefs.set "fontSize", s
-    $('#lines').style.fontSize = "#{s}px"
+    lines.lines.style.fontSize = "#{s}px"
     iconSize = clamp 4, 44, parseInt s
-    log iconSize
+    # log iconSize
     setStyle '.icon', 'height', "#{iconSize}px"
     setStyle '.icon img', 'height', "#{iconSize}px"
 
@@ -147,10 +127,7 @@ post.on 'menuAction', (action) ->
         when 'Decrease'      then changeFontSize -1
         when 'Reset'         then resetFontSize()
         when 'Open Log File' then openFile logFile 
-        
-        when 'Clear' 
-            lines.innerHTML = ''
-            lineNo = 0
+        when 'Clear'         then lines.clear()
             
         when 'Visual Studio', 'VS Code', 'ko'
             setEditor action
@@ -158,56 +135,6 @@ post.on 'menuAction', (action) ->
         when 'ID', 'Num', 'Src', 'Icon', 'File', 'Time'
             toggleDisplay action.toLowerCase()
         
-# 000      000  000   000  00000000  
-# 000      000  0000  000  000       
-# 000      000  000 0 000  0000000   
-# 000      000  000  0000  000       
-# 0000000  000  000   000  00000000  
-
-num = 0
-lineForLog = (info) ->
-    
-    icon = 
-        if info.icon 
-            if info.icon.startsWith 'file://' then "<img src='#{info.icon}'/>" else info.icon
-        else if icons[info.id]
-            "<img src='#{icons[info.id]}'/>"
-        else
-            file = slash.join __dirname, "../img/#{info.id}.png"
-            icons[info.id] = slash.fileUrl if slash.exists file then file else slash.join __dirname, "../img/blank.png"
-            "<img src='#{icons[info.id]}'/>"
-    
-    num  += 1
-    html  = ""
-    
-    html += "<span class='src'>#{info.source ? ''}"
-    if info.line
-        html += "<span class='ln'>:#{info.line}</span>"
-        if info.column
-            html += "<span class='col'>:#{info.column}</span>"
-    html += "</span>"
-    
-    d = new Date()
-    time = ["#{_.padStart(String(d.getHours()),   2, '0')}"
-            "#{_.padStart(String(d.getMinutes()), 2, '0')}"
-            "#{_.padStart(String(d.getSeconds()), 2, '0')}"].join ':' 
-    
-    html += "<span class='num'>#{num}</span>"
-    html += "<span class='icon'>#{icon}</span>"
-    html += "<span class='time'>#{time}</span>"
-    html += "<span class='id'>#{info.id ? ''}</span>"
-    html += "<span class='file'>#{slash.base(info.source) ? ''}</span>"
-    html += "<span class='sep'>#{info.sep ? '⯈ '}</span>"
-    html += "<span class='log'>#{str info.str}</span>"
-    
-    
-    line = elem class:"line #{info.type}", html:html
-    
-    icon =$ '.icon', line
-    new tooltip elem:icon, parent:line, html:slash.tilde(info.source)
-    
-    line
-
 toggleDisplay = (column) ->
     
     key = "#lines div span.#{column}"
@@ -226,19 +153,9 @@ toggleDisplay = (column) ->
 
 onMsg = (args) ->
     
-    # log 'onMsg', args
-    atBot = lines.scrollTop > lines.scrollHeight - lines.clientHeight - 10
-    
-    lines.appendChild lineForLog args
-    
-    if lines.children.length > 4000
-        while lines.children.length > 3600
-            lines.firstChild.remove()
-            
-    if atBot
-        lines.scrollTop = lines.scrollHeight
+    lines.appendLog args
 
-# udpReceiver = new udp onMsg:onMsg #, debug:true
+udpReceiver = new udp onMsg:onMsg #, debug:true
         
 #  0000000  000000000  00000000   00000000   0000000   00     00    
 # 000          000     000   000  000       000   000  000   000    

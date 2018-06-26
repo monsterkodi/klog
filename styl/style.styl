@@ -45,13 +45,14 @@ body
     & div
         width           100%
         white-space     nowrap
+        overflow        hidden
         & span
             padding-right   12px
             display         inline-block
             vertical-align  top
-                
+            cursor          pointer 
+            
             &.icon
-                cursor              pointer
                 min-width           1.3em
                 margin              0
                 position            relative
@@ -66,6 +67,7 @@ body
                 width               2em
                 padding-right       0px
             &.log
+                cursor              text
                 white-space         pre
                 padding-left        2px
             &.num
