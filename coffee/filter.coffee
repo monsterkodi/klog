@@ -6,8 +6,9 @@
 000       000  0000000     000     00000000  000   000
 ###
 
-{ elem, log, _ } = require 'kxk'
+{ empty, valid, elem, _ } = require 'kxk'
 
+log = console.log
 Input = require './input'
 
 class Filter extends Input
@@ -16,10 +17,12 @@ class Filter extends Input
         
         super 'filter', '⍛'
         
-    onClick: =>
+    apply: (text, line) =>
         
-        log 'filter'
+        text = text.trim()
+        info = line.info
+        # console.log @name, text, info
+        hidden = valid(text) and info.str.indexOf(text) >= 0
+        line.classList.toggle 'filtered', hidden
         
-        super()
-
 module.exports = Filter

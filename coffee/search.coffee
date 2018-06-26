@@ -6,8 +6,9 @@
 0000000   00000000  000   000  000   000   0000000  000   000
 ###
 
-{ elem, stopEvent, log, _ } = require 'kxk'
+{ elem, stopEvent, _ } = require 'kxk'
 
+log   = console.log
 Input = require './input'
 
 class Search extends Input
@@ -16,10 +17,8 @@ class Search extends Input
 
         super 'search', '⚲'
 
-    onClick: =>
+    apply: (text, line) =>
         
-        log 'search'
+        log @name, text, line.info
 
-        super()
-        
 module.exports = Search

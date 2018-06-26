@@ -75,6 +75,7 @@ class Lines
         html += "<span class='log'>#{str info.str}</span>"
         
         line = elem class:"line #{info.type}", html:html
+        line.info = info
         
         icon =$ '.icon', line
         new tooltip elem:icon, parent:line, html:slash.tilde(info.source)

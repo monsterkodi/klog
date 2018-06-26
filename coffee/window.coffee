@@ -132,6 +132,8 @@ post.on 'menuAction', (action) ->
         when 'Reset'         then resetFontSize()
         when 'Open Log File' then openFile logFile 
         when 'Clear'         then lines.clear()
+        when 'Search'        then post.emit 'focus', 'search'
+        when 'Filter'        then post.emit 'focus', 'filter'
             
         when 'Visual Studio', 'VS Code', 'ko'
             setEditor action

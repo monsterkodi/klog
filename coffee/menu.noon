@@ -25,13 +25,16 @@ klog
 #     0      000  00000000  00     00  
 
 View
-    Num                     ctrl+n
-    Time                    ctrl+t
-    ID                      ctrl+i                 
-    File                    ctrl+f
-    Src                     ctrl+s
-    Icon
+    Search                  ctrl+s
+    Filter                  ctrl+f
     -
+    Num                     n
+    Time                    t
+    ID                      i                 
+    File                    f
+    Src                     s
+    Icon
+    --
     Font Size   
         Increase            ctrl+=
         Decrease            ctrl+-
