@@ -6,7 +6,7 @@
 0000000   00000000  000   000  000   000   0000000  000   000
 ###
 
-{ elem, stopEvent, _ } = require 'kxk'
+{ elem, empty, valid, reversed, matchr, stopEvent, str, $, _ } = require 'kxk'
 
 log   = console.log
 Input = require './input'
@@ -17,8 +17,31 @@ class Search extends Input
 
         super 'search', '⚲'
 
-    apply: (text, line) =>
+    apply: (line) =>
         
-        log @name, text, line.info
+        text = @input.value
+        log @name, text
 
+        div   =$ '.log', line
+        info  = line.info
+        texts = text.trim().split /\s+/
+        
+        cfg = []
+        for t in texts
+            cfg.push [new RegExp(t), 'highlight']
+            
+        newLine = info.str
+        rgs = matchr.ranges cfg, info.str 
+        if valid rgs
+            log '--', info.str, str rgs
+            
+            dss = matchr.dissect rgs
+            
+            log '++', str dss
+            for d in reversed dss
+                span    = "<span class='highlight'>" + d.match + "</span>"
+                newLine = newLine.slice(0, d.start) + span + newLine.slice(d.start + d.match.length)
+                
+        div.innerHTML = newLine
+                
 module.exports = Search

@@ -6,7 +6,7 @@
 000  000   000  000         0000000      000   
 ###
 
-{ post, elem, keyinfo, stopEvent, log, $, _ } = require 'kxk'
+{ post, prefs, elem, keyinfo, stopEvent, log, $, _ } = require 'kxk'
 
 class Input
 
@@ -22,6 +22,9 @@ class Input
         @input.addEventListener 'keydown', @onInputKey
         window.titlebar.pushElem @input
         
+        @input.value = prefs.get("input:#{@name}:value") ? ''
+        @show() if prefs.get "input:#{@name}:visible"
+        
         post.on 'focus', @onFocus
         
     onFocus: (name) => 
@@ -36,23 +39,32 @@ class Input
         if info.combo == 'esc'
             @input.blur()
         
-    onEnter: => log 'Enter', @input.value
+    onEnter: => @onInput() #log 'Enter', @input.value
     onInput: => 
+        
+        prefs.set "input:#{@name}:value", @input.value
+        
         lines =$ '#lines'
         for line in lines.children
-            @apply @input.value, line
+            @apply line
         
     show: -> 
-        
+
+        prefs.set "input:#{@name}:visible", true
         if @input.style.display == 'none'
             @input.style.display = 'flex'
         @input.focus()
+            
+    hide: ->
+        
+        prefs.set "input:#{@name}:visible", false
+        @input.style.display = 'none'
             
     onButton: (event) =>
         
         if @input.style.display == 'none'
             @show()
         else
-            @input.style.display = 'none'
+            @hide()
         
 module.exports = Input

@@ -17,12 +17,19 @@ class Filter extends Input
         
         super 'filter', '⍛'
         
-    apply: (text, line) =>
+    apply: (line) =>
         
-        text = text.trim()
+        text = @input.value
         info = line.info
-        # console.log @name, text, info
-        hidden = valid(text) and info.str.indexOf(text) >= 0
+        texts = text.trim().split /\s+/
+        hidden = false
+        
+        for t in texts
+            
+            if valid(t) and info.str.indexOf(t) >= 0
+                hidden = true
+                break
+                
         line.classList.toggle 'filtered', hidden
         
 module.exports = Filter

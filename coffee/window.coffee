@@ -27,8 +27,9 @@ userData = w.userData
 logFile  = slash.join userData, 'log.txt' 
 
 lines  = new Lines
-search = new Search
-filter = new Filter
+
+window.search = new Search
+window.filter = new Filter
 
 #  0000000   00000000   00000000  000   000  
 # 000   000  000   000  000       0000  000  
@@ -190,7 +191,7 @@ tail.on 'line', (line) ->
 # 000  000  0000  000     000       
 # 000  000   000  000     000       
 
-setEditor   prefs.get 'editor'
+setEditor   prefs.get 'editor', 'ko'
 setFontSize prefs.get 'fontSize', defaultFontSize
 
 for column in ['id', 'src', 'icon', 'num', 'time']
