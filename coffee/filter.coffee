@@ -6,7 +6,7 @@
 000       000  0000000     000     00000000  000   000
 ###
 
-{ empty, valid, elem, _ } = require 'kxk'
+{ slash, empty, valid, elem, _ } = require 'kxk'
 
 log = console.log
 Input = require './input'
@@ -26,7 +26,16 @@ class Filter extends Input
         
         for t in texts
             
-            if valid(t) and info.str.indexOf(t) >= 0
+            log info if t.startsWith('@')
+            
+            continue if empty t
+            if t.startsWith('@') and slash.base(info.source) == t.substr 1
+                hidden = true
+                break
+            else if t.startsWith('#') and info.id == t.substr 1
+                hidden = true
+                break
+            else if info.str.indexOf(t) >= 0
                 hidden = true
                 break
                 

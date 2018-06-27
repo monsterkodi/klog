@@ -20,7 +20,7 @@ class Search extends Input
     apply: (line) =>
         
         text = @input.value
-        log @name, text
+        # log @name, text
 
         div   =$ '.log', line
         info  = line.info
@@ -33,11 +33,8 @@ class Search extends Input
         newLine = info.str
         rgs = matchr.ranges cfg, info.str 
         if valid rgs
-            log '--', info.str, str rgs
-            
             dss = matchr.dissect rgs
-            
-            log '++', str dss
+            # log '++', str dss
             for d in reversed dss
                 span    = "<span class='highlight'>" + d.match + "</span>"
                 newLine = newLine.slice(0, d.start) + span + newLine.slice(d.start + d.match.length)

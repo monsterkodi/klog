@@ -28,11 +28,11 @@ View
     Search                  ctrl+s
     Filter                  ctrl+f
     -
-    Num                     n
-    Time                    t
-    ID                      i                 
-    File                    f
-    Src                     s
+    Num                     n ctrl+n
+    Time                    t ctrl+t
+    ID                      i ctrl+i                 
+    File                    f ctrl+f
+    Src                     s ctrl+s
     Icon
     --
     Font Size   

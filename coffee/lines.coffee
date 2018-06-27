@@ -24,6 +24,9 @@ class Lines
         
         @lines.appendChild @lineForLog msg
         
+        window.search.apply @lines.lastChild
+        window.filter.apply @lines.lastChild
+        
         if @lines.children.length > 4000
             while @lines.children.length > 3600
                 @lines.firstChild.remove()

@@ -34,7 +34,7 @@ class Input
     onInputKey: (event) =>
         
         info = keyinfo.forEvent event
-        if info.mod != 'ctrl'
+        if 0 > info.mod.indexOf 'ctrl'
             event.stopPropagation()
         if info.combo == 'esc'
             @input.blur()
