@@ -1,13 +1,13 @@
 name            klog
 productName     klog
-version         0.27.0
+version         0.30.0
 description     log tool
 main            js/main.js
 repository
                 type  git
                 url   git+https://github.com/monsterkodi/klog.git
 scripts
-                mac   bash ./bin/buildmac.sh
+                mac   ./bin/buildmac.sh
                 win   bash ./bin/buildwin.sh
 keywords
                 log
