@@ -6,7 +6,7 @@
 000  000   000  000         0000000      000   
 ###
 
-{ post, prefs, elem, keyinfo, stopEvent, log, $, _ } = require 'kxk'
+{ post, prefs, elem, keyinfo, stopEvent, log, $ } = require 'kxk'
 
 class Input
 
@@ -15,7 +15,7 @@ class Input
         @button = elem class:'winbutton gray', text:text, click:@onButton
         window.titlebar.pushElem @button
         
-        @input = elem 'input', class:'input search', value:'', dblclick:stopEvent, autofocus:true, click:stopEvent
+        @input = elem 'input', class:"input #{@name}", value:'', dblclick:stopEvent, autofocus:true, click:stopEvent
         @input.style.display = 'none'
         @input.addEventListener 'change',  @onEnter
         @input.addEventListener 'input',   @onInput

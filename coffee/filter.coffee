@@ -6,9 +6,9 @@
 000       000  0000000     000     00000000  000   000
 ###
 
-{ slash, empty, valid, elem, _ } = require 'kxk'
+{ slash, empty } = require 'kxk'
 
-log = console.log
+log   = console.log
 Input = require './input'
 
 class Filter extends Input
@@ -25,8 +25,6 @@ class Filter extends Input
         hidden = false
         
         for t in texts
-            
-            log info if t.startsWith('@')
             
             continue if empty t
             if t.startsWith('@') and slash.base(info.source) == t.substr 1

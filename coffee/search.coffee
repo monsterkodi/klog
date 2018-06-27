@@ -6,7 +6,7 @@
 0000000   00000000  000   000  000   000   0000000  000   000
 ###
 
-{ elem, empty, valid, reversed, matchr, stopEvent, str, $, _ } = require 'kxk'
+{ valid, reversed, matchr, $ } = require 'kxk'
 
 log   = console.log
 Input = require './input'
@@ -20,7 +20,6 @@ class Search extends Input
     apply: (line) =>
         
         text = @input.value
-        # log @name, text
 
         div   =$ '.log', line
         info  = line.info
@@ -34,7 +33,6 @@ class Search extends Input
         rgs = matchr.ranges cfg, info.str 
         if valid rgs
             dss = matchr.dissect rgs
-            # log '++', str dss
             for d in reversed dss
                 span    = "<span class='highlight'>" + d.match + "</span>"
                 newLine = newLine.slice(0, d.start) + span + newLine.slice(d.start + d.match.length)
