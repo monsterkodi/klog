@@ -32,12 +32,20 @@ logFile  = slash.join userData, 'log.txt'
 #  0000000   000        00000000  000   000  
 
 koSend = null
+ueSend = null
+
 openFile = (f) ->
   
-    
     [file, line] = slash.splitFileLine f
     
     log 'openFile', file, line
+    
+    if file.startsWith '/Game/'
+        log 'UESEND!', file
+        if not ueSend 
+            ueSend = new udp port:9889
+        ueSend.send file
+        return
     
     switch prefs.get 'editor', 'Visual Studio'
         when 'VS Code'
@@ -59,11 +67,11 @@ openFile = (f) ->
 #  0000000  0000000  000   0000000  000   000  
 
 onClick = (event) ->
-    
+    log 'click'
     if lineElem = elem.upElem event.target, class:'line'
         file =  $('.src', lineElem).innerText
         if valid file
-            
+            log 'onClick', file
             file = file.replace /[\w\-]+\-x64\/resources\/app\//, ''
             
             if /\/node\_modules\//.test file
@@ -238,7 +246,7 @@ onMsg = (args) ->
     if atBot
         lines.scrollTop = lines.scrollHeight
 
-# udpReceiver = new udp onMsg:onMsg #, debug:true
+udpReceiver = new udp onMsg:onMsg #, debug:true
         
 #  0000000  000000000  00000000   00000000   0000000   00     00    
 # 000          000     000   000  000       000   000  000   000    
