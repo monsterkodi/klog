@@ -182,7 +182,7 @@ log 'logFile:', logFile
 tail = new Tail logFile
 tail.on 'error', error
 tail.on 'line', (line) -> 
-    log "tail '#{line}'"
+    # log "tail '#{line}'"
     onMsg JSON.parse line
     
 # 000  000   000  000  000000000    

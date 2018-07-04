@@ -6,7 +6,7 @@
 0000000   00000000  000   000  000   000   0000000  000   000
 ###
 
-{ valid, reversed, matchr, $ } = require 'kxk'
+{ valid, reversed, matchr, str, $ } = require 'kxk'
 
 log   = console.log
 Input = require './input'
@@ -36,7 +36,7 @@ class Search extends Input
             for d in reversed dss
                 span    = "<span class='highlight'>" + d.match + "</span>"
                 newLine = newLine.slice(0, d.start) + span + newLine.slice(d.start + d.match.length)
-                
-        div.innerHTML = newLine
+     
+        div.innerHTML = str.encode newLine
                 
 module.exports = Search

@@ -1,6 +1,6 @@
 name            klog
 productName     klog
-version         0.34.0
+version         0.36.0
 description     log tool
 main            js/main.js
 repository
