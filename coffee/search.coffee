@@ -37,6 +37,8 @@ class Search extends Input
                 span    = "<span class='highlight'>" + d.match + "</span>"
                 newLine = newLine.slice(0, d.start) + span + newLine.slice(d.start + d.match.length)
      
-        div.innerHTML = str.encode newLine
+        logStr = newLine.split('\n').map((s) -> str.encode s).join '<br>'
+        
+        div.innerHTML = logStr
                 
 module.exports = Search

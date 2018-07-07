@@ -75,7 +75,9 @@ class Lines
         html += "<span class='id'>#{info.id ? ''}</span>"
         html += "<span class='file'>#{slash.base(info.source) ? ''}</span>"
         html += "<span class='sep'>#{info.sep ? '⯈ '}</span>"
-        html += "<span class='log'>#{str.encode info.str}</span>"
+    
+        logStr = info.str.split('\n').map((s) -> str.encode s).join '<br>'
+        html += "<span class='log'>#{logStr}</span>"
         
         line = elem class:"line #{info.type}", html:html
         line.info = info
