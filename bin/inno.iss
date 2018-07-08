@@ -1,12 +1,10 @@
-
 #define MyAppName "klog"
-#define MyAppVersion "0.16.0"
+#define MyAppVersion "0.38.0"
 #define MyAppPublisher "monsterkodi"
 #define MyAppURL "https://github.com/monsterkodi/klog"
 #define MyAppExeName "klog.exe"
 
 [Setup]
-; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{1629C7D0-5067-4EDE-A797-8A693CFBC23B}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
@@ -32,7 +30,6 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-;Source: "..\{#MyAppName}-win32-x64\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\{#MyAppName}-win32-x64\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
