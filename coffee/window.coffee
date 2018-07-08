@@ -57,7 +57,6 @@ openFile = (f) ->
         when 'VS Code'
             open "vscode://file/" + slash.resolve f
         when 'Visual Studio'
-            # [file, line] = slash.splitFileLine f
             file = slash.unslash slash.resolve file
             bat = slash.unslash slash.resolve slash.join __dirname, '../bin/openFile/openVS.bat'
             childp.exec "\"#{bat}\" \"#{file}\" #{line} 0", { cwd:slash.dir(bat) }, (err) -> 
@@ -75,13 +74,12 @@ post.on 'openFile', openFile
 #  0000000   0000000   000   000  0000000     0000000   
 
 post.on 'combo', (combo, info) -> 
+    
     switch combo
         when 'home'      then lines.lines.scrollTop = 0
         when 'end'       then lines.lines.scrollTop = lines.scrollHeight
         when 'page up'   then lines.lines.scrollTop -= 1000
         when 'page down' then lines.lines.scrollTop += 1000
-        else
-            log 'combo', combo
 
 # 00000000   0000000   000   000  000000000      0000000  000  0000000  00000000
 # 000       000   000  0000  000     000        000       000     000   000
@@ -101,7 +99,7 @@ setFontSize = (s) ->
     prefs.set "fontSize", s
     lines.lines.style.fontSize = "#{s}px"
     iconSize = clamp 4, 44, parseInt s
-    # log iconSize
+
     setStyle '.icon', 'height', "#{iconSize}px"
     setStyle '.icon img', 'height', "#{iconSize}px"
 
@@ -119,7 +117,14 @@ resetFontSize = ->
     
     prefs.set 'fontSize', defaultFontSize
     setFontSize defaultFontSize
-            
+     
+onWheel = (event) ->
+    
+    if 0 <= w.modifiers.indexOf 'ctrl'
+        changeFontSize -event.deltaY/100
+    
+window.document.addEventListener 'wheel', onWheel    
+    
 # 00     00  00000000  000   000  000   000   0000000    0000000  000000000  000   0000000   000   000  
 # 000   000  000       0000  000  000   000  000   000  000          000     000  000   000  0000  000  
 # 000000000  0000000   000 0 000  000   000  000000000  000          000     000  000   000  000 0 000  
@@ -182,7 +187,6 @@ log 'logFile:', logFile
 tail = new Tail logFile
 tail.on 'error', error
 tail.on 'line', (line) -> 
-    # log "tail '#{line}'"
     onMsg JSON.parse line
     
 # 000  000   000  000  000000000    
