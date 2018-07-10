@@ -23,8 +23,7 @@ w = new win
     menu:   '../coffee/menu.noon'
     icon:   '../img/menu@2x.png'
     
-userData = w.userData
-logFile  = slash.join userData, 'log.txt' 
+logFile  = slash.join w.userData, '..', 'klog.txt' 
 
 lines  = new Lines
 
@@ -100,7 +99,7 @@ setFontSize = (s) ->
     lines.lines.style.fontSize = "#{s}px"
     iconSize = clamp 4, 44, parseInt s
 
-    setStyle '.icon', 'height', "#{iconSize}px"
+    setStyle '.icon',     'height', "#{iconSize}px"
     setStyle '.icon img', 'height', "#{iconSize}px"
 
 changeFontSize = (d) ->
@@ -172,7 +171,7 @@ toggleDisplay = (column) ->
 # 000   000  0000000    0000000   
 
 onMsg = (args) ->
-    
+    log 'onMsg', args
     lines.appendLog args
 
 udpReceiver = new udp onMsg:onMsg #, debug:true
