@@ -6,16 +6,17 @@
 00     00  000  000   000  0000000     0000000   00     00  
 ###
 
-{ post, win, open, prefs, elem, setStyle, getStyle, 
-  valid, empty, childp, slash, clamp, udp, str, fs, error, $, _ } = require 'kxk'
+{ post, setStyle, getStyle, childp, empty, prefs, slash, first, clamp, open, args, win, udp, error, log, _ } = require 'kxk'
 
 { Tail } = require 'tail'
 
 Lines  = require './lines'
 Search = require './search'
 Filter = require './filter'
+Find   = require './find'
   
-log = console.log
+log  = console.log
+klog = require('kxk').log
 
 w = new win 
     dir:    __dirname
@@ -23,10 +24,11 @@ w = new win
     menu:   '../coffee/menu.noon'
     icon:   '../img/menu@2x.png'
     
-logFile  = slash.join w.userData, '..', 'klog.txt' 
+logFile = slash.join w.userData, '..', 'klog.txt' 
+findDir = slash.resolve prefs.get 'findDir', '~'
 
-lines  = new Lines
-
+window.lines  = lines = new Lines
+window.find   = new Find
 window.search = new Search
 window.filter = new Filter
 
@@ -65,6 +67,24 @@ openFile = (f) ->
             koSend.send slash.resolve f
     
 post.on 'openFile', openFile
+
+openDir = (dir) ->
+    
+    opts =
+        title:      'Open'
+        properties: ['openDirectory']
+    
+    electron = require 'electron'
+    electron.remote.dialog.showOpenDialog opts, (dirs) =>
+        if dir = first dirs
+            slash.dirExists dir, ->
+                setFindDir dir
+                
+setFindDir = (dir) ->
+    
+    findDir = slash.tilde dir
+    prefs.set 'findDir', findDir
+    klog 'findDir', findDir
             
 #  0000000   0000000   00     00  0000000     0000000   
 # 000       000   000  000   000  000   000  000   000  
@@ -133,20 +153,21 @@ window.document.addEventListener 'wheel', onWheel
 setEditor = (editor) ->
     
     prefs.set 'editor', editor
-    require('kxk').log "editor: #{prefs.get 'editor'}"
+    klog "editor: #{prefs.get 'editor'}"
 
 post.on 'menuAction', (action) ->
     
-    log 'menuAction', action
     switch action
         
-        when 'Increase'      then changeFontSize +1
-        when 'Decrease'      then changeFontSize -1
-        when 'Reset'         then resetFontSize()
-        when 'Open Log File' then openFile logFile 
-        when 'Clear'         then lines.clear()
-        when 'Search'        then post.emit 'focus', 'search'
-        when 'Filter'        then post.emit 'focus', 'filter'
+        when 'Increase'             then changeFontSize +1
+        when 'Decrease'             then changeFontSize -1
+        when 'Reset'                then resetFontSize()
+        when 'Open Log File'        then openFile logFile 
+        when 'Open Find Directory'  then openDir findDir
+        when 'Clear'                then lines.clear()
+        when 'Find'                 then post.emit 'focus', 'find'
+        when 'Search'               then post.emit 'focus', 'search'
+        when 'Exclude'              then post.emit 'focus', 'filter'
             
         when 'Visual Studio', 'VS Code', 'ko'
             setEditor action
@@ -195,6 +216,7 @@ tail.on 'line', (line) ->
 # 000  000   000  000     000       
 
 setEditor   prefs.get 'editor', 'ko'
+setFindDir  prefs.get 'findDir', '~'
 setFontSize prefs.get 'fontSize', defaultFontSize
 
 for column in ['id', 'src', 'icon', 'num', 'time']

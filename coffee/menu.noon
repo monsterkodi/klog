@@ -6,18 +6,18 @@
 # 000   000  00000000  000   000   0000000
 
 klog
-    Clear                   ctrl+k k
-    -
+    Open Find Directory     ctrl+o
+    Open Log File
+    --
+    About                   ctrl+,
+    ---
+    Quit                    ctrl+q
+
+Editor
     Visual Studio           ctrl+1
     VS Code                 ctrl+2
     ko                      ctrl+3
-    -- 
-    Open Log File
-    ---
-    About                   ctrl+,
-    ----
-    Quit                    ctrl+q
-
+    
 # 000   000  000  00000000  000   000  
 # 000   000  000  000       000 0 000  
 #  000 000   000  0000000   000000000  
@@ -25,16 +25,19 @@ klog
 #     0      000  00000000  00     00  
 
 View
-    Search                  ctrl+s
-    Filter                  ctrl+f
+    Find                    ctrl+f
+    Search                  ctrl+s f3
+    Exclude                 ctrl+e
     -
+    Clear                   ctrl+k k
+    --
     Num                     n ctrl+n
     Time                    t ctrl+t
     ID                      i ctrl+i                 
     File                    f ctrl+f
     Src                     s ctrl+s
     Icon
-    --
+    ---
     Font Size   
         Increase            ctrl+=
         Decrease            ctrl+-
@@ -55,7 +58,7 @@ Window
     Minimize                alt+ctrl+shift+m
     Maximize                alt+ctrl+m
     ---
-    Screenshot              f3
+    Screenshot              alt+f3
     Reload                  alt+ctrl+l
     DevTools                alt+ctrl+i
 

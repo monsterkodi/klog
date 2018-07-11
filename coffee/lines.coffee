@@ -24,6 +24,7 @@ class Lines
         
         @lines.appendChild @lineForLog msg
         
+        window.find.apply   @lines.lastChild
         window.search.apply @lines.lastChild
         window.filter.apply @lines.lastChild
         
@@ -73,7 +74,7 @@ class Lines
         html += "<span class='icon'>#{icon}</span>"
         html += "<span class='time'>#{time}</span>"
         html += "<span class='id'>#{info.id ? ''}</span>"
-        html += "<span class='file'>#{slash.base(info.source) ? ''}</span>"
+        html += "<span class='file'>#{info.file ? slash.base(info.source) ? ''}</span>"
         html += "<span class='sep'>#{info.sep ? '⯈ '}</span>"
     
         logStr = info.str.split('\n').map((s) -> str.encode s).join '<br>'

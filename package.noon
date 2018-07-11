@@ -1,13 +1,13 @@
 name            klog
 productName     klog
-version         0.39.0
-description     log tool
+version         0.42.0
+description     log and search tool
 main            js/main.js
 repository
                 type  git
                 url   git+https://github.com/monsterkodi/klog.git
 scripts
-                mac   ./bin/buildmac.sh
+                mac   bash ./bin/buildmac.sh
                 win   bash ./bin/buildwin.sh
 keywords
                 log
@@ -17,8 +17,9 @@ license         Unlicense
 bugs
                 url  https://github.com/monsterkodi/klog/issues
 dependencies
-                kxk   https://github.com/monsterkodi/kxk.git
-                tail  ^1.2.3
+                findit2   ^2.2.3
+                kxk       https://github.com/monsterkodi/kxk.git
+                tail      ^1.2.3
 devDependencies
                 electron        ^2.0.2
                 electron-packager  ^12.1.0

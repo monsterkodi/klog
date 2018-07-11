@@ -36,17 +36,20 @@ class Input
         info = keyinfo.forEvent event
         if 0 > info.mod.indexOf 'ctrl'
             event.stopPropagation()
+        if info.combo == 'enter'
+            @submit? @input.value
         if info.combo == 'esc'
             @input.blur()
         
-    onEnter: => @onInput() #log 'Enter', @input.value
+    onEnter: => @onInput() 
+        
     onInput: => 
         
         prefs.set "input:#{@name}:value", @input.value
         
         lines =$ '#lines'
         for line in lines.children
-            @apply line
+            @apply? line
         
     show: -> 
 
