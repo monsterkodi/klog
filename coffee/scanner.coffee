@@ -65,17 +65,22 @@ class Scanner
         @chunks[file] = []
         
         fileChunk = (f) => (chunk) => @onFileChunk f, chunk
-        fileEnd   = (f) => (     ) => @onFileEnd f
+        fileEnd   = (f) =>         => @onFileEnd f
         
         stream = fs.createReadStream file, encoding:'utf8'
         stream.on 'error', ->
-        stream.on 'end',   fileEnd file
+        stream.on 'end',   fileEnd   file
         stream.on 'data',  fileChunk file
         
     onFileEnd: (file) ->
         
         if valid @chunks[file]
-            @send id:'file', type:'file', file:slash.base(file), source:file, str:slash.tilde(file)
+            @send 
+                id:     'file'
+                type:   'file'
+                file:   slash.base(file)
+                source: file
+                str:    slash.tilde(file)
             
             for chunk in @chunks[file]
                 @send chunk
@@ -85,11 +90,16 @@ class Scanner
         for data in chunk.split '\n'
             
             if data.indexOf(@search) >= 0
-                @chunks[file].push id:'find', file:'', type:'find', source:file, str:data, find:@search, sep:''
+                @chunks[file].push 
+                    id:     'find' 
+                    file:   ''
+                    type:   'find'
+                    source: file
+                    str:    data
+                    find:   @search
+                    sep:    ''
 
-    onEnd: =>
-        
-        @walker = null
+    onEnd: => @walker = null
                 
     #  0000000  000000000   0000000   00000000   
     # 000          000     000   000  000   000  

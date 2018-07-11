@@ -22,7 +22,9 @@ class Lines
         
         atBot = @lines.scrollTop > @lines.scrollHeight - @lines.clientHeight - 10
         
-        @lines.appendChild @lineForLog msg
+        line = @lineForLog msg
+        line.info = msg
+        @lines.appendChild line
         
         window.find.apply   @lines.lastChild
         window.search.apply @lines.lastChild
@@ -81,7 +83,7 @@ class Lines
         html += "<span class='log'>#{logStr}</span>"
         
         line = elem class:"line #{info.type}", html:html
-        line.info = info
+        # line.info = info
         
         icon =$ '.icon', line
         new tooltip elem:icon, parent:line, html:slash.tilde(info.source)
