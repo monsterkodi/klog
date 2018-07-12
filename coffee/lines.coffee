@@ -44,7 +44,7 @@ class Lines
         window.find.apply   line
         window.search.apply line
         # window.filter.apply line
-        log 'append line', line
+        # log 'append line', line
         @lines.appendChild  line
         
     prependLine: (line) ->
@@ -64,7 +64,7 @@ class Lines
         
     onShiftLines: (top, bot, num) =>
         
-        log 'onShiftLines', top, bot, num
+        # log 'onShiftLines', top, bot, num
         
         if num > 0
             for n in [0...num]
@@ -98,29 +98,16 @@ class Lines
     
     appendLog: (msg) -> 
         
-        # atBot = @lines.scrollTop > @lines.scrollHeight - @lines.clientHeight - 10
-        
         line = @lineForLog msg
         line.info = msg
         
         @cache.push line
         
-        # @lines.appendChild line
-        
         @scroll.setNumLines @cache.length
 
-        log @lines.children.length, @scroll.bot, @scroll.top, @cache.length
         if @lines.children.length < @scroll.bot-@scroll.top
-            log 'append fill'
             @appendLine line
         
-        # if @lines.children.length > 4000
-            # while @lines.children.length > 3600
-                # @lines.firstChild.remove()
-                
-        # if atBot
-            # @lines.scrollTop = @lines.scrollHeight
-            
     clear: -> 
     
         @scroll.setNumLines 0

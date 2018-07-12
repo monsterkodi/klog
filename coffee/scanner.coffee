@@ -104,6 +104,7 @@ class Scanner
             
             if data.length > 1024
                 data = data.substr 0, 1024
+                
             if data.indexOf(@search) >= 0
                 @chunks[file].push 
                     id:     'find' 

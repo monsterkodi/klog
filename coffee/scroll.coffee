@@ -120,7 +120,7 @@ class Scroll
 
         return if oldTop == @top and oldBot == @bot
         
-        log 'setTop', oldTop, oldBot, '->', @top, @bot
+        # log 'setTop', oldTop, oldBot, '->', @top, @bot
             
         if (@top > oldBot) or (@bot < oldTop) or (oldBot < oldTop) 
             # new range outside, start from scratch
@@ -207,8 +207,7 @@ class Scroll
     
     updateOffset: -> 
            
-        log 'updateOffset', @scroll, @offsetTop
+        # log 'updateOffset', @scroll, @offsetTop
         @view.style.transform = "translate3d(0,-#{@offsetTop}px, 0)"
-        # @view.style.transform = "translate3d(0,-#{@scroll}px, 0)"
                     
 module.exports = Scroll
