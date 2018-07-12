@@ -6,7 +6,7 @@
 0000000    0000000  000   000  000   000  000   000  00000000  000   000
 ###
 
-{ post, slash, walkdir, elem, empty, valid, fs, $, _ } = require 'kxk'
+{ slash, first, valid, empty, fs, error, log, _ } = require 'kxk'
 
 log    = console.log
 findit = require 'findit2'
@@ -16,15 +16,16 @@ class Scanner
     constructor: (@dir, @search) ->
         
         @chunks = {}
+        @queue  = []
         
         try
-            @walker = findit @dir, no_recurse:false, track_inodes:false
+            @walker = findit @dir
                                 
             @walker.on 'directory', @onDir            
             @walker.on 'file',      @onFile            
             @walker.on 'end',       @onEnd               
             @walker.on 'stop',      @onEnd               
-            @walker.on 'error', ->
+            @walker.on 'error', (err) -> log 'error!', err.stack
                 
         catch err
             error "Scanner.start -- #{err} dir: #{@dir} stack:", err.stack
@@ -38,7 +39,8 @@ class Scanner
     onFile: (file, stat) =>
 
         if slash.isText file
-            @addFile slash.path file
+            @queue.push slash.path file
+            if @queue.length == 1 then @parseFile first @queue
             
     #  0000000   000   000        0000000    000  00000000   
     # 000   000  0000  000        000   000  000  000   000  
@@ -54,36 +56,47 @@ class Scanner
         if dirName.endsWith '-x64'
             stop()
                         
-    #  0000000   0000000    0000000         00000000  000  000      00000000  
-    # 000   000  000   000  000   000       000       000  000      000       
-    # 000000000  000   000  000   000       000000    000  000      0000000   
-    # 000   000  000   000  000   000       000       000  000      000       
-    # 000   000  0000000    0000000         000       000  0000000  00000000  
+    # 0000000    00000000   0000000   000   000  00000000  000   000  00000000  
+    # 000   000  000       000   000  000   000  000       000   000  000       
+    # 000   000  0000000   000 00 00  000   000  0000000   000   000  0000000   
+    # 000   000  000       000 0000   000   000  000       000   000  000       
+    # 0000000    00000000   00000 00   0000000   00000000   0000000   00000000  
     
-    addFile: (file) ->
-
+    dequeue: ->
+        
+        @queue.shift()
+        if valid @queue
+            @parseFile first @queue
+        else if @walker == null
+            @sendResult()
+        
+    parseFile: (file) ->
+        
         @chunks[file] = []
         
         fileChunk = (f) => (chunk) => @onFileChunk f, chunk
-        fileEnd   = (f) =>         => @onFileEnd f
+        fileEnd   = (f) =>      () => @onFileEnd f
         
         stream = fs.createReadStream file, encoding:'utf8'
-        stream.on 'error', ->
+        stream.on 'error', @dequeue
         stream.on 'end',   fileEnd   file
         stream.on 'data',  fileChunk file
         
     onFileEnd: (file) ->
         
         if valid @chunks[file]
+            
             @send 
                 id:     'file'
                 type:   'file'
                 file:   slash.base(file)
                 source: file
-                str:    slash.tilde(file)
+                str:    slash.tilde(file) + " #{@chunks[file].length}"
             
             for chunk in @chunks[file]
                 @send chunk
+                
+        @dequeue()
         
     onFileChunk: (file, chunk) -> 
         
@@ -99,7 +112,20 @@ class Scanner
                     find:   @search
                     sep:    ''
 
-    onEnd: => @walker = null
+    onEnd: => 
+                
+        @walker = null
+        if empty @queue
+            @sendResult()
+
+    sendResult: =>
+        
+        @send
+            id:     'file'
+            type:   'file'
+            file:   ''
+            source: ''
+            str:    "#{_.size @chunks} files parsed"
                 
     #  0000000  000000000   0000000   00000000   
     # 000          000     000   000  000   000  
