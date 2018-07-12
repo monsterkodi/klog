@@ -6,8 +6,9 @@
 0000000  000  000   000  00000000  0000000 
 ###
 
-{ post, tooltip, slash, empty, valid, elem, str, log, $, _ } = require 'kxk'
+{ post, setStyle, tooltip, slash, valid, elem, str, $, _ } = require 'kxk'
 
+log = console.log
 Scroll    = require './scroll'
 ScrollBar = require './scrollbar'
 
@@ -17,6 +18,7 @@ class Lines
         
         @num = 0        
         @lines =$ '#lines'
+        @cache = []
         @icons = {}
         
         @scroll    = new Scroll @lines, 16
@@ -25,9 +27,54 @@ class Lines
         @lines.addEventListener 'click', @onClick
         
         post.on 'fontSize', @onFontSize
+        post.on 'showLines', @onShowLines 
+        post.on 'shiftLines', @onShiftLines
+        post.on 'clearLines', @onClearLines
         
         window.addEventListener 'resize', @onResize
         
+    onClearLines: => 
+        
+        log 'onClearLines'
+        @num = 0  
+        @lines.innerHTML = ''
+        
+    appendLine: (line) ->
+        
+        window.find.apply   line
+        window.search.apply line
+        # window.filter.apply line
+        log 'append line', line
+        @lines.appendChild  line
+        
+    prependLine: (line) ->
+        return if not line
+        # log 'prepend line', line
+        window.find.apply   line
+        window.search.apply line
+        @lines.insertBefore line, @lines.firstChild
+        
+    onShowLines: (top, bot, num) =>
+        
+        log 'onShowLines', top, bot, num
+        @lines.innerHTML = ''
+        for li in [top..bot]
+            # log 'appendLine', li
+            @appendLine @cache[li]
+        
+    onShiftLines: (top, bot, num) =>
+        
+        log 'onShiftLines', top, bot, num
+        
+        if num > 0
+            for n in [0...num]
+                @lines.firstChild.remove()
+                @appendLine @cache[bot-num+n]
+        else
+            for n in [0...-num]
+                @lines.lastChild.remove()
+                @prependLine @cache[top-num-n]
+    
     # 00000000   00000000   0000000  000  0000000  00000000  
     # 000   000  000       000       000     000   000       
     # 0000000    0000000   0000000   000    000    0000000   
@@ -36,7 +83,7 @@ class Lines
     
     onResize: =>
         
-        log 'onResize', @lines.clientHeight
+        # log 'onResize', @lines.clientHeight
         @scroll.setViewHeight @lines.parentNode.clientHeight
 
     onWheel: (delta) =>
@@ -51,29 +98,33 @@ class Lines
     
     appendLog: (msg) -> 
         
-        atBot = @lines.scrollTop > @lines.scrollHeight - @lines.clientHeight - 10
+        # atBot = @lines.scrollTop > @lines.scrollHeight - @lines.clientHeight - 10
         
         line = @lineForLog msg
         line.info = msg
-        @lines.appendChild line
         
-        window.find.apply   @lines.lastChild
-        window.search.apply @lines.lastChild
-        window.filter.apply @lines.lastChild
+        @cache.push line
+        
+        # @lines.appendChild line
+        
+        @scroll.setNumLines @cache.length
 
-        @scroll.setNumLines @lines.children.length
+        log @lines.children.length, @scroll.bot, @scroll.top, @cache.length
+        if @lines.children.length < @scroll.bot-@scroll.top
+            log 'append fill'
+            @appendLine line
         
-        if @lines.children.length > 4000
-            while @lines.children.length > 3600
-                @lines.firstChild.remove()
+        # if @lines.children.length > 4000
+            # while @lines.children.length > 3600
+                # @lines.firstChild.remove()
                 
-        if atBot
-            @lines.scrollTop = @lines.scrollHeight
+        # if atBot
+            # @lines.scrollTop = @lines.scrollHeight
             
     clear: -> 
     
-        @lines.innerHTML = ''
         @scroll.setNumLines 0
+        @cache = []
             
     # 000      000  000   000  00000000  
     # 000      000  0000  000  000       
@@ -121,8 +172,8 @@ class Lines
         line = elem class:"line #{info.type}", html:html
         # line.info = info
         
-        icon =$ '.icon', line
-        new tooltip elem:icon, parent:line, html:slash.tilde(info.source)
+        # icon =$ '.icon', line
+        # new tooltip elem:icon, parent:line, html:slash.tilde(info.source)
         
         line
     
@@ -136,12 +187,16 @@ class Lines
         
         return if not @lines?
 
-        if not @lines.firstChild
-            @appendLog file:'', source:'', id:'', str:'Text'
+        return if not @lines.firstChild
+        # if not @lines.firstChild
+            # @appendLog file:'', source:'', id:'', str:'Text'
         
+        setStyle '.line', 'height', ""
+            
         lineHeight = @lines.firstChild.clientHeight
         if lineHeight > 0
             @scroll?.setLineHeight lineHeight
+            setStyle '.line', 'height', "#{lineHeight}px"
 
     #  0000000  000      000   0000000  000   000  
     # 000       000      000  000       000  000   

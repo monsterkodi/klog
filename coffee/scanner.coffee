@@ -91,7 +91,7 @@ class Scanner
                 type:   'file'
                 file:   slash.base(file)
                 source: file
-                str:    slash.tilde(file) + " #{@chunks[file].length}"
+                str:    slash.tilde(file) #+ " #{@chunks[file].length}"
             
             for chunk in @chunks[file]
                 @send chunk
@@ -102,6 +102,8 @@ class Scanner
         
         for data in chunk.split '\n'
             
+            if data.length > 1024
+                data = data.substr 0, 1024
             if data.indexOf(@search) >= 0
                 @chunks[file].push 
                     id:     'find' 

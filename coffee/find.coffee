@@ -34,7 +34,7 @@ class Find extends Input
         
     apply: (line) =>
         
-        info  = line.info
+        info = line.info
         
         return if info.id != 'find'
         

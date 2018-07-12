@@ -39,7 +39,6 @@ class Scroll
         @bot          = -1 # index of last  visible line in view
         
         log 'scroll.init', str @info()
-        @updateOffset()
 
     # 000  000   000  00000000   0000000 
     # 000  0000  000  000       000   000
@@ -61,6 +60,7 @@ class Scroll
     calc: ->
         
         if @viewHeight <= 0
+            log "calc #{@viewHeight} <= 0"
             return
             
         @scrollMax   = Math.max(0,@fullHeight - @viewHeight)   # maximum scroll offset (pixels)
@@ -84,7 +84,7 @@ class Scroll
         
         @view.scrollLeft += x if x
         
-        return if not delta and @top < @bot
+        # return if not delta and @top < @bot
         
         scroll = @scroll
         delta = 0 if Number.isNaN delta
@@ -102,8 +102,6 @@ class Scroll
                         
             @offsetTop = parseInt offset
             @updateOffset()
-            
-            log 'scroll', delta, str @info()
             post.emit 'scroll', @scroll, @
             
     #  0000000  00000000  000000000  000000000   0000000   00000000 
@@ -121,12 +119,14 @@ class Scroll
         @top = Math.max 0, @bot - @viewLines
 
         return if oldTop == @top and oldBot == @bot
+        
+        log 'setTop', oldTop, oldBot, '->', @top, @bot
             
         if (@top > oldBot) or (@bot < oldTop) or (oldBot < oldTop) 
             # new range outside, start from scratch
             num = @bot - @top + 1
             
-            if num > 0
+            if num > 0 
                 post.emit 'showLines', @top, @bot, num
 
         else   
@@ -146,8 +146,16 @@ class Scroll
     
     reset: =>
         
+        @scroll       =  0 # current scroll value from document start (pixels)
+        @offsetTop    =  0 # height of view above first visible line (pixels)
+        @offsetSmooth =  0 # smooth scrolling offset / part of top line that is hidden (pixels)
+        
+        @numLines     =  0 # total number of lines in buffer
+        @top          = -1 # index of first visible line in view
+        @bot          = -1 # index of last  visible line in view
+        
         post.emit 'clearLines'
-        @init()
+        
         @updateOffset()
         
     # 000   000  000  00000000  000   000  000   000  00000000  000   0000000   000   000  000000000
@@ -159,7 +167,6 @@ class Scroll
     setViewHeight: (h) =>
         
         if @viewHeight != h
-            @bot = @top-1
             @viewHeight = h
             @calc()
             
@@ -172,16 +179,12 @@ class Scroll
     setNumLines: (n) =>
         
         if @numLines != n
-            log "setNumLines #{@numLines} #{n}"
             @fullHeight = n * @lineHeight
             if n
                 @numLines = n
                 @calc()
             else
-                log 'setNumLines init'
-                @init()
-                log 'post clearLines'
-                post.emit 'clearLines'             
+                @reset()
 
     # 000      000  000   000  00000000  000   000  00000000  000   0000000   000   000  000000000
     # 000      000  0000  000  000       000   000  000       000  000        000   000     000   
@@ -204,8 +207,8 @@ class Scroll
     
     updateOffset: -> 
            
-        log 'updateOffset', @scroll
-        # @view.style.transform = "translate3d(0,-#{@offsetTop}px, 0)"
-        @view.style.transform = "translate3d(0,-#{@scroll}px, 0)"
+        log 'updateOffset', @scroll, @offsetTop
+        @view.style.transform = "translate3d(0,-#{@offsetTop}px, 0)"
+        # @view.style.transform = "translate3d(0,-#{@scroll}px, 0)"
                     
 module.exports = Scroll

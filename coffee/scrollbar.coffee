@@ -107,7 +107,7 @@ class Scrollbar
 
     update: =>
 
-        log 'update', @scroll.numLines, @scroll.lineHeight, @scroll.viewHeight
+        # log 'update', @scroll.numLines, @scroll.lineHeight, @scroll.viewHeight
         
         if @scroll.numLines * @scroll.lineHeight < @scroll.viewHeight
             
