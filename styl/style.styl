@@ -8,6 +8,8 @@
 frameWidth       = 6px
 logFontSize      = 15px
 titlebarFontSize = 15px
+scrollbarWidth   = 32px
+scrollhandleWidth = 8px
 fontMono         = "Meslo LG S", "Liberation Mono", "Menlo", "Cousine", "Andale Mono", monospace
 titlebarFont     = Bahnschrift Light, Ebrima, Varela Round, Arial Rounded MT Bold, Helvetica, Arial
 
@@ -30,7 +32,8 @@ body
 #main
     display             flex
     flex-direction      column
-    overflow            scroll
+    // overflow            scroll
+    overflow            hidden
     
 .input
     flex                10 1 0
@@ -43,7 +46,36 @@ body
     color               #fff
     font-size           titlebarFontSize
     font-family         titlebarFont
-       
+  
+//  0000000   0000000  00000000    0000000   000      000      0000000     0000000   00000000
+// 000       000       000   000  000   000  000      000      000   000  000   000  000   000
+// 0000000   000       0000000    000   000  000      000      0000000    000000000  0000000
+//      000  000       000   000  000   000  000      000      000   000  000   000  000   000
+// 0000000    0000000  000   000   0000000   0000000  0000000  0000000    000   000  000   000
+
+.scrollbar
+    position            absolute
+    top                 0
+    cursor              ns-resize
+
+    &.left
+        bottom          0
+        left            0
+        width           scrollbarWidth
+    &.right
+        right           0
+        width           10%
+        height          100%
+
+.scrollhandle
+    position            absolute
+    width               scrollhandleWidth
+    top                 0
+    &.left
+        left            0
+    &.right
+        right           0
+    
 // 000      000  000   000  00000000   0000000  
 // 000      000  0000  000  000       000       
 // 000      000  000 0 000  0000000   0000000   
@@ -54,7 +86,8 @@ body
     font-size               logFontSize
     -webkit-user-select     text
     flex                    1 1 0
-    overflow                auto
+    // overflow                auto
+    overflow                visible
     padding-left            6px
     & div    
         &.filtered    

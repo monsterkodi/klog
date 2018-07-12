@@ -6,7 +6,10 @@
 0000000  000  000   000  00000000  0000000 
 ###
 
-{ post, elem, valid, slash, tooltip, log, str, $, _ } = require 'kxk'
+{ post, tooltip, slash, empty, valid, elem, str, log, $, _ } = require 'kxk'
+
+Scroll    = require './scroll'
+ScrollBar = require './scrollbar'
 
 class Lines
 
@@ -16,9 +19,37 @@ class Lines
         @lines =$ '#lines'
         @icons = {}
         
+        @scroll    = new Scroll @lines, 16
+        @scrollBar = new ScrollBar @scroll
+        
         @lines.addEventListener 'click', @onClick
+        
+        post.on 'fontSize', @onFontSize
+        
+        window.addEventListener 'resize', @onResize
+        
+    # 00000000   00000000   0000000  000  0000000  00000000  
+    # 000   000  000       000       000     000   000       
+    # 0000000    0000000   0000000   000    000    0000000   
+    # 000   000  000            000  000   000     000       
+    # 000   000  00000000  0000000   000  0000000  00000000  
+    
+    onResize: =>
+        
+        log 'onResize', @lines.clientHeight
+        @scroll.setViewHeight @lines.parentNode.clientHeight
 
-    appendLog: (msg) ->
+    onWheel: (delta) =>
+        
+        @scroll.by 5*@scroll.lineHeight * delta/100
+        
+    #  0000000   00000000   00000000   00000000  000   000  0000000    
+    # 000   000  000   000  000   000  000       0000  000  000   000  
+    # 000000000  00000000   00000000   0000000   000 0 000  000   000  
+    # 000   000  000        000        000       000  0000  000   000  
+    # 000   000  000        000        00000000  000   000  0000000    
+    
+    appendLog: (msg) -> 
         
         atBot = @lines.scrollTop > @lines.scrollHeight - @lines.clientHeight - 10
         
@@ -29,6 +60,8 @@ class Lines
         window.find.apply   @lines.lastChild
         window.search.apply @lines.lastChild
         window.filter.apply @lines.lastChild
+
+        @scroll.setNumLines @lines.children.length
         
         if @lines.children.length > 4000
             while @lines.children.length > 3600
@@ -36,8 +69,11 @@ class Lines
                 
         if atBot
             @lines.scrollTop = @lines.scrollHeight
-
-    clear: -> @lines.innerHTML = ''
+            
+    clear: -> 
+    
+        @lines.innerHTML = ''
+        @scroll.setNumLines 0
             
     # 000      000  000   000  00000000  
     # 000      000  0000  000  000       
@@ -90,6 +126,23 @@ class Lines
         
         line
     
+    # 00000000   0000000   000   000  000000000
+    # 000       000   000  0000  000     000
+    # 000000    000   000  000 0 000     000
+    # 000       000   000  000  0000     000
+    # 000        0000000   000   000     000
+
+    onFontSize: (size) =>
+        
+        return if not @lines?
+
+        if not @lines.firstChild
+            @appendLog file:'', source:'', id:'', str:'Text'
+        
+        lineHeight = @lines.firstChild.clientHeight
+        if lineHeight > 0
+            @scroll?.setLineHeight lineHeight
+
     #  0000000  000      000   0000000  000   000  
     # 000       000      000  000       000  000   
     # 000       000      000  000       0000000    

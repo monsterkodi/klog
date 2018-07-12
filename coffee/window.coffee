@@ -6,7 +6,7 @@
 00     00  000  000   000  0000000     0000000   00     00  
 ###
 
-{ post, setStyle, getStyle, childp, empty, prefs, slash, first, clamp, open, args, win, udp, error, log, _ } = require 'kxk'
+{ post, stopEvent, setStyle, getStyle, childp, prefs, empty, slash, first, clamp, open, args, udp, win, error, log, _ } = require 'kxk'
 
 { Tail } = require 'tail'
 
@@ -23,6 +23,7 @@ w = new win
     pkg:    require '../package.json'
     menu:   '../coffee/menu.noon'
     icon:   '../img/menu@2x.png'
+    onLoad: -> onLoad()
     
 logFile = slash.join w.userData, '..', 'klog.txt' 
 findDir = slash.resolve prefs.get 'findDir', '~'
@@ -32,6 +33,10 @@ window.find   = new Find
 window.search = new Search
 window.filter = new Filter
 
+onLoad = ->
+    log 'onLoad'
+    lines.onResize()
+    
 #  0000000   00000000   00000000  000   000  
 # 000   000  000   000  000       0000  000  
 # 000   000  00000000   0000000   000 0 000  
@@ -121,6 +126,8 @@ setFontSize = (s) ->
 
     setStyle '.icon',     'height', "#{iconSize}px"
     setStyle '.icon img', 'height', "#{iconSize}px"
+    
+    post.emit 'fontSize', s
 
 changeFontSize = (d) ->
     
@@ -137,10 +144,19 @@ resetFontSize = ->
     prefs.set 'fontSize', defaultFontSize
     setFontSize defaultFontSize
      
+# 000   000  000   000  00000000  00000000  000      
+# 000 0 000  000   000  000       000       000      
+# 000000000  000000000  0000000   0000000   000      
+# 000   000  000   000  000       000       000      
+# 00     00  000   000  00000000  00000000  0000000  
+
 onWheel = (event) ->
     
     if 0 <= w.modifiers.indexOf 'ctrl'
         changeFontSize -event.deltaY/100
+    else
+        lines.onWheel event.deltaY
+        stopEvent event
     
 window.document.addEventListener 'wheel', onWheel    
     
@@ -184,7 +200,7 @@ toggleDisplay = (column) ->
     else
         prefs.set "display:#{column}", false
         setStyle key, 'display', 'none'
-    
+        
 # 00     00   0000000   0000000   
 # 000   000  000       000        
 # 000000000  0000000   000  0000  
@@ -192,7 +208,7 @@ toggleDisplay = (column) ->
 # 000   000  0000000    0000000   
 
 onMsg = (args) ->
-    log 'onMsg', args
+    # log 'onMsg', args
     lines.appendLog args
 
 udpReceiver = new udp onMsg:onMsg #, debug:true
