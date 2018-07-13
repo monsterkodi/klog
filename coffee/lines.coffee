@@ -52,7 +52,7 @@ class Lines
             @appendLine oldLines++
             
         while newLines < oldLines
-            log 'onChangeLines', oldLines, newLines, @cache.length
+            # log 'onChangeLines', oldLines, newLines, @cache.length
             @lines.lastChild?.remove()
             oldLines--
         
@@ -64,7 +64,9 @@ class Lines
     
     appendLine: (lineIndex) ->
         
-        return if lineIndex > @cache.length-1
+        if lineIndex > @cache.length-1
+            log "skip append #{lineIndex}"
+            return
         
         line = @cache[lineIndex]
         
@@ -82,7 +84,9 @@ class Lines
     
     prependLine: (lineIndex) ->
         
-        return if lineIndex < 0 or lineIndex > @cache.length-1
+        if lineIndex < 0 or lineIndex > @cache.length-1
+            log "skip prepend #{lineIndex}"
+            return 
         
         line = @cache[lineIndex]
         
@@ -91,10 +95,19 @@ class Lines
         window.search.apply line
         @lines.insertBefore line, @lines.firstChild
     
-    removeLine: (lineIndex) ->
+    shiftLine: (lineIndex) ->
+        
+        if lineIndex >= 0 and lineIndex <= @cache.length-1 
+            @lines.firstChild.remove() # this should check if line matches!
+        else 
+            log "skip shift #{lineIndex}"
+        
+    popLine: (lineIndex) ->
         
         if lineIndex <= @cache.length-1 
             @lines.lastChild.remove() # this should check if line matches!
+        else 
+            log "skip pop #{lineIndex}"
         
     #  0000000  000   000   0000000   000   000  000      000  000   000  00000000   0000000  
     # 000       000   000  000   000  000 0 000  000      000  0000  000  000       000       
@@ -104,14 +117,14 @@ class Lines
     
     onShowLines: (top, bot, num) =>
         
-        log "Lines.onShowLines top:#{top} bot:#{bot} num:#{num} cache:#{@cache.length}"
+        # log "Lines.onShowLines top:#{top} bot:#{bot} num:#{num} cache:#{@cache.length}"
         
         @lines.innerHTML = ''
         for li in [top..bot]
             @appendLine li
             
         if valid(@cache) and @scroll.lineHeight <= prefs.get 'fontSize'
-            log 'onShowLines delayedFontSize'
+            # log 'onShowLines delayedFontSize'
             @onFontSize prefs.get 'fontSize', 16
         
     #  0000000  000   000  000  00000000  000000000  000      000  000   000  00000000   0000000  
@@ -121,16 +134,16 @@ class Lines
     # 0000000   000   000  000  000          000     0000000  000  000   000  00000000  0000000   
     
     onShiftLines: (top, bot, num) =>
-        
-        log "Lines.onShiftLines top:#{top} bot:#{bot} num:#{num}"
-        
+        # log 'onShiftLines', top, bot, num
         if num > 0
             for n in [0...num]
-                @lines.firstChild.remove()
+                # log 'onShiftLines shift', top-num+n, 'append', bot-num+n+1, @cache.length
+                @shiftLine  top-num+n
                 @appendLine bot-num+n+1
         else
             for n in [0...-num]
-                @removeLine bot-num-n
+                # log 'onShiftLines prepend', top-num-n-1, 'pop', bot-num-n, @cache.length
+                @popLine     bot-num-n
                 @prependLine top-num-n-1
     
     # 00000000   00000000   0000000  000  0000000  00000000  
@@ -143,6 +156,12 @@ class Lines
         
         @scroll.setViewHeight @lines.parentNode.clientHeight
 
+    # 000   000  000   000  00000000  00000000  000      
+    # 000 0 000  000   000  000       000       000      
+    # 000000000  000000000  0000000   0000000   000      
+    # 000   000  000   000  000       000       000      
+    # 00     00  000   000  00000000  00000000  0000000  
+    
     onWheel: (event) =>
         
         scrollFactor = ->
@@ -153,8 +172,8 @@ class Lines
         
         delta = event.deltaY * scrollFactor()
         
-        # @scroll.by @scroll.lineHeight * delta/50
-        @scroll.by delta/50
+        @scroll.by @scroll.lineHeight * delta/200
+        # @scroll.by delta/50
         
     #  0000000   00000000   00000000   00000000  000   000  0000000    
     # 000   000  000   000  000   000  000       0000  000  000   000  
@@ -171,7 +190,7 @@ class Lines
         
         @scroll.setNumLines @cache.length
 
-        log 'appendLog', @lines.children.length, str @scroll.info()
+        # log 'appendLog', @lines.children.length, str @scroll.info()
         
         if @lines.children.length <= @scroll.bot-@scroll.top
             @appendLine @cache.length-1

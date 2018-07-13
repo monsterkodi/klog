@@ -70,9 +70,9 @@ class Scroll
         if @viewHeight <= 0
             return
             
-        @scrollMax   = Math.max(0,@fullHeight - @viewHeight)   # maximum scroll offset (pixels)
-        @fullLines   = Math.floor(@viewHeight / @lineHeight)   # number of lines in view (excluding partials)
-        @viewLines   = Math.ceil(@viewHeight / @lineHeight)+1  # number of lines in view (including partials)
+        @scrollMax = Math.max(0,@fullHeight - @viewHeight)   # maximum scroll offset (pixels)
+        @fullLines = Math.floor(@viewHeight / @lineHeight)   # number of lines in view (excluding partials)
+        @viewLines = Math.ceil(@viewHeight / @lineHeight)+1  # number of lines in view (including partials)
         
         @by 0
         post.emit 'scroll', @scroll, @
@@ -91,23 +91,47 @@ class Scroll
         
         @view.scrollLeft += x if x
         
+        oldTop = @top
+        oldBot = @bot
+        
         scroll = @scroll
-        delta = 0 if Number.isNaN delta
+        delta  = 0 if Number.isNaN delta
         
         @scroll = parseInt clamp 0, @scrollMax, @scroll+delta
-        top = parseInt @scroll / @lineHeight
-        offset = @scroll - top * @lineHeight 
         
-        @setTop top
+        top = parseInt @scroll / @lineHeight
+        
+        @top = Math.max 0, top
+        @bot = Math.min @top+@viewLines-1
+        
 
-        offset += (top - @top) * @lineHeight
+        if oldTop != @top or oldBot == @bot
+        
+            if (@top > oldBot) or (@bot < oldTop) or (oldBot < oldTop) 
+                # new range outside, start from scratch
+                num = @bot - @top + 1
+                
+                if num > 0 
+                    post.emit 'showLines', @top, @bot, num
+    
+            else   
+                
+                num = @top - oldTop
+                
+                if 0 < Math.abs num
+                    post.emit 'shiftLines', @top, @bot, num
+                    
+        if oldBot > -1 and oldTop > -1 and oldBot - oldTop != @bot - @top
+            post.emit 'changeLines', oldBot-oldTop, @bot-@top
+
+        offset = @scroll - @top * @lineHeight
         
         if offset != @offsetTop or scroll != @scroll
                         
             @offsetTop = offset
             @updateOffset()
-            post.emit 'scroll', @scroll, @
-
+            post.emit 'scroll', @scroll, @                       
+            
     #  0000000   00000000  00000000   0000000  00000000  000000000  
     # 000   000  000       000       000       000          000     
     # 000   000  000000    000000    0000000   0000000      000     
@@ -117,37 +141,7 @@ class Scroll
     updateOffset: ->
            
         @view.style.transform = "translate3d(0,-#{@offsetTop}px, 0)"
-            
-    #  0000000  00000000  000000000  000000000   0000000   00000000 
-    # 000       000          000        000     000   000  000   000
-    # 0000000   0000000      000        000     000   000  00000000 
-    #      000  000          000        000     000   000  000      
-    # 0000000   00000000     000        000      0000000   000      
-            
-    setTop: (top) =>
-        
-        oldTop = @top
-        oldBot = @bot
-        
-        @top = Math.max 0, top
-        @bot = Math.min @top+@viewLines-1
-
-        return if oldTop == @top and oldBot == @bot
-        
-        if (@top > oldBot) or (@bot < oldTop) or (oldBot < oldTop) 
-            # new range outside, start from scratch
-            num = @bot - @top + 1
-            
-            if num > 0 
-                post.emit 'showLines', @top, @bot, num
-
-        else   
-            
-            num = @top - oldTop
-            
-            if 0 < Math.abs num
-                post.emit 'shiftLines', @top, @bot, num
-                
+                            
     # 000   000  000   000  00     00  000      000  000   000  00000000   0000000
     # 0000  000  000   000  000   000  000      000  0000  000  000       000     
     # 000 0 000  000   000  000000000  000      000  000 0 000  0000000   0000000 
@@ -174,16 +168,9 @@ class Scroll
         
         if @viewHeight != h
             
-            oldLines = clamp 0, @numLines, @viewLines
-            
             @viewHeight = h
             @calc()
-            
-            newLines = clamp 0, @numLines, @viewLines
-            
-            if oldLines != newLines
-                post.emit 'changeLines', oldLines, newLines
-            
+                        
     # 000      000  000   000  00000000  000   000  00000000  000   0000000   000   000  000000000
     # 000      000  0000  000  000       000   000  000       000  000        000   000     000   
     # 000      000  000 0 000  0000000   000000000  0000000   000  000  0000  000000000     000   
@@ -194,16 +181,8 @@ class Scroll
             
         if @lineHeight != h
             
-            oldLines = clamp 0, @numLines, @viewLines
-            
             @lineHeight = h
-            @fullHeight = @numLines * @lineHeight
-            
+            @fullHeight = @numLines * @lineHeight            
             @calc()
-            
-            newLines = clamp 0, @numLines, @viewLines
-                    
-            if oldLines != newLines
-                post.emit 'changeLines', oldLines, newLines
-            
+                                    
 module.exports = Scroll

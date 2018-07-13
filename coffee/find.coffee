@@ -24,7 +24,7 @@ class Find extends Input
         dir = prefs.get 'findDir', ''
         return if empty dir
         
-        window.lines.appendLog id:'find', str:"find #{term} in #{dir}", find:term, type:'find'
+        log "find #{term} in #{dir}"
         
         @cp?.kill()
         @cp = childp.fork slash.join(__dirname, 'scanner.js'), [dir, term], stdio: ['pipe', 'pipe', 'ignore', 'ipc'], execPath: 'node'

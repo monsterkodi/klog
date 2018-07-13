@@ -8,8 +8,10 @@
 
 { slash, first, valid, empty, fs, error, log, _ } = require 'kxk'
 
-log    = console.log
-findit = require 'findit2'
+log             = console.log
+findit          = require 'findit2'
+prettyTime      = require 'pretty-ms'
+{ performance } = require 'perf_hooks'
 
 class Scanner
 
@@ -17,6 +19,12 @@ class Scanner
         
         @chunks = {}
         @queue  = []
+        
+        @fileCount = 0
+        @scanCount = 0
+        @lineCount = 0
+        
+        @scanStart = performance.now()
         
         try
             @walker = findit @dir
@@ -30,6 +38,11 @@ class Scanner
         catch err
             error "Scanner.start -- #{err} dir: #{@dir} stack:", err.stack
         
+    stats: ->
+        
+        time = prettyTime performance.now()-@scanStart
+        "#{@lineCount} lines in #{@fileCount} files contain '#{@search}' (#{@scanCount} files scanned in #{time})"
+            
     #  0000000   000   000        00000000  000  000      00000000  
     # 000   000  0000  000        000       000  000      000       
     # 000   000  000 0 000        000000    000  000      0000000   
@@ -72,6 +85,7 @@ class Scanner
         
     parseFile: (file) ->
         
+        @scanCount++
         @chunks[file] = []
         
         fileChunk = (f) => (chunk) => @onFileChunk f, chunk
@@ -85,7 +99,7 @@ class Scanner
     onFileEnd: (file) ->
         
         if valid @chunks[file]
-            
+            @fileCount++
             @send 
                 id:     'file'
                 type:   'file'
@@ -95,6 +109,7 @@ class Scanner
                 str:    slash.tilde(file) #+ " #{@chunks[file].length}"
             
             for chunk in @chunks[file]
+                @lineCount++
                 @send chunk
                 
         @dequeue()
@@ -123,14 +138,20 @@ class Scanner
         if empty @queue
             @sendResult()
 
+    # 00000000   00000000   0000000  000   000  000      000000000  
+    # 000   000  000       000       000   000  000         000     
+    # 0000000    0000000   0000000   000   000  000         000     
+    # 000   000  000            000  000   000  000         000     
+    # 000   000  00000000  0000000    0000000   0000000     000     
+    
     sendResult: =>
         
         @send
             id:     'file'
             type:   'file'
             file:   'scanner'
-            source: __filename
-            str:    "#{_.size @chunks} files parsed"
+            source: slash.path __filename
+            str:    @stats()
                 
     #  0000000  000000000   0000000   00000000   
     # 000          000     000   000  000   000  
