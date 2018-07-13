@@ -128,8 +128,8 @@ class Scanner
         @send
             id:     'file'
             type:   'file'
-            file:   ''
-            source: ''
+            file:   'scanner'
+            source: __filename
             str:    "#{_.size @chunks} files parsed"
                 
     #  0000000  000000000   0000000   00000000   

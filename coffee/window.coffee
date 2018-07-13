@@ -6,7 +6,7 @@
 00     00  000  000   000  0000000     0000000   00     00  
 ###
 
-{ post, stopEvent, setStyle, getStyle, childp, prefs, empty, slash, first, clamp, open, args, udp, win, error, log, _ } = require 'kxk'
+{ post, stopEvent, getStyle, setStyle, keyinfo, childp, clamp, prefs, first, slash, empty, open, args, win, udp, error, log, _ } = require 'kxk'
 
 { Tail } = require 'tail'
 
@@ -18,25 +18,22 @@ Find   = require './find'
 log  = console.log
 klog = require('kxk').log
 
+window.lines = lines = new Lines
+
 w = new win 
     dir:    __dirname
     pkg:    require '../package.json'
     menu:   '../coffee/menu.noon'
     icon:   '../img/menu@2x.png'
-    onLoad: -> onLoad()
+    onLoad: -> window.lines.onResize()
+
+window.find   = new Find
+window.search = new Search
+window.filter = new Filter
     
 logFile = slash.join w.userData, '..', 'klog.txt' 
 findDir = slash.resolve prefs.get 'findDir', '~'
 
-window.lines  = lines = new Lines
-window.find   = new Find
-window.search = new Search
-window.filter = new Filter
-
-onLoad = ->
-    log 'onLoad'
-    lines.onResize()
-    
 #  0000000   00000000   00000000  000   000  
 # 000   000  000   000  000       0000  000  
 # 000   000  00000000   0000000   000 0 000  
@@ -152,10 +149,12 @@ resetFontSize = ->
 
 onWheel = (event) ->
     
-    if 0 <= w.modifiers.indexOf 'ctrl'
+    { mod, key, combo } = keyinfo.forEvent event
+
+    if mod == 'ctrl'
         changeFontSize -event.deltaY/100
     else
-        lines.onWheel event.deltaY
+        lines.onWheel event
         stopEvent event
     
 window.document.addEventListener 'wheel', onWheel    

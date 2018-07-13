@@ -6,7 +6,7 @@
 0000000  000  000   000  00000000  0000000 
 ###
 
-{ post, setStyle, prefs, slash, valid, elem, str, log, $, _ } = require 'kxk'
+{ post, setStyle, prefs, slash, valid, elem, str, $, _ } = require 'kxk'
 
 log = console.log
 Scroll    = require './scroll'
@@ -30,6 +30,7 @@ class Lines
         post.on 'showLines', @onShowLines 
         post.on 'shiftLines', @onShiftLines
         post.on 'clearLines', @onClearLines
+        post.on 'changeLines', @onChangeLines
         
         window.addEventListener 'resize', @onResize
         
@@ -39,11 +40,21 @@ class Lines
     # 000       000      000       000   000  000   000  
     #  0000000  0000000  00000000  000   000  000   000  
     
-    onClearLines: => 
+    onClearLines: =>
         
         log 'onClearLines'
         @num = 0  
         @lines.innerHTML = ''
+        
+    onChangeLines: (oldLines, newLines) =>
+        
+        while newLines > oldLines
+            @appendLine oldLines++
+            
+        while newLines < oldLines
+            log 'onChangeLines', oldLines, newLines, @cache.length
+            @lines.lastChild?.remove()
+            oldLines--
         
     #  0000000   00000000   00000000   00000000  000   000  0000000    
     # 000   000  000   000  000   000  000       0000  000  000   000  
@@ -51,7 +62,11 @@ class Lines
     # 000   000  000        000        000       000  0000  000   000  
     # 000   000  000        000        00000000  000   000  0000000    
     
-    appendLine: (line) ->
+    appendLine: (lineIndex) ->
+        
+        return if lineIndex > @cache.length-1
+        
+        line = @cache[lineIndex]
         
         window.find.apply   line
         window.search.apply line
@@ -65,12 +80,21 @@ class Lines
     # 000        000   000  000       000        000       000  0000  000   000  
     # 000        000   000  00000000  000        00000000  000   000  0000000    
     
-    prependLine: (line) ->
-        return if not line
+    prependLine: (lineIndex) ->
+        
+        return if lineIndex < 0 or lineIndex > @cache.length-1
+        
+        line = @cache[lineIndex]
+        
         # log 'prepend line', line
         window.find.apply   line
         window.search.apply line
         @lines.insertBefore line, @lines.firstChild
+    
+    removeLine: (lineIndex) ->
+        
+        if lineIndex <= @cache.length-1 
+            @lines.lastChild.remove() # this should check if line matches!
         
     #  0000000  000   000   0000000   000   000  000      000  000   000  00000000   0000000  
     # 000       000   000  000   000  000 0 000  000      000  0000  000  000       000       
@@ -80,11 +104,13 @@ class Lines
     
     onShowLines: (top, bot, num) =>
         
+        log "Lines.onShowLines top:#{top} bot:#{bot} num:#{num} cache:#{@cache.length}"
+        
         @lines.innerHTML = ''
         for li in [top..bot]
-            @appendLine @cache[li]
+            @appendLine li
             
-        if @scroll.lineHeight <= prefs.get 'fontSize'
+        if valid(@cache) and @scroll.lineHeight <= prefs.get 'fontSize'
             log 'onShowLines delayedFontSize'
             @onFontSize prefs.get 'fontSize', 16
         
@@ -96,14 +122,16 @@ class Lines
     
     onShiftLines: (top, bot, num) =>
         
+        log "Lines.onShiftLines top:#{top} bot:#{bot} num:#{num}"
+        
         if num > 0
             for n in [0...num]
                 @lines.firstChild.remove()
-                @appendLine @cache[bot-num+n]
+                @appendLine bot-num+n+1
         else
             for n in [0...-num]
-                @lines.lastChild.remove()
-                @prependLine @cache[top-num-n-1]
+                @removeLine bot-num-n
+                @prependLine top-num-n-1
     
     # 00000000   00000000   0000000  000  0000000  00000000  
     # 000   000  000       000       000     000   000       
@@ -115,9 +143,18 @@ class Lines
         
         @scroll.setViewHeight @lines.parentNode.clientHeight
 
-    onWheel: (delta) =>
+    onWheel: (event) =>
         
-        @scroll.by @scroll.lineHeight * delta/50
+        scrollFactor = ->
+            f  = 1
+            f *= 1 + 1 * event.shiftKey
+            f *= 1 + 3 * event.ctrlKey
+            f *= 1 + 7 * event.altKey
+        
+        delta = event.deltaY * scrollFactor()
+        
+        # @scroll.by @scroll.lineHeight * delta/50
+        @scroll.by delta/50
         
     #  0000000   00000000   00000000   00000000  000   000  0000000    
     # 000   000  000   000  000   000  000       0000  000  000   000  
@@ -134,8 +171,10 @@ class Lines
         
         @scroll.setNumLines @cache.length
 
+        log 'appendLog', @lines.children.length, str @scroll.info()
+        
         if @lines.children.length <= @scroll.bot-@scroll.top
-            @appendLine line
+            @appendLine @cache.length-1
         
     clear: -> 
     
@@ -175,7 +214,7 @@ class Lines
                 "#{_.padStart(String(d.getMinutes()), 2, '0')}"
                 "#{_.padStart(String(d.getSeconds()), 2, '0')}"].join ':' 
         
-        html += "<span class='num'>#{@num}</span>"
+        html += "<span class='num'>#{@num-1}</span>"
         html += "<span class='icon'>#{icon}</span>"
         html += "<span class='time'>#{time}</span>"
         html += "<span class='id'>#{info.id ? ''}</span>"
@@ -193,11 +232,11 @@ class Lines
         
         line
     
-    # 00000000   0000000   000   000  000000000
-    # 000       000   000  0000  000     000
-    # 000000    000   000  000 0 000     000
-    # 000       000   000  000  0000     000
-    # 000        0000000   000   000     000
+    # 00000000   0000000   000   000  000000000       0000000  000  0000000  00000000  
+    # 000       000   000  0000  000     000         000       000     000   000       
+    # 000000    000   000  000 0 000     000         0000000   000    000    0000000   
+    # 000       000   000  000  0000     000              000  000   000     000       
+    # 000        0000000   000   000     000         0000000   000  0000000  00000000  
 
     onFontSize: (size) =>
         return if not @lines?

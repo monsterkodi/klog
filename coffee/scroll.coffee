@@ -14,17 +14,25 @@ class Scroll
 
     constructor: (@view) ->
 
-        @scroll       =  0 # current scroll value from document start (pixels)
-        @offsetTop    =  0 # height of view above first visible line (pixels)
+        @resetSize()
+        @resetLines()
+        
+    resetSize: ->
+        
         @lineHeight   =  0 # height of single line (pixels)
         @viewHeight   = -1 # height of scroll view (pixels)
-        @fullHeight   = -1 # total height of all lines (pixels)
         @fullLines    = -1 # number of full lines fitting in view (excluding partials)
         @viewLines    = -1 # number of lines fitting in view (including partials)
         @scrollMax    = -1 # maximum scroll offset (pixels)
-        @numLines     = -1 # total number of lines in buffer
+        
+    resetLines: ->
+        
         @top          = -1 # index of first visible line in view
         @bot          = -1 # index of last  visible line in view
+        @fullHeight   =  0 # total height of all lines (pixels)
+        @scroll       =  0 # current scroll value from document start (pixels)
+        @offsetTop    =  0 # height of view above first visible line (pixels)
+        @numLines     =  0 # total number of lines in buffer
         
     # 00000000   00000000   0000000  00000000  000000000
     # 000   000  000       000       000          000   
@@ -34,13 +42,7 @@ class Scroll
     
     reset: =>
         
-        @scroll       =  0 # current scroll value from document start (pixels)
-        @offsetTop    =  0 # height of view above first visible line (pixels)
-        @offsetSmooth =  0 # smooth scrolling offset / part of top line that is hidden (pixels)
-        
-        @numLines     =  0 # total number of lines in buffer
-        @top          = -1 # index of first visible line in view
-        @bot          = -1 # index of last  visible line in view
+        @resetLines()
         
         post.emit 'clearLines'
         
@@ -112,7 +114,7 @@ class Scroll
     # 000   000  000       000            000  000          000     
     #  0000000   000       000       0000000   00000000     000     
     
-    updateOffset: -> 
+    updateOffset: ->
            
         @view.style.transform = "translate3d(0,-#{@offsetTop}px, 0)"
             
@@ -127,8 +129,8 @@ class Scroll
         oldTop = @top
         oldBot = @bot
         
-        @bot = Math.min top+@viewLines, @numLines-1
-        @top = Math.max 0, @bot - @viewLines
+        @top = Math.max 0, top
+        @bot = Math.min @top+@viewLines-1
 
         return if oldTop == @top and oldBot == @bot
         
@@ -146,20 +148,6 @@ class Scroll
             if 0 < Math.abs num
                 post.emit 'shiftLines', @top, @bot, num
                 
-    lineIndexIsInView: (li) -> @top <= li <= @bot
-            
-    # 000   000  000  00000000  000   000  000   000  00000000  000   0000000   000   000  000000000
-    # 000   000  000  000       000 0 000  000   000  000       000  000        000   000     000   
-    #  000 000   000  0000000   000000000  000000000  0000000   000  000  0000  000000000     000   
-    #    000     000  000       000   000  000   000  000       000  000   000  000   000     000   
-    #     0      000  00000000  00     00  000   000  00000000  000   0000000   000   000     000   
-
-    setViewHeight: (h) =>
-        
-        if @viewHeight != h
-            @viewHeight = h
-            @calc()
-            
     # 000   000  000   000  00     00  000      000  000   000  00000000   0000000
     # 0000  000  000   000  000   000  000      000  0000  000  000       000     
     # 000 0 000  000   000  000000000  000      000  000 0 000  0000000   0000000 
@@ -176,6 +164,26 @@ class Scroll
             else
                 @reset()
 
+    # 000   000  000  00000000  000   000  000   000  00000000  000   0000000   000   000  000000000
+    # 000   000  000  000       000 0 000  000   000  000       000  000        000   000     000   
+    #  000 000   000  0000000   000000000  000000000  0000000   000  000  0000  000000000     000   
+    #    000     000  000       000   000  000   000  000       000  000   000  000   000     000   
+    #     0      000  00000000  00     00  000   000  00000000  000   0000000   000   000     000   
+
+    setViewHeight: (h) =>
+        
+        if @viewHeight != h
+            
+            oldLines = clamp 0, @numLines, @viewLines
+            
+            @viewHeight = h
+            @calc()
+            
+            newLines = clamp 0, @numLines, @viewLines
+            
+            if oldLines != newLines
+                post.emit 'changeLines', oldLines, newLines
+            
     # 000      000  000   000  00000000  000   000  00000000  000   0000000   000   000  000000000
     # 000      000  0000  000  000       000   000  000       000  000        000   000     000   
     # 000      000  000 0 000  0000000   000000000  0000000   000  000  0000  000000000     000   
@@ -185,8 +193,17 @@ class Scroll
     setLineHeight: (h) =>
             
         if @lineHeight != h
+            
+            oldLines = clamp 0, @numLines, @viewLines
+            
             @lineHeight = h
             @fullHeight = @numLines * @lineHeight
+            
             @calc()
+            
+            newLines = clamp 0, @numLines, @viewLines
                     
+            if oldLines != newLines
+                post.emit 'changeLines', oldLines, newLines
+            
 module.exports = Scroll
