@@ -6,7 +6,7 @@
 0000000  000  000   000  00000000  0000000 
 ###
 
-{ post, setStyle, tooltip, slash, valid, elem, str, $, _ } = require 'kxk'
+{ post, setStyle, prefs, slash, valid, elem, str, log, $, _ } = require 'kxk'
 
 log = console.log
 Scroll    = require './scroll'
@@ -21,7 +21,7 @@ class Lines
         @cache = []
         @icons = {}
         
-        @scroll    = new Scroll @lines, 16
+        @scroll    = new Scroll @lines
         @scrollBar = new ScrollBar @scroll
         
         @lines.addEventListener 'click', @onClick
@@ -33,12 +33,24 @@ class Lines
         
         window.addEventListener 'resize', @onResize
         
+    #  0000000  000      00000000   0000000   00000000   
+    # 000       000      000       000   000  000   000  
+    # 000       000      0000000   000000000  0000000    
+    # 000       000      000       000   000  000   000  
+    #  0000000  0000000  00000000  000   000  000   000  
+    
     onClearLines: => 
         
         log 'onClearLines'
         @num = 0  
         @lines.innerHTML = ''
         
+    #  0000000   00000000   00000000   00000000  000   000  0000000    
+    # 000   000  000   000  000   000  000       0000  000  000   000  
+    # 000000000  00000000   00000000   0000000   000 0 000  000   000  
+    # 000   000  000        000        000       000  0000  000   000  
+    # 000   000  000        000        00000000  000   000  0000000    
+    
     appendLine: (line) ->
         
         window.find.apply   line
@@ -47,6 +59,12 @@ class Lines
         # log 'append line', line
         @lines.appendChild  line
         
+    # 00000000   00000000   00000000  00000000   00000000  000   000  0000000    
+    # 000   000  000   000  000       000   000  000       0000  000  000   000  
+    # 00000000   0000000    0000000   00000000   0000000   000 0 000  000   000  
+    # 000        000   000  000       000        000       000  0000  000   000  
+    # 000        000   000  00000000  000        00000000  000   000  0000000    
+    
     prependLine: (line) ->
         return if not line
         # log 'prepend line', line
@@ -54,17 +72,29 @@ class Lines
         window.search.apply line
         @lines.insertBefore line, @lines.firstChild
         
+    #  0000000  000   000   0000000   000   000  000      000  000   000  00000000   0000000  
+    # 000       000   000  000   000  000 0 000  000      000  0000  000  000       000       
+    # 0000000   000000000  000   000  000000000  000      000  000 0 000  0000000   0000000   
+    #      000  000   000  000   000  000   000  000      000  000  0000  000            000  
+    # 0000000   000   000   0000000   00     00  0000000  000  000   000  00000000  0000000   
+    
     onShowLines: (top, bot, num) =>
         
-        log 'onShowLines', top, bot, num
         @lines.innerHTML = ''
         for li in [top..bot]
-            # log 'appendLine', li
             @appendLine @cache[li]
+            
+        if @scroll.lineHeight <= prefs.get 'fontSize'
+            log 'onShowLines delayedFontSize'
+            @onFontSize prefs.get 'fontSize', 16
         
+    #  0000000  000   000  000  00000000  000000000  000      000  000   000  00000000   0000000  
+    # 000       000   000  000  000          000     000      000  0000  000  000       000       
+    # 0000000   000000000  000  000000       000     000      000  000 0 000  0000000   0000000   
+    #      000  000   000  000  000          000     000      000  000  0000  000            000  
+    # 0000000   000   000  000  000          000     0000000  000  000   000  00000000  0000000   
+    
     onShiftLines: (top, bot, num) =>
-        
-        # log 'onShiftLines', top, bot, num
         
         if num > 0
             for n in [0...num]
@@ -73,7 +103,7 @@ class Lines
         else
             for n in [0...-num]
                 @lines.lastChild.remove()
-                @prependLine @cache[top-num-n]
+                @prependLine @cache[top-num-n-1]
     
     # 00000000   00000000   0000000  000  0000000  00000000  
     # 000   000  000       000       000     000   000       
@@ -83,12 +113,11 @@ class Lines
     
     onResize: =>
         
-        # log 'onResize', @lines.clientHeight
         @scroll.setViewHeight @lines.parentNode.clientHeight
 
     onWheel: (delta) =>
         
-        @scroll.by 5*@scroll.lineHeight * delta/100
+        @scroll.by @scroll.lineHeight * delta/50
         
     #  0000000   00000000   00000000   00000000  000   000  0000000    
     # 000   000  000   000  000   000  000       0000  000  000   000  
@@ -105,7 +134,7 @@ class Lines
         
         @scroll.setNumLines @cache.length
 
-        if @lines.children.length < @scroll.bot-@scroll.top
+        if @lines.children.length <= @scroll.bot-@scroll.top
             @appendLine line
         
     clear: -> 
@@ -121,8 +150,8 @@ class Lines
     
     lineForLog: (info) ->
         
-        icon = 
-            if info.icon 
+        icon =
+            if info.icon?
                 if info.icon.startsWith 'file://' then "<img src='#{info.icon}'/>" else info.icon
             else if @icons[info.id]
                 "<img src='#{@icons[info.id]}'/>"
@@ -171,18 +200,15 @@ class Lines
     # 000        0000000   000   000     000
 
     onFontSize: (size) =>
-        
         return if not @lines?
-
-        return if not @lines.firstChild
-        # if not @lines.firstChild
-            # @appendLog file:'', source:'', id:'', str:'Text'
-        
-        setStyle '.line', 'height', ""
-            
-        lineHeight = @lines.firstChild.clientHeight
-        if lineHeight > 0
-            @scroll?.setLineHeight lineHeight
+        if @lines.firstChild
+            setStyle '.line', 'height', ''
+            lineHeight = @lines.firstChild.clientHeight
+            if lineHeight > 0
+                @scroll?.setLineHeight lineHeight
+                setStyle '.line', 'height', "#{lineHeight}px"
+        else if size > 0
+            @scroll?.setLineHeight size
             setStyle '.line', 'height', "#{lineHeight}px"
 
     #  0000000  000      000   0000000  000   000  

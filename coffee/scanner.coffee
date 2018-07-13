@@ -89,6 +89,7 @@ class Scanner
             @send 
                 id:     'file'
                 type:   'file'
+                icon:   '☉'
                 file:   slash.base(file)
                 source: file
                 str:    slash.tilde(file) #+ " #{@chunks[file].length}"
@@ -109,6 +110,7 @@ class Scanner
                 @chunks[file].push 
                     id:     'find' 
                     file:   ''
+                    icon:   ''
                     type:   'find'
                     source: file
                     str:    data
