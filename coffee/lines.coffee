@@ -221,7 +221,7 @@ class Lines
                         className = 'noon-icon'
                     else
                         className = 'file-icon'
-                "<span class=\"#{className} browserFileIcon\"/>"
+                "<div class=\"#{className} browserFileIcon\"></div>"
             else
                 file = slash.join __dirname, "../img/#{info.id}.png"
                 @icons[info.id] = slash.fileUrl if slash.exists file then file else slash.join __dirname, "../img/blank.png"
@@ -240,11 +240,12 @@ class Lines
         d = new Date()
         time = ["#{_.padStart(String(d.getHours()),   2, '0')}"
                 "#{_.padStart(String(d.getMinutes()), 2, '0')}"
-                "#{_.padStart(String(d.getSeconds()), 2, '0')}"].join ':' 
+                "#{_.padStart(String(d.getSeconds()), 2, '0')}"
+                "#{_.padStart(String(d.getMilliseconds()), 2, '0')}"].join ':' 
         
         html += "<span class='num'>#{@num-1}</span>"
-        html += "<span class='icon'>#{icon}</span>"
         html += "<span class='time'>#{time}</span>"
+        html += "<span class='icon'>#{icon}</span>"
         html += "<span class='id'>#{info.id ? ''}</span>"
         html += "<span class='file'>#{info.file ? slash.base(info.source) ? ''}</span>"
         html += "<span class='sep'>#{info.sep ? '⯈ '}</span>"

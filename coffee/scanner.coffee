@@ -18,6 +18,7 @@ class Scanner
     constructor: (@dir, @search) ->
         
         @chunks = {}
+        @lineno = {}
         @queue  = []
         
         @fileCount = 0
@@ -93,6 +94,7 @@ class Scanner
         
         @scanCount++
         @chunks[file] = []
+        @lineno[file] = 0
         
         fileChunk = (f) => (chunk) => @onFileChunk f, chunk
         fileEnd   = (f) =>      () => @onFileEnd f
@@ -134,7 +136,9 @@ class Scanner
     
     onFileChunk: (file, chunk) -> 
         
-        for data in chunk.split '\n'
+        for data in chunk.split /\r?\n/
+            
+            @lineno[file]++
             
             if data.length > 1024
                 data = data.substr 0, 1024
@@ -145,6 +149,7 @@ class Scanner
                     file:   ''
                     icon:   ''
                     type:   'find'
+                    line:   @lineno[file]
                     source: file
                     str:    data
                     find:   @search
