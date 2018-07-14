@@ -252,12 +252,6 @@ class Lines
                 logClss  += ' ' + ext
         
         html  = ""
-        html += "<span class='#{srcClss}'>#{info.source ? ''}"
-        if info.line
-            html += "<span class='ln'>:#{info.line}</span>"
-            if info.column
-                html += "<span class='col'>:#{info.column}</span>"
-        html += "</span>"
         
         d = new Date()
         time = ["#{_.padStart(String(d.getHours()),   2, '0')}"
@@ -274,6 +268,12 @@ class Lines
     
         logStr = info.str.split('\n').map((s) -> str.encode s).join '<br>'
         html += "<span class='#{logClss}'>#{logStr}</span>"
+        html += "<span class='#{srcClss}'>#{info.source ? ''}"
+        if info.line
+            html += "<span class='ln'>:#{info.line}</span>"
+            if info.column
+                html += "<span class='col'>:#{info.column}</span>"
+        html += "</span>"
         
         line = elem class:"line #{info.type}", html:html
         # line.info = info
