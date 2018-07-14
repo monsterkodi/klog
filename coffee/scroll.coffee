@@ -104,7 +104,7 @@ class Scroll
         @top = Math.max 0, top
         @bot = Math.min @top+@viewLines-1
         
-        log 'oldTop', oldTop, oldBot, @top, @bot
+        # log 'oldTop', oldTop, oldBot, @top, @bot
         
         if oldTop != @top or oldBot != @bot
         
@@ -123,7 +123,7 @@ class Scroll
                     post.emit 'shiftLines', @top, @bot, num
                     
         if oldBot > -1 and oldTop > -1 and oldBot - oldTop != @bot - @top
-            log 'changeLines'
+            # log 'changeLines'
             post.emit 'changeLines', oldBot-oldTop, @bot-@top
 
         offset = @scroll - @top * @lineHeight
@@ -182,7 +182,7 @@ class Scroll
     setLineHeight: (h) =>
             
         if @lineHeight != h
-            log 'setLineHeight', h, @lineHeight
+            
             @lineHeight = h
             @fullHeight = @numLines * @lineHeight            
             @calc()

@@ -17,6 +17,14 @@ class Filter extends Input
         
         super 'filter', '⍛'
         
+    onInput: =>
+        
+        super()
+        
+        lines =$ '#lines'
+        for line in lines.children
+            @apply line
+        
     apply: (line) =>
         
         text    = @input.value

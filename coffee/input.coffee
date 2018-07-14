@@ -8,6 +8,8 @@
 
 { post, prefs, elem, keyinfo, stopEvent, log, $ } = require 'kxk'
 
+Highlight = require './highlight'
+
 class Input
 
     constructor: (@name, text) ->
@@ -23,6 +25,7 @@ class Input
         window.titlebar.pushElem @input
         
         @input.value = prefs.get("input:#{@name}:value") ? ''
+        
         @show() if prefs.get "input:#{@name}:visible"
         
         post.on 'focus', @onFocus
@@ -43,14 +46,32 @@ class Input
         
     onEnter: => @onInput() 
         
+    # 000  000   000  00000000   000   000  000000000  
+    # 000  0000  000  000   000  000   000     000     
+    # 000  000 0 000  00000000   000   000     000     
+    # 000  000  0000  000        000   000     000     
+    # 000  000   000  000         0000000      000     
+    
     onInput: => 
         
         prefs.set "input:#{@name}:value", @input.value
         
-        lines =$ '#lines'
-        for line in lines.children
-            @apply? line
+        if @cfg?
+            text = @input.value
+            texts = text.trim().split(/\s+/).map (s) -> s.trim()
+            
+            @cfg = []
+            for t in texts
+                @cfg.push [new RegExp(t), "highlight-#{@name}"]
+  
+            Highlight.lines()
         
+    #  0000000  000   000   0000000   000   000  
+    # 000       000   000  000   000  000 0 000  
+    # 0000000   000000000  000   000  000000000  
+    #      000  000   000  000   000  000   000  
+    # 0000000   000   000   0000000   00     00  
+    
     show: -> 
 
         prefs.set "input:#{@name}:visible", true

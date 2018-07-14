@@ -11,7 +11,8 @@
 log = console.log
 Scroll    = require './scroll'
 ScrollBar = require './scrollbar'
-fileIcons   = require 'file-icons-js'
+Highlight = require './highlight'
+fileIcons = require 'file-icons-js'
 
 class Lines
 
@@ -61,8 +62,7 @@ class Lines
         
         line = @cache[lineIndex]
         
-        window.find.apply   line
-        window.search.apply line
+        Highlight.line line
         # window.filter.apply line
         # log 'append line', line
         @lines.appendChild  line
@@ -74,7 +74,7 @@ class Lines
     # 000        000   000  00000000  000        00000000  000   000  0000000    
     
     prependLine: (lineIndex) ->
-        log "Lines.prependLine lineIndex:#{lineIndex}"
+        # log "Lines.prependLine lineIndex:#{lineIndex}"
         
         if lineIndex < 0 or lineIndex > @cache.length-1
             log "skip prepend #{lineIndex}"
@@ -83,25 +83,24 @@ class Lines
         line = @cache[lineIndex]
         
         # log 'prepend line', line
-        window.find.apply   line
-        window.search.apply line
+        Highlight.line line
         @lines.insertBefore line, @lines.firstChild
     
     shiftLine: (lineIndex) ->
-        log "Lines.shiftLine lineIndex:#{lineIndex}"
+        # log "Lines.shiftLine lineIndex:#{lineIndex}"
         
         if lineIndex >= 0 and lineIndex <= @cache.length-1 
             @lines.firstChild.remove() # this should check if line matches!
-        else 
-            log "skip shift #{lineIndex}"
+        # else 
+            # log "skip shift #{lineIndex}"
         
     popLine: (lineIndex) ->
-        log "Lines.popLine lineIndex:#{lineIndex}"
+        # log "Lines.popLine lineIndex:#{lineIndex}"
         
         if lineIndex <= @cache.length-1 
             @lines.lastChild.remove() # this should check if line matches!
-        else 
-            log "skip pop #{lineIndex}"
+        # else 
+            # log "skip pop #{lineIndex}"
         
     #  0000000  000   000   0000000   000   000  
     # 000       000   000  000   000  000 0 000  
@@ -111,7 +110,7 @@ class Lines
     
     onShowLines: (top, bot, num) =>
         
-        log "Lines.onShowLines top:#{top} bot:#{bot} num:#{num} cache:#{@cache.length}"
+        # log "Lines.onShowLines top:#{top} bot:#{bot} num:#{num} cache:#{@cache.length}"
         
         @lines.innerHTML = ''
         for li in [top..bot]
@@ -143,15 +142,15 @@ class Lines
     # 0000000   000   000  000  000          000     
     
     onShiftLines: (top, bot, num) =>
-        log 'onShiftLines', top, bot, num
+        # log 'onShiftLines', top, bot, num
         if num > 0
             for n in [0...num]
-                log 'onShiftLines shift', top-num+n, 'append', bot-num+n+1, @cache.length
+                # log 'onShiftLines shift', top-num+n, 'append', bot-num+n+1, @cache.length
                 @shiftLine  top-num+n
                 @appendLine bot-num+n+1
         else
             for n in [0...-num]
-                log 'onShiftLines prepend', top-num-n-1, 'pop', bot-num-n, top-num-n-1
+                # log 'onShiftLines prepend', top-num-n-1, 'pop', bot-num-n, top-num-n-1
                 @popLine     bot-num-n
                 @prependLine top-num-n-1
     
@@ -251,11 +250,20 @@ class Lines
                 "#{_.padStart(String(d.getSeconds()), 2, '0')}"
                 "#{_.padStart(String(d.getMilliseconds()), 2, '0')}"].join ':' 
         
+        fileClss = 'file'
+        iconClss = 'icon'
+        idClss   = 'id'
+        if info.source?
+            ext = slash.ext info.source
+            fileClss += ' ' + ext
+            iconClss += ' ' + ext
+            idClss   += ' ' + ext
+                
         html += "<span class='num'>#{@num-1}</span>"
         html += "<span class='time'>#{time}</span>"
-        html += "<span class='icon'>#{icon}</span>"
-        html += "<span class='id'>#{info.id ? ''}</span>"
-        html += "<span class='file'>#{info.file ? slash.base(info.source) ? ''}</span>"
+        html += "<span class='#{iconClss}'>#{icon}</span>"
+        html += "<span class='#{idClss}'>#{info.id ? ''}</span>"            
+        html += "<span class='#{fileClss}'>#{info.file ? slash.base(info.source) ? ''}</span>"
         html += "<span class='sep'>#{info.sep ? '⯈ '}</span>"
     
         logStr = info.str.split('\n').map((s) -> str.encode s).join '<br>'

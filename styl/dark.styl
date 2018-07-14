@@ -99,14 +99,83 @@ textBlurColor  = #444
     
 #lines div span
     background          bgColor
-    & .highlight
+    & .highlight-search
         background          #800
         border-radius       4px
         color               #ff0
-    & .find
+    & .highlight-find
         // text-decoration     underline
         background          #00f
         border-radius       4px
         color               #ff4
     
+/*
+00000000  000  000      00000000   0000000
+000       000  000      000       000
+000000    000  000      0000000   0000000
+000       000  000      000            000
+000       000  0000000  00000000  0000000
+*/
+// #0af #88e #aaf #b4a #aaa #666
+// #ff0 #f80 #f00 #0a0 #0f0     
+
+.git-dirs-icon
+.dir
+.directory
+    color           #aaf
+    font-weight     bold
+
+.file
+    color           #aaa
+
+.git-changed-icon
+.cc
+.cpp
+.coffee
+    color           #ff0
+
+.git-added-icon
+.h
+.hpp
+.py
+.noon
+    color           #f80
+
+.md
+.txt
+.image
+    color           #0a0
+
+.pic
+    color           #0f0
+
+.pug
+.styl
+    color           #0af
+
+.js
+.css
+.json
+.html
+    color           #b4a
+
+.sh
+    color           #f00
+
+.dirname
+    opacity         0.6
+.extname
+    opacity         0.5
+.separator
+    opacity         0.3
+
+.linepos
+    color           #66a
+
+.lock
+.dotfile
+    color           #666
+
+.dir .dotfile
+    color           #88e
     

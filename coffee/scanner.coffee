@@ -6,7 +6,7 @@
 0000000    0000000  000   000  000   000  000   000  00000000  000   000
 ###
 
-{ slash, first, valid, empty, fs, error, log, _ } = require 'kxk'
+{ slash, first, valid, empty, fs, str, error, log, _ } = require 'kxk'
 
 log             = console.log
 findit          = require 'findit2'
@@ -42,7 +42,7 @@ class Scanner
     stats: ->
         
         time = prettyTime performance.now()-@scanStart
-        "#{@lineCount} lines in #{@fileCount} files contain '#{@search}' (#{@scanCount} files scanned in #{time})"
+        "find '#{@search}' in #{slash.tilde @dir} : #{@lineCount} lines in #{@fileCount} files (#{@scanCount} files scanned in #{time})"
             
     #  0000000   000   000        00000000  000  000      00000000  
     # 000   000  0000  000        000       000  000      000       
@@ -175,6 +175,7 @@ class Scanner
             id:     'klog'
             type:   'win'
             file:   'find'
+            sep:    '⯅'
             icon:   slash.fileUrl slash.join __dirname, '../img/menu@2x.png'
             source: slash.path __filename
             str:    @stats()
