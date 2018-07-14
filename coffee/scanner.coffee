@@ -83,6 +83,12 @@ class Scanner
         else if @walker == null
             @sendResult()
         
+    # 00000000    0000000   00000000    0000000  00000000  
+    # 000   000  000   000  000   000  000       000       
+    # 00000000   000000000  0000000    0000000   0000000   
+    # 000        000   000  000   000       000  000       
+    # 000        000   000  000   000  0000000   00000000  
+    
     parseFile: (file) ->
         
         @scanCount++
@@ -96,6 +102,12 @@ class Scanner
         stream.on 'end',   fileEnd   file
         stream.on 'data',  fileChunk file
         
+    # 00000000  000  000      00000000  00000000  000   000  0000000    
+    # 000       000  000      000       000       0000  000  000   000  
+    # 000000    000  000      0000000   0000000   000 0 000  000   000  
+    # 000       000  000      000       000       000  0000  000   000  
+    # 000       000  0000000  00000000  00000000  000   000  0000000    
+    
     onFileEnd: (file) ->
         
         if valid @chunks[file]
@@ -103,10 +115,10 @@ class Scanner
             @send 
                 id:     'file'
                 type:   'file'
-                icon:   '☉'
-                file:   slash.base(file)
+                sep:    ''
+                file:   slash.base file 
                 source: file
-                str:    slash.tilde(file) #+ " #{@chunks[file].length}"
+                str:    slash.tilde file 
             
             for chunk in @chunks[file]
                 @lineCount++
@@ -114,6 +126,12 @@ class Scanner
                 
         @dequeue()
         
+    #  0000000  000   000  000   000  000   000  000   000  
+    # 000       000   000  000   000  0000  000  000  000   
+    # 000       000000000  000   000  000 0 000  0000000    
+    # 000       000   000  000   000  000  0000  000  000   
+    #  0000000  000   000   0000000   000   000  000   000  
+    
     onFileChunk: (file, chunk) -> 
         
         for data in chunk.split '\n'
@@ -147,9 +165,10 @@ class Scanner
     sendResult: =>
         
         @send
-            id:     'file'
-            type:   'file'
-            file:   'scanner'
+            id:     'klog'
+            type:   'win'
+            file:   'find'
+            icon:   slash.fileUrl slash.join __dirname, '../img/menu@2x.png'
             source: slash.path __filename
             str:    @stats()
                 

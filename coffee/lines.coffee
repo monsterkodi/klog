@@ -6,11 +6,12 @@
 0000000  000  000   000  00000000  0000000 
 ###
 
-{ post, setStyle, prefs, slash, valid, elem, str, $, _ } = require 'kxk'
+{ post, setStyle, valid, prefs, slash, empty, elem, str, log, $, _ } = require 'kxk'
 
 log = console.log
 Scroll    = require './scroll'
 ScrollBar = require './scrollbar'
+fileIcons   = require 'file-icons-js'
 
 class Lines
 
@@ -65,7 +66,7 @@ class Lines
     appendLine: (lineIndex) ->
         
         if lineIndex > @cache.length-1
-            log "skip append #{lineIndex}"
+            # log "skip append #{lineIndex}"
             return
         
         line = @cache[lineIndex]
@@ -106,8 +107,8 @@ class Lines
         
         if lineIndex <= @cache.length-1 
             @lines.lastChild.remove() # this should check if line matches!
-        else 
-            log "skip pop #{lineIndex}"
+        # else 
+            # log "skip pop #{lineIndex}"
         
     #  0000000  000   000   0000000   000   000  000      000  000   000  00000000   0000000  
     # 000       000   000  000   000  000 0 000  000      000  0000  000  000       000       
@@ -142,7 +143,7 @@ class Lines
                 @appendLine bot-num+n+1
         else
             for n in [0...-num]
-                # log 'onShiftLines prepend', top-num-n-1, 'pop', bot-num-n, @cache.length
+                # log 'onShiftLines prepend', top-num-n-1, 'pop', bot-num-n, top-num-n-1
                 @popLine     bot-num-n
                 @prependLine top-num-n-1
     
@@ -172,8 +173,8 @@ class Lines
         
         delta = event.deltaY * scrollFactor()
         
-        @scroll.by @scroll.lineHeight * delta/200
-        # @scroll.by delta/50
+        # @scroll.by @scroll.lineHeight * delta/200
+        @scroll.by 5 * @scroll.lineHeight * delta/100
         
     #  0000000   00000000   00000000   00000000  000   000  0000000    
     # 000   000  000   000  000   000  000       0000  000  000   000  
@@ -213,6 +214,14 @@ class Lines
                 if info.icon.startsWith 'file://' then "<img src='#{info.icon}'/>" else info.icon
             else if @icons[info.id]
                 "<img src='#{@icons[info.id]}'/>"
+            else if info.id == 'file'
+                className = fileIcons.getClass slash.removeLinePos info.source
+                if empty className
+                    if slash.ext(info.source) == 'noon'
+                        className = 'noon-icon'
+                    else
+                        className = 'file-icon'
+                "<span class=\"#{className} browserFileIcon\"/>"
             else
                 file = slash.join __dirname, "../img/#{info.id}.png"
                 @icons[info.id] = slash.fileUrl if slash.exists file then file else slash.join __dirname, "../img/blank.png"

@@ -123,6 +123,8 @@ setFontSize = (s) ->
 
     setStyle '.icon',     'height', "#{iconSize}px"
     setStyle '.icon img', 'height', "#{iconSize}px"
+    setStyle '.icon .browserFileIcon::before', 'fontSize', "#{s}px"
+    # setStyle '.icon .browserFileIcon', 'width', "#{s}px"
     
     post.emit 'fontSize', s
 
