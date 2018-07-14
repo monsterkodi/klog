@@ -23,6 +23,9 @@ body
     font-family         fontMono
     font-size           15px
     
+::selection
+    background          #888
+    
 // 00     00   0000000   000  000   000  
 // 000   000  000   000  000  0000  000  
 // 000000000  000000000  000  000 0 000  
@@ -96,9 +99,8 @@ body
         display             flex
         flex-direction      row
         & span
-            flex-shrink         0
+            flex-shrink     0
             vertical-align  top
-            padding-right   12px
             display         inline-block
             cursor          pointer 
             
@@ -113,7 +115,6 @@ body
                 width               1.4em
                 margin              0
                 position            relative
-                padding-right       0
                 padding-left        0.2em
                 -webkit-user-select none
                 & img
@@ -124,9 +125,9 @@ body
                 text-align          center
                 min-width           2em
                 width               2em
-                padding-right       0px
                 -webkit-user-select none
             &.log
+                flex-grow           1
                 cursor              text
                 white-space         pre
                 padding-left        2px
@@ -144,19 +145,24 @@ body
             &.src
                 -webkit-user-select none
                 text-align          right
-                flex-grow           1
+                
                 & .ln
                     min-width       30px
-                    padding-right   0
                 & .col
                     min-width       30px
-                    padding-right   0
             &.name
                 min-width           100px
   
+.src
+.line.file .log
 .file .icon
     opacity             0.5
-                
+    &:hover
+        opacity         1
+     
+// .punctuation
+    // opacity             0.5
+        
 // 000   0000000   0000000   000   000  
 // 000  000       000   000  0000  000  
 // 000  000       000   000  000 0 000  

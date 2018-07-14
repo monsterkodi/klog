@@ -14,6 +14,8 @@ class Scroll
 
     constructor: (@view) ->
 
+        post.on 'combo', @onCombo
+                
         @resetSize()
         @resetLines()
         
@@ -77,6 +79,22 @@ class Scroll
         @by 0
         post.emit 'scroll', @scroll, @
         
+    #  0000000   0000000   00     00  0000000     0000000   
+    # 000       000   000  000   000  000   000  000   000  
+    # 000       000   000  000000000  0000000    000   000  
+    # 000       000   000  000 0 000  000   000  000   000  
+    #  0000000   0000000   000   000  0000000     0000000   
+    
+    onCombo: (combo) =>
+        
+        switch combo
+            when 'page up'   then @by -@lineHeight*@viewLines
+            when 'page down' then @by @lineHeight*@viewLines
+            when 'up'        then @by -@lineHeight
+            when 'down'      then @by @lineHeight
+            when 'home'      then @to 0
+            when 'end'       then @to @scrollMax
+    
     # 0000000    000   000
     # 000   000   000 000 
     # 0000000      00000  

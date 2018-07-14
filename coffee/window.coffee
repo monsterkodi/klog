@@ -88,20 +88,6 @@ setFindDir = (dir) ->
     prefs.set 'findDir', findDir
     klog 'findDir', findDir
             
-#  0000000   0000000   00     00  0000000     0000000   
-# 000       000   000  000   000  000   000  000   000  
-# 000       000   000  000000000  0000000    000   000  
-# 000       000   000  000 0 000  000   000  000   000  
-#  0000000   0000000   000   000  0000000     0000000   
-
-post.on 'combo', (combo, info) -> 
-    
-    switch combo
-        when 'home'      then lines.lines.scrollTop = 0
-        when 'end'       then lines.lines.scrollTop = lines.scrollHeight
-        when 'page up'   then lines.lines.scrollTop -= 1000
-        when 'page down' then lines.lines.scrollTop += 1000
-
 # 00000000   0000000   000   000  000000000      0000000  000  0000000  00000000
 # 000       000   000  0000  000     000        000       000     000   000
 # 000000    000   000  000 0 000     000        0000000   000    000    0000000

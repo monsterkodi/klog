@@ -76,8 +76,6 @@ textBlurColor  = #444
 .find
     color               #ddd
 .src
-    opacity             0.5
-    // color               #66f
     & .ln
         color           #88f
     & .col
@@ -180,4 +178,313 @@ textBlurColor  = #444
 
 .dir .dotfile
     color           #88e
+    
+/*
+ 0000000  000   000  000   000  000000000   0000000   000   000
+000        000 000   0000  000     000     000   000   000 000
+0000000     00000    000 0 000     000     000000000    00000
+     000     000     000  0000     000     000   000   000 000
+0000000      000     000   000     000     000   000  000   000
+*/
+
+// #181818 #222 #333 #444 #4f4f4f #666 #aaa
+// #f80 #fa0 #fd0 #ff0 #ff4 #ff8           
+// #00f #55f #66f #88f #aaf #ccf           
+// #040 #050 #060 #080 #0a0 #0f0           
+// #808 #a0a #c0c #f0f #f8f #fcf           
+// #a00 #d00 #f08 #48a                     
+
+.syntax
+    color           #666
+
+.browserRow.array
+    color           #aaa
+.browserRow .arrayIndex
+    color           #444
+    font-size       12px
+.browserRow .arrayDot
+    color           #333
+
+.invisible
+    color           #181818
+    &.invisible-tab
+        color       #333
+    &.trailing
+        color       #d00
+
+.array
+    color           #00f
+
+// 00000000  000   000  000   000   0000000  000000000  000   0000000   000   000  
+// 000       000   000  0000  000  000          000     000  000   000  0000  000  
+// 000000    000   000  000 0 000  000          000     000  000   000  000 0 000  
+// 000       000   000  000  0000  000          000     000  000   000  000  0000  
+// 000        0000000   000   000   0000000     000     000   0000000   000   000  
+
+.func
+.function
+    color           #fa0
+    &.post          
+        color       #bbf
+    &.call
+        color       #f80
+        &.class     
+            color   #fc0
+
+    &.marker
+        opacity     1
+        color       #55f
+        
+    &.marker.head
+    &.marker.tail
+        color       transparent
+        
+    &.marker.tail::before
+        border-color        #55f
+    &.marker.head::before
+        border-left-color   #55f
+        
+    &.marker.tail.bound::before
+        border-color        #f80
+    &.marker.head.bound::before
+        border-left-color   #f80
+            
+    &.bracket
+        color       #55f
+    &.argument
+        color       #aaf
+    
+//  0000000  000       0000000    0000000   0000000  
+// 000       000      000   000  000       000       
+// 000       000      000000000  0000000   0000000   
+// 000       000      000   000       000       000  
+//  0000000  0000000  000   000  0000000   0000000   
+
+.obj
+.owner
+.callee
+.dictionary
+.class.object
+.class
+    color           #ff8
+
+.range
+    color           #66f
+
+.require
+    color           #0f0
+
+.this
+    opacity         0.5
+    color           #88f
+
+.punctuation
+.marker
+    opacity         0.5
+
+.module
+    color           #ff8
+
+.property
+    color           #fa8
+
+.elem
+.namespace
+    color           #48a
+    &.member
+        color       #f80
+
+.member
+    color           #ccf
+            
+.method
+    color           #ff0
+    &.class
+    &.call
+        color       #ff8
+    &.definition
+    &.template
+        color       #48a
+
+.template
+    color           #48a
+
+.operator
+    color           #fa0
+    &.negate
+        color       #ff0
+
+.regexp
+.keypath
+    color           #f80
+
+.syntax.cond
+.keyword.function.call
+.keyword
+    color           #aaf
+    &.null
+        color       #a00
+
+// 00     00   0000000    0000000  00000000    0000000   
+// 000   000  000   000  000       000   000  000   000  
+// 000000000  000000000  000       0000000    000   000  
+// 000 0 000  000   000  000       000   000  000   000  
+// 000   000  000   000   0000000  000   000   0000000   
+
+.macro
+    color           #f0f
+    &.define
+        color       #c0c
+    &.call
+        color       #f0f
+    &.argument
+        color       #f8f
+
+.interpolation.marker
+        color       #f80
+
+.variable.err
+    color           #f08
+
+.syntax.exists
+    opacity         0.7
+
+//  0000000  000000000  00000000   000  000   000   0000000   
+// 000          000     000   000  000  0000  000  000        
+// 0000000      000     0000000    000  000 0 000  000  0000  
+//      000     000     000   000  000  000  0000  000   000  
+// 0000000      000     000   000  000  000   000   0000000   
+
+.string
+    color           #0a0
+    &.double
+    &.triple
+        color       #0f0
+    &.interpolation
+        opacity     0.5
+    &.dictionary
+        color       #0a0
+
+.bool
+.true
+    color           #88f
+.false
+    color           #d00
+
+.nil
+    color           #808
+        
+.number
+.int
+    color           #88f
+.float
+    color           #f08
+
+.keyword.return
+.keyword.return.function.call    
+    color           #c0c
+    
+//  0000000   0000000   00     00  00     00  00000000  000   000  000000000
+// 000       000   000  000   000  000   000  000       0000  000     000
+// 000       000   000  000000000  000000000  0000000   000 0 000     000
+// 000       000   000  000 0 000  000 0 000  000       000  0000     000
+//  0000000   0000000   000   000  000   000  00000000  000   000     000
+
+.comment
+.comment.text.keyword
+.comment.string.double
+    color               #4f4f4f !important
+
+.comment.header
+    color               #040 !important
+    background          #040
+    border-left-color   #060
+    border-bottom-color #020
+
+.comment.header.minimap
+    color               #0a0 !important
+    opacity             1
+
+.comment.triple.header
+    color               #060 !important
+    background          #060
+    border-left-color   #080
+    border-bottom-color #040
+
+.comment.triple.header.minimap
+    color               #0f0 !important
+    
+.header.marker.minimap
+    color               #222 !important
+
+.require
+    &.variable
+        color       #0f0
+    &.string
+        color       #0a0
+    &.keyword.require
+        color       #666
+    &.syntax
+        opacity     0.5
+
+// 000000000  00000000   0000000  000000000
+//    000     000       000          000
+//    000     0000000   0000000      000
+//    000     000            000     000
+//    000     00000000  0000000      000
+
+.test
+    color           #ccf
+.test-suite
+    color           #88f
+.test-fail
+    color           #ff0
+.test-error
+    color           #fa0
+.test-pass
+    color           #0a0
+
+// 00     00  0000000
+// 000   000  000   000
+// 000000000  000   000
+// 000 0 000  000   000
+// 000   000  0000000
+
+.markdown
+    &.h1
+        color       #ff0
+    &.h2
+        color       #ff4
+    &.h3
+        color       #ff8
+    &.h4
+        color       #aaf
+    &.h5
+        color       #88f
+    &.li1
+    &.li1::before
+        color       #0f0
+    &.li2
+        color       #000
+    &.li2::before
+        border-left-color  #0a0
+    &.li3
+    &.li3::before
+        color       #080
+    &.bold
+        color       #ff8
+        font-weight bold
+        &.marker
+            opacity 0.3
+    &.code
+        color       #ccf
+    &.italic
+        font-style  italic
+
+.found
+    text-decoration  underline
+
+.git-deleted
+    opacity         0.26
+    
     

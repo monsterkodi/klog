@@ -9,6 +9,7 @@
 { matchr, valid, str, $, _ } = require 'kxk'
 
 log = console.log
+Syntax = require './syntax'
 
 class Highlight
 
@@ -44,8 +45,13 @@ class Highlight
         for line in info.str.split '\n'
             
             rgs = matchr.ranges cfg, line
+            log 'rgs', str rgs
+            rgs = rgs.concat Syntax.ranges line
+            log 'rgs', str rgs
+            matchr.sortRanges rgs
             if valid rgs
                 dss = matchr.dissect rgs
+                log 'dss', str dss
                 previ = 0
                 spans = []
                 for d in dss
