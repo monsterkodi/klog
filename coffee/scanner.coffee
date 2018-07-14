@@ -143,13 +143,15 @@ class Scanner
             if data.length > 1024
                 data = data.substr 0, 1024
                 
-            if data.indexOf(@search) >= 0
+            column = data.indexOf(@search)
+            if column >= 0
                 @chunks[file].push 
                     id:     'find' 
                     file:   ''
                     icon:   ''
                     type:   'find'
                     line:   @lineno[file]
+                    column: column
                     source: file
                     str:    data
                     find:   @search

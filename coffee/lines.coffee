@@ -46,17 +46,7 @@ class Lines
         log 'onClearLines'
         @num = 0  
         @lines.innerHTML = ''
-        
-    onChangeLines: (oldLines, newLines) =>
-        
-        while newLines > oldLines
-            @appendLine oldLines++
-            
-        while newLines < oldLines
-            # log 'onChangeLines', oldLines, newLines, @cache.length
-            @lines.lastChild?.remove()
-            oldLines--
-        
+                
     #  0000000   00000000   00000000   00000000  000   000  0000000    
     # 000   000  000   000  000   000  000       0000  000  000   000  
     # 000000000  00000000   00000000   0000000   000 0 000  000   000  
@@ -84,6 +74,7 @@ class Lines
     # 000        000   000  00000000  000        00000000  000   000  0000000    
     
     prependLine: (lineIndex) ->
+        log "Lines.prependLine lineIndex:#{lineIndex}"
         
         if lineIndex < 0 or lineIndex > @cache.length-1
             log "skip prepend #{lineIndex}"
@@ -97,6 +88,7 @@ class Lines
         @lines.insertBefore line, @lines.firstChild
     
     shiftLine: (lineIndex) ->
+        log "Lines.shiftLine lineIndex:#{lineIndex}"
         
         if lineIndex >= 0 and lineIndex <= @cache.length-1 
             @lines.firstChild.remove() # this should check if line matches!
@@ -104,21 +96,22 @@ class Lines
             log "skip shift #{lineIndex}"
         
     popLine: (lineIndex) ->
+        log "Lines.popLine lineIndex:#{lineIndex}"
         
         if lineIndex <= @cache.length-1 
             @lines.lastChild.remove() # this should check if line matches!
-        # else 
-            # log "skip pop #{lineIndex}"
+        else 
+            log "skip pop #{lineIndex}"
         
-    #  0000000  000   000   0000000   000   000  000      000  000   000  00000000   0000000  
-    # 000       000   000  000   000  000 0 000  000      000  0000  000  000       000       
-    # 0000000   000000000  000   000  000000000  000      000  000 0 000  0000000   0000000   
-    #      000  000   000  000   000  000   000  000      000  000  0000  000            000  
-    # 0000000   000   000   0000000   00     00  0000000  000  000   000  00000000  0000000   
+    #  0000000  000   000   0000000   000   000  
+    # 000       000   000  000   000  000 0 000  
+    # 0000000   000000000  000   000  000000000  
+    #      000  000   000  000   000  000   000  
+    # 0000000   000   000   0000000   00     00  
     
     onShowLines: (top, bot, num) =>
         
-        # log "Lines.onShowLines top:#{top} bot:#{bot} num:#{num} cache:#{@cache.length}"
+        log "Lines.onShowLines top:#{top} bot:#{bot} num:#{num} cache:#{@cache.length}"
         
         @lines.innerHTML = ''
         for li in [top..bot]
@@ -128,22 +121,37 @@ class Lines
             # log 'onShowLines delayedFontSize'
             @onFontSize prefs.get 'fontSize', 16
         
-    #  0000000  000   000  000  00000000  000000000  000      000  000   000  00000000   0000000  
-    # 000       000   000  000  000          000     000      000  0000  000  000       000       
-    # 0000000   000000000  000  000000       000     000      000  000 0 000  0000000   0000000   
-    #      000  000   000  000  000          000     000      000  000  0000  000            000  
-    # 0000000   000   000  000  000          000     0000000  000  000   000  00000000  0000000   
+    #  0000000  000   000   0000000   000   000   0000000   00000000  
+    # 000       000   000  000   000  0000  000  000        000       
+    # 000       000000000  000000000  000 0 000  000  0000  0000000   
+    # 000       000   000  000   000  000  0000  000   000  000       
+    #  0000000  000   000  000   000  000   000   0000000   00000000  
+    
+    onChangeLines: (oldLines, newLines) =>
+        
+        while newLines > oldLines
+            @appendLine oldLines++
+            
+        while newLines < oldLines
+            @popLine oldLines
+            oldLines--
+            
+    #  0000000  000   000  000  00000000  000000000  
+    # 000       000   000  000  000          000     
+    # 0000000   000000000  000  000000       000     
+    #      000  000   000  000  000          000     
+    # 0000000   000   000  000  000          000     
     
     onShiftLines: (top, bot, num) =>
-        # log 'onShiftLines', top, bot, num
+        log 'onShiftLines', top, bot, num
         if num > 0
             for n in [0...num]
-                # log 'onShiftLines shift', top-num+n, 'append', bot-num+n+1, @cache.length
+                log 'onShiftLines shift', top-num+n, 'append', bot-num+n+1, @cache.length
                 @shiftLine  top-num+n
                 @appendLine bot-num+n+1
         else
             for n in [0...-num]
-                # log 'onShiftLines prepend', top-num-n-1, 'pop', bot-num-n, top-num-n-1
+                log 'onShiftLines prepend', top-num-n-1, 'pop', bot-num-n, top-num-n-1
                 @popLine     bot-num-n
                 @prependLine top-num-n-1
     

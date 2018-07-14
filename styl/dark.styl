@@ -51,6 +51,11 @@ textBlurColor  = #444
 .input
     font-size           18px
     color               #aaa
+    &.find
+        color           #aaf
+        &::selection
+            color       #ff8
+            background  #00f
     &.search
         color           #ff0
         &::selection
@@ -96,9 +101,12 @@ textBlurColor  = #444
     background          bgColor
     & .highlight
         background          #800
+        border-radius       4px
         color               #ff0
     & .find
-        text-decoration     underline
+        // text-decoration     underline
+        background          #00f
+        border-radius       4px
         color               #ff4
     
     
