@@ -235,9 +235,24 @@ class Lines
                 "<img src='#{@icons[info.id]}'/>"
         
         @num  += 1
-        html  = ""
         
-        html += "<span class='src'>#{info.source ? ''}"
+        fileClss = 'file'
+        iconClss = 'icon'
+        idClss   = 'id'
+        logClss  = 'log'
+        srcClss  = 'src'
+        
+        if info.source?
+            ext = slash.ext info.source
+            fileClss += ' ' + ext
+            iconClss += ' ' + ext
+            idClss   += ' ' + ext
+            srcClss   += ' ' + ext
+            if info.type == 'file'
+                logClss  += ' ' + ext
+        
+        html  = ""
+        html += "<span class='#{srcClss}'>#{info.source ? ''}"
         if info.line
             html += "<span class='ln'>:#{info.line}</span>"
             if info.column
@@ -249,25 +264,16 @@ class Lines
                 "#{_.padStart(String(d.getMinutes()), 2, '0')}"
                 "#{_.padStart(String(d.getSeconds()), 2, '0')}"
                 "#{_.padStart(String(d.getMilliseconds()), 2, '0')}"].join ':' 
-        
-        fileClss = 'file'
-        iconClss = 'icon'
-        idClss   = 'id'
-        if info.source?
-            ext = slash.ext info.source
-            fileClss += ' ' + ext
-            iconClss += ' ' + ext
-            idClss   += ' ' + ext
-                
+                        
         html += "<span class='num'>#{@num-1}</span>"
         html += "<span class='time'>#{time}</span>"
         html += "<span class='#{iconClss}'>#{icon}</span>"
-        html += "<span class='#{idClss}'>#{info.id ? ''}</span>"            
-        html += "<span class='#{fileClss}'>#{info.file ? slash.base(info.source) ? ''}</span>"
+        html += "<span class='#{idClss}'>#{info.id ? ''} </span>"            
+        html += "<span class='#{fileClss}'>#{info.file ? slash.base(info.source) ? ''} </span>"
         html += "<span class='sep'>#{info.sep ? '⯈ '}</span>"
     
         logStr = info.str.split('\n').map((s) -> str.encode s).join '<br>'
-        html += "<span class='log'>#{logStr}</span>"
+        html += "<span class='#{logClss}'>#{logStr}</span>"
         
         line = elem class:"line #{info.type}", html:html
         # line.info = info
