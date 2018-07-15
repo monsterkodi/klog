@@ -8,7 +8,7 @@
 
 { post, childp, matchr, empty, prefs, slash, valid, last, str, log, $ } = require 'kxk'
 
-Input = require './input'
+# Input = require './input'
 
 class Find extends Input
 
