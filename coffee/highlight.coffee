@@ -6,7 +6,7 @@
 000   000  000   0000000   000   000  0000000  000   0000000   000   000     000   
 ###
 
-{ matchr, valid, str, $, _ } = require 'kxk'
+{ matchr, slash, valid, str, log, $ } = require 'kxk'
 
 log = console.log
 Syntax = require './syntax'
@@ -45,7 +45,7 @@ class Highlight
         for line in info.str.split '\n'
             
             rgs = matchr.ranges cfg, line
-            rgs = rgs.concat Syntax.ranges line
+            rgs = rgs.concat Syntax.ranges line, slash.ext info.source
             matchr.sortRanges rgs
             if valid rgs
                 dss = matchr.dissect rgs

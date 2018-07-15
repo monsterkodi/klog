@@ -6,7 +6,7 @@
 00     00  000  000   000  0000000     0000000   00     00  
 ###
 
-{ post, stopEvent, getStyle, setStyle, keyinfo, childp, clamp, prefs, first, slash, empty, open, args, win, udp, error, log, _ } = require 'kxk'
+{ post, stopEvent, getStyle, setStyle, keyinfo, childp, clamp, prefs, first, slash, empty, open, args, win, udp, fs, error, log, _ } = require 'kxk'
 
 { Tail } = require 'tail'
 
@@ -49,12 +49,12 @@ openFile = (f) ->
     
     log 'openFile', file, line
     
-    if file.startsWith '/Game/'
-        log 'UESEND!', file
-        if not ueSend 
-            ueSend = new udp port:9889
-        ueSend.send file
-        return
+    # if file.startsWith '/Game/'
+        # log 'UESEND!', file
+        # if not ueSend 
+            # ueSend = new udp port:9889
+        # ueSend.send file
+        # return
     
     switch prefs.get 'editor', 'Visual Studio'
         when 'VS Code'
@@ -87,7 +87,33 @@ setFindDir = (dir) ->
     findDir = slash.tilde dir
     prefs.set 'findDir', findDir
     klog 'findDir', findDir
+           
+    
+loadFile = (file) ->
+    
+    log 'loadFile', file
+        
+    lines.clear()
+    buffer = ''
+    
+    stream = fs.createReadStream file, encoding:'utf8'
+    stream.on 'data', (chunk) ->
+        buffer += chunk
+        while buffer.indexOf('\n') >= 0
+            index  = buffer.indexOf('\n')
+            data   = buffer.slice 0, index
+            buffer = buffer.slice index+1
+            try
+               lines.appendLog JSON.parse data
+            catch err
+                console.log "data:>#{data}<"
             
+clearFile = (file) ->
+    
+    console.log "unlink #{file}"
+    # fs.unlink file
+    fs.writeFile file, '', encoding:'utf8', (err) -> log 'cleared'
+                
 # 00000000   0000000   000   000  000000000      0000000  000  0000000  00000000
 # 000       000   000  0000  000     000        000       000     000   000
 # 000000    000   000  000 0 000     000        0000000   000    000    0000000
@@ -164,7 +190,9 @@ post.on 'menuAction', (action) ->
         when 'Increase'             then changeFontSize +1
         when 'Decrease'             then changeFontSize -1
         when 'Reset'                then resetFontSize()
+        when 'Load Log File'        then loadFile logFile 
         when 'Open Log File'        then openFile logFile 
+        when 'Clear Log File'       then clearFile logFile 
         when 'Open Find Directory'  then openDir findDir
         when 'Clear'                then lines.clear()
         when 'Find'                 then post.emit 'focus', 'find'

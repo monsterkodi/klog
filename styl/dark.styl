@@ -313,6 +313,7 @@ textBlurColor  = #444
 
 .regexp
 .keypath
+.semver
     color           #f80
 
 .syntax.cond
@@ -362,15 +363,9 @@ textBlurColor  = #444
     &.dictionary
         color       #0a0
 
-.bool
-.true
-    color           #88f
-.false
-    color           #d00
-
 .nil
-    color           #808
-        
+    color           #d00
+    
 .number
 .int
     color           #88f
@@ -388,8 +383,8 @@ textBlurColor  = #444
 //  0000000   0000000   000   000  000   000  00000000  000   000     000
 
 .comment
-.comment.text.keyword
-.comment.string.double
+// .comment.text.keyword
+// .comment.string.double
     color               #4f4f4f !important
 
 .comment.header
@@ -415,13 +410,7 @@ textBlurColor  = #444
     color               #222 !important
 
 .require
-    color       #666
-    &.variable
-        color       #0f0
-    &.string
-        color       #0a0
-    &.syntax
-        opacity     0.5
+    color           #666
 
 // 00     00  0000000
 // 000   000  000   000

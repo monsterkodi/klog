@@ -17,11 +17,191 @@ chai.should()
 describe 'klog', ->
     
     describe 'syntax', ->
+        
+        it 'numbers', ->
+            
+            rgs = Syntax.ranges "a 6670"
+            expect(rgs).to.deep.include 
+                start: 2
+                match: "6670"
+                value: 'number'
 
+            rgs = Syntax.ranges "667AC"
+            expect(rgs).to.deep.include
+                start: 0
+                match: "667AC"
+                value: 'number hex'
+
+            rgs = Syntax.ranges "66.700"
+            expect(rgs).to.deep.include
+                start: 0
+                match: "66"
+                value: 'number float'
+                
+            expect(rgs).to.deep.include
+                start: 2
+                match: "."
+                value: 'punctuation float'
+
+            expect(rgs).to.deep.include
+                start: 3
+                match: "700"
+                value: 'number float'
+
+            rgs = Syntax.ranges "77.800 -100"
+            expect(rgs).to.deep.include
+                start: 0
+                match: "77"
+                value: 'number float'
+                
+            expect(rgs).to.deep.include
+                start: 8
+                match: "100"
+                value: 'number'
+
+            rgs = Syntax.ranges "(8.9,100.2)"
+            expect(rgs).to.deep.include
+                start: 3
+                match: "9"
+                value: 'number float'
+                
+            expect(rgs).to.deep.include
+                start: 9
+                match: "2"
+                value: 'number float'
+                
+        it 'semver', ->    
+            
+            rgs = Syntax.ranges "66.70.0"
+            expect(rgs).to.deep.include
+                start: 0
+                match: "66"
+                value: 'semver'
+            expect(rgs).to.deep.include
+                start: 3
+                match: "70"
+                value: 'semver'
+            expect(rgs).to.deep.include
+                start: 6
+                match: "0"
+                value: 'semver'
+
+            rgs = Syntax.ranges "^0.7.1"
+            expect(rgs).to.deep.include
+                start: 1
+                match: "0"
+                value: 'semver'
+            expect(rgs).to.deep.include
+                start: 3
+                match: "7"
+                value: 'semver'
+            expect(rgs).to.deep.include
+                start: 5
+                match: "1"
+                value: 'semver'
+                
+            rgs = Syntax.ranges "^1.0.0-alpha.12"
+            expect(rgs).to.deep.include
+                start: 1
+                match: "1"
+                value: 'semver'
+            expect(rgs).to.deep.include
+                start: 3
+                match: "0"
+                value: 'semver'
+            expect(rgs).to.deep.include
+                start: 5
+                match: "0"
+                value: 'semver'
+                
+        it 'comments', ->
+            
+            rgs = Syntax.ranges "hello # world", 'coffee'
+            expect(rgs).to.deep.include 
+                start: 6
+                match: "#"
+                value: 'comment punctuation'
+
+            expect(rgs).to.deep.include
+                start: 7
+                match: " world"
+                value: 'comment'
+                
+            rgs = Syntax.ranges "(^\s*#\s*)(.*)$", 'noon'
+            for rng in rgs
+                expect(rng).to.not.have.property 'value', 'comment'
+                
+            rgs = Syntax.ranges '#def "clippo"'
+            expect(rgs).to.deep.include 
+                start: 5
+                match: '"'
+                value: 'string double punctuation'
+            expect(rgs).to.deep.include 
+                start: 6
+                match: 'clippo'
+                value: 'string double'
+                    
+        it 'strings', ->
+            
+            rgs = Syntax.ranges 'a="\'X\'"'
+
+            expect(rgs).to.deep.include 
+                start: 3
+                match: "'X'"
+                value: 'string double'
+
+            rgs = Syntax.ranges 'a=\'"X"\''
+            expect(rgs).to.deep.include 
+                start: 3
+                match: '"X"'
+                value: 'string single'
+
+            rgs = Syntax.ranges 'a=`\'"X"\'`'
+            expect(rgs).to.deep.include 
+                start: 3
+                match: '\'"X"\''
+                value: 'string backtick'
+                
+            rgs = Syntax.ranges 'a="";b=" ";c="X"'
+            for i in [2,3,7,9,13,15]
+                expect(rgs).to.deep.include 
+                    start: i
+                    match: '"'
+                    value: 'string double punctuation'
+
+            expect(rgs).to.deep.include 
+                start: 14
+                match: 'X'
+                value: 'string double'
+                    
+            rgs = Syntax.ranges "a='';b=' ';c='Y'"
+            for i in [2,3,7,9,13,15]
+                expect(rgs).to.deep.include 
+                    start: i
+                    match: "'"
+                    value: 'string single punctuation'
+
+            expect(rgs).to.deep.include 
+                start: 14
+                match: 'Y'
+                value: 'string single'
+                    
+            rgs = Syntax.ranges "a=``;b=` `;c=`Z`"
+            for i in [2,3,7,9,13,15]
+                expect(rgs).to.deep.include 
+                    start: i
+                    match: "`"
+                    value: 'string backtick punctuation'
+
+            expect(rgs).to.deep.include 
+                start: 14
+                match: 'Z'
+                value: 'string backtick'
+                    
         it 'punctuation', ->
             
             rgs = Syntax.ranges '/some\\path/file.txt:10'
-            log rgs
+
             expect(rgs).to.deep.include 
                 start: 0
                 match: '/'
