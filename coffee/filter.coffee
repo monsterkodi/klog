@@ -6,7 +6,7 @@
 000       000  0000000     000     00000000  000   000
 ###
 
-{ empty, slash, log, $ } = require 'kxk'
+{ empty, valid, slash, log, $ } = require 'kxk'
 
 log   = console.log
 Input = require './input'
@@ -24,15 +24,21 @@ class Filter extends Input
         lines =$ '#lines'
         for line in lines.children
             @apply line
+            
+    terms: -> 
+        
+        text = @input.value.trim()
+        if valid text
+            text.split /\s+/
+        else
+            []
         
     apply: (line) =>
         
-        text    = @input.value
         info    = line.info
-        texts   = text.trim().split /\s+/
         hidden  = false
         
-        for t in texts
+        for t in @terms()
             
             continue if empty t
             if t.startsWith('@') 

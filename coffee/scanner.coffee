@@ -6,7 +6,7 @@
 0000000    0000000  000   000  000   000  000   000  00000000  000   000
 ###
 
-{ slash, first, valid, empty, fs, str, error, log, _ } = require 'kxk'
+{ valid, slash, first, empty, noon, str, fs, error, _ } = require 'kxk'
 
 log             = console.log
 findit          = require 'findit2'
@@ -15,13 +15,20 @@ prettyTime      = require 'pretty-ms'
 
 class Scanner
 
-    constructor: (@dir, @search) ->
+    constructor: (@dir, @search, exts) ->
         
+        log 'new Scanner', @dir, @search, exts
         @maxLineLength = 400
         
         @chunks = {}
         @lineno = {}
         @queue  = []
+        
+        @whitelist = exts.filter((ext) -> ext[0] == '.').map (ext) -> ext.slice 1
+        @blacklist = exts.filter((ext) -> ext[0] == '!').map (ext) -> ext.slice 1
+        
+        log '@whitelist', str @whitelist
+        log '@blacklist', str @blacklist
         
         @fileCount = 0
         @scanCount = 0
@@ -41,6 +48,16 @@ class Scanner
         catch err
             error "Scanner.start -- #{err} dir: #{@dir} stack:", err.stack
         
+    shouldScan: (file) ->
+        
+        if valid @whitelist
+            return slash.ext(file) in @whitelist
+        else if valid @blacklist
+            if slash.ext(file) in @blacklist
+                return false
+            return true
+        return true
+            
     stats: ->
         
         time = prettyTime performance.now()-@scanStart
@@ -54,7 +71,7 @@ class Scanner
     
     onFile: (file, stat) =>
 
-        if slash.isText file
+        if @shouldScan(file) and slash.isText(file) 
             @queue.push slash.path file
             if @queue.length == 1 then @parseFile first @queue
             
@@ -199,6 +216,7 @@ class Scanner
             process.send obj
         else
             log JSON.stringify obj
+            # log noon.stringify obj
         
 process.on 'uncaughtException', (err) ->
     log 'scanner error', err.stack
@@ -208,9 +226,12 @@ if not empty process.argv[2]
     if empty process.argv[3]
         dir    = process.cwd()
         search = process.argv[2]
+        exts   = []
     else
         dir    = process.argv[2]
         search = process.argv[3]
+        exts   = [].slice.call(process.argv).slice 4
+        log 'exts', exts
         
-    new Scanner slash.resolve(dir), search
+    new Scanner slash.resolve(dir), search, exts
     

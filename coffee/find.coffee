@@ -8,7 +8,7 @@
 
 { post, childp, matchr, empty, prefs, slash, valid, last, str, log, $ } = require 'kxk'
 
-# Input = require './input'
+Input = require './input'
 
 class Find extends Input
 
@@ -37,7 +37,8 @@ class Find extends Input
         log "find '#{term}' in #{dir}" # don't remove this log!
         
         @cp?.kill()
-        @cp = childp.fork slash.join(__dirname, 'scanner.js'), [dir, term], stdio: ['pipe', 'pipe', 'ignore', 'ipc'], execPath: 'node'
+        args = [dir, term].concat window.filter.terms()
+        @cp = childp.fork slash.join(__dirname, 'scanner.js'), args, stdio: ['pipe', 'pipe', 'ignore', 'ipc'], execPath: 'node'
         @cp.on 'message', @onScanner
         
     onScanner: (message) => window.lines.appendLog message

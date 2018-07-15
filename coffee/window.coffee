@@ -31,7 +31,7 @@ window.find   = new Find
 window.search = new Search
 window.filter = new Filter
     
-logFile = slash.join w.userData, '..', 'klog.txt' 
+logFile = slash.tilde slash.join w.userData, '..', 'klog.txt' 
 findDir = slash.resolve prefs.get 'findDir', '~'
 
 #  0000000   00000000   00000000  000   000  
@@ -87,15 +87,13 @@ setFindDir = (dir) ->
     findDir = slash.tilde dir
     prefs.set 'findDir', findDir
     klog 'findDir', findDir
-           
     
 loadFile = (file) ->
     
-    log 'loadFile', file
-        
     lines.clear()
     buffer = ''
-    
+
+    file = slash.untilde file
     stream = fs.createReadStream file, encoding:'utf8'
     stream.on 'data', (chunk) ->
         buffer += chunk
@@ -109,9 +107,11 @@ loadFile = (file) ->
                 console.log "data:>#{data}<"
             
 clearFile = (file) ->
+
+    lines.clear()
+    buffer = ''
     
-    console.log "unlink #{file}"
-    # fs.unlink file
+    file = slash.untilde file
     fs.writeFile file, '', encoding:'utf8', (err) -> log 'cleared'
                 
 # 00000000   0000000   000   000  000000000      0000000  000  0000000  00000000
@@ -233,8 +233,7 @@ udpReceiver = new udp onMsg:onMsg #, debug:true
 #      000     000     000   000  000       000   000  000 0 000    
 # 0000000      000     000   000  00000000  000   000  000   000    
 
-log 'logFile:', logFile
-tail = new Tail logFile
+tail = new Tail slash.untilde logFile
 tail.on 'error', error
 tail.on 'line', (line) -> 
     onMsg JSON.parse line
@@ -245,8 +244,11 @@ tail.on 'line', (line) ->
 # 000  000  0000  000     000       
 # 000  000   000  000     000       
 
-setEditor   prefs.get 'editor', 'ko'
-setFindDir  prefs.get 'findDir', '~'
+prefs.set 'editor',  prefs.get 'editor', 'ko'
+prefs.set 'findDir', prefs.get 'findDir', '~'
+
+klog "editor:  #{prefs.get 'editor'}\nlogFile: #{logFile}\nfindDir: #{prefs.get 'findDir'}"
+
 setFontSize prefs.get 'fontSize', defaultFontSize
 
 for column in ['id', 'src', 'icon', 'num', 'time']
