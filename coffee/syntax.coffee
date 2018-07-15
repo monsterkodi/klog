@@ -15,15 +15,29 @@ class Syntax
     @endWord: (obj) ->
         
         if valid obj.word
+            
             word = obj.word
+            
             obj.words.push word
             obj.word = ''
             
-            if word in ['console','process','global','module','exports','fs','os']
+            clss = switch word
+                when 'first', 'last', 'valid', 'empty', 'clamp', 'watch', 'str', 'pos', 'elem', 'stopEvent', 'if', 'else', 'then', 'for', 'of', 'in', 'is', 'while', 'do', 'unless', 'not', 'or', 'and', 'try', 'catch', 'return', 'break', 'continue', 'new', 'switch', 'when', 'super', 'extends', 'by'
+                    'keyword'
+                when 'post', 'childp', 'matchr', 'prefs', 'slash', 'noon', 'args', 'console','process','global','module','exports','fs','os'
+                    'module'                    
+                when 'log'
+                    'function'
+                when 'err', 'error'
+                    'function call'
+                when 'require'
+                    'require'
+                    
+            if clss            
                 obj.rgs.push
-                    start: obj.index - word.length - 1
+                    start: obj.index - word.length
                     match: word
-                    value: 'module'
+                    value: clss
     
     @ranges: (string) ->
         
@@ -35,24 +49,33 @@ class Syntax
         
         for char in string
             
-            switch char 
-                when '~', '@', '#', '/', '\\', ':', '.', ';', ',', '{', '}', '(', ')', '[', ']', '|', "'", '"', '`'
+            wordEnd = true
+            
+            switch char
+                
+                when "'", '"', '`'
                     obj.rgs.push
                         start: obj.index
                         match: char
                         value: 'punctuation'
-                when '+'
-                    Syntax.endWord obj
-                when ' '
-                    Syntax.endWord obj
+                when '~', '+', '-', '^', '=', '@', '#', '/', '\\', ':', '.', ';', ',', '|', '{', '}', '(', ')', '[', ']'
+                    obj.rgs.push
+                        start: obj.index
+                        match: char
+                        value: 'punctuation'
+                when '+' then 
+                when ' ' then 
                 else
+                    wordEnd = false
                     obj.word += char
+                    
+            if wordEnd then Syntax.endWord obj
                     
             obj.index++
             
         Syntax.endWord obj
             
-        log 'Syntax', str obj
+        # log 'Syntax', str obj
         
         obj.rgs
 

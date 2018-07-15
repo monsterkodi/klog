@@ -17,6 +17,8 @@ class Scanner
 
     constructor: (@dir, @search) ->
         
+        @maxLineLength = 400
+        
         @chunks = {}
         @lineno = {}
         @queue  = []
@@ -140,8 +142,8 @@ class Scanner
             
             @lineno[file]++
             
-            if data.length > 1024
-                data = data.substr 0, 1024
+            if data.length > @maxLineLength
+                data = data.substr 0, @maxLineLength
                 
             column = data.indexOf(@search)
             if column >= 0

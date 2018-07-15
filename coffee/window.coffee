@@ -101,7 +101,7 @@ getFontSize = -> prefs.get 'fontSize', defaultFontSize
 setFontSize = (s) ->
         
     s = getFontSize() if not _.isFinite s
-    s = clamp 4, 44, s
+    s = clamp 8, 44, s
 
     prefs.set "fontSize", s
     lines.lines.style.fontSize = "#{s}px"
