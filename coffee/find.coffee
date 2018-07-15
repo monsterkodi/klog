@@ -41,6 +41,14 @@ class Find extends Input
         @cp = childp.fork slash.join(__dirname, 'scanner.js'), args, stdio: ['pipe', 'pipe', 'ignore', 'ipc'], execPath: 'node'
         @cp.on 'message', @onScanner
         
-    onScanner: (message) => window.lines.appendLog message
+    onScanner: (message) => 
+    
+        if message.type == 'find' 
+            if @lastMessage.type == 'file' or @lastMessage.line < message.line-1
+                window.lines.appendLog()
+        else if message.type == 'file'
+            window.lines.appendLog()
+        @lastMessage = message
+        window.lines.appendLog message
                 
 module.exports = Find

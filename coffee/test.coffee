@@ -18,6 +18,53 @@ describe 'klog', ->
     
     describe 'syntax', ->
         
+        it 'coffee', ->
+            
+            rgs = Syntax.ranges " a: b", 'coffee'
+            log rgs
+            expect(rgs).to.deep.include
+                start: 1
+                match: "a"
+                value: 'property'
+            
+            rgs = Syntax.ranges "obj.value = obj.another.value", 'coffee'
+            expect(rgs).to.deep.include 
+                start: 0
+                match: "obj"
+                value: 'obj'
+            expect(rgs).to.deep.include 
+                start: 4
+                match: "value"
+                value: 'property'
+            expect(rgs).to.deep.include 
+                start: 12
+                match: "obj"
+                value: 'obj'
+            expect(rgs).to.deep.include 
+                start: 16
+                match: "another"
+                value: 'property'
+            expect(rgs).to.deep.include 
+                start: 24
+                match: "value"
+                value: 'property'
+                
+            rgs = Syntax.ranges "if args.rights", 'coffee'
+            expect(rgs).to.deep.include
+                start: 3
+                match: "args"
+                value: 'obj'
+            expect(rgs).to.deep.include 
+                start: 8
+                match: "rights"
+                value: 'property'
+                
+            rgs = Syntax.ranges "a(b).length", 'coffee'
+            expect(rgs).to.deep.include
+                start: 5
+                match: "length"
+                value: 'property'
+        
         it 'numbers', ->
             
             rgs = Syntax.ranges "a 6670"
@@ -37,12 +84,10 @@ describe 'klog', ->
                 start: 0
                 match: "66"
                 value: 'number float'
-                
             expect(rgs).to.deep.include
                 start: 2
                 match: "."
                 value: 'punctuation float'
-
             expect(rgs).to.deep.include
                 start: 3
                 match: "700"
@@ -53,7 +98,6 @@ describe 'klog', ->
                 start: 0
                 match: "77"
                 value: 'number float'
-                
             expect(rgs).to.deep.include
                 start: 8
                 match: "100"
@@ -64,7 +108,6 @@ describe 'klog', ->
                 start: 3
                 match: "9"
                 value: 'number float'
-                
             expect(rgs).to.deep.include
                 start: 9
                 match: "2"
@@ -121,7 +164,6 @@ describe 'klog', ->
                 start: 6
                 match: "#"
                 value: 'comment punctuation'
-
             expect(rgs).to.deep.include
                 start: 7
                 match: " world"
@@ -144,7 +186,6 @@ describe 'klog', ->
         it 'strings', ->
             
             rgs = Syntax.ranges 'a="\'X\'"'
-
             expect(rgs).to.deep.include 
                 start: 3
                 match: "'X'"
@@ -168,7 +209,6 @@ describe 'klog', ->
                     start: i
                     match: '"'
                     value: 'string double punctuation'
-
             expect(rgs).to.deep.include 
                 start: 14
                 match: 'X'
@@ -180,7 +220,6 @@ describe 'klog', ->
                     start: i
                     match: "'"
                     value: 'string single punctuation'
-
             expect(rgs).to.deep.include 
                 start: 14
                 match: 'Y'
@@ -192,7 +231,6 @@ describe 'klog', ->
                     start: i
                     match: "`"
                     value: 'string backtick punctuation'
-
             expect(rgs).to.deep.include 
                 start: 14
                 match: 'Z'
@@ -201,23 +239,20 @@ describe 'klog', ->
         it 'punctuation', ->
             
             rgs = Syntax.ranges '/some\\path/file.txt:10'
-
             expect(rgs).to.deep.include 
                 start: 0
                 match: '/'
                 value: 'punctuation'
-
             expect(rgs).to.deep.include 
                 start: 5
                 match: '\\'
                 value: 'punctuation'
-                
             expect(rgs).to.deep.include 
                 start: 15
                 match: '.'
                 value: 'punctuation'
-                
             expect(rgs).to.deep.include 
                 start: 19
                 match: ':'
                 value: 'punctuation'
+                

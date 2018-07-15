@@ -27,8 +27,8 @@ class Scanner
         @whitelist = exts.filter((ext) -> ext[0] == '.').map (ext) -> ext.slice 1
         @blacklist = exts.filter((ext) -> ext[0] == '!').map (ext) -> ext.slice 1
         
-        log '@whitelist', str @whitelist
-        log '@blacklist', str @blacklist
+        # log '@whitelist', str @whitelist
+        # log '@blacklist', str @blacklist
         
         @fileCount = 0
         @scanCount = 0

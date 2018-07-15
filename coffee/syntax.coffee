@@ -31,10 +31,22 @@ class Syntax
             obj.words.push word
             obj.word = ''
 
+            log "@endWord #{word}"
+            
+            getValue = (back=-1) ->
+                if char not in [' ', undefined] # punctuation that triggered addWord is already on stack!
+                    back -= 1                   # therefore adjust back index
+                obj.rgs[obj.rgs.length+back]?.value 
+                
+            setValue = (back, value) ->
+                if char not in [' ', undefined] # punctuation that triggered addWord is already on stack!
+                    back -= 1                   # therefore adjust back index
+                obj.rgs[obj.rgs.length+back].value = value
+            
             switch obj.ext 
                 when 'js', 'coffee'
                     clss = switch word
-                        when 'first', 'last', 'valid', 'empty', 'clamp', 'watch', 'str', 'pos', 'elem', 'stopEvent', 'if', 'else', 'then', 'for', 'of', 'in', 'is', 'while', 'do', 'unless', 'not', 'or', 'and', 'try', 'catch', 'return', 'break', 'continue', 'new', 'switch', 'when', 'super', 'extends', 'by', 'true', '__filename', '__dirname'
+                        when 'first', 'last', 'valid', 'empty', 'clamp', 'watch', 'str', 'pos', 'elem', 'stopEvent', 'if', 'else', 'then', 'for', 'of', 'in', 'is', 'while', 'do', 'unless', 'not', 'or', 'and', 'try', 'catch', 'return', 'break', 'continue', 'new', 'switch', 'when', 'super', 'extends', 'by', 'true'
                             'keyword'
                         when 'post', 'childp', 'matchr', 'prefs', 'slash', 'noon', 'args', 'console','process','global','module','exports','fs','os'
                             'module'                    
@@ -46,16 +58,11 @@ class Syntax
                             'nil'
                         when 'require'
                             'require'
-
-            getValue = (back=-1) ->
-                if char not in [' ', undefined] # punctuation that triggered addWord is already on stack!
-                    back -= 1                   # therefore adjust back index
-                obj.rgs[obj.rgs.length+back]?.value 
-                
-            setValue = (back, value) ->
-                if char not in [' ', undefined] # punctuation that triggered addWord is already on stack!
-                    back -= 1                   # therefore adjust back index
-                obj.rgs[obj.rgs.length+back].value = value
+                        when 'dirname', 'filename'
+                            if obj.last.endsWith '__'
+                                setValue -2, 'keyword punctuation'
+                                setValue -1, 'keyword punctuation'
+                                'keyword' 
                     
             if not clss
                 if /^\d+$/.test word
@@ -77,14 +84,32 @@ class Syntax
                 else if /^[a-fA-F\d][a-fA-F\d][a-fA-F\d]+$/.test word
                     clss = 'number hex'
                   
+            log "@endWord2 #{word}", str obj
+            
             if not clss
-                if obj.last == '.'
-                    if obj.ext in ['js', 'coffee']
-                        if getValue(-2) == 'text'
+                if char == ':'
+                    if obj.ext in ['js', 'coffee', 'json']
+                        clss = 'property'
+            
+            if not clss
+                if obj.last in ['.', ':']
+                    if obj.ext in ['js', 'coffee', 'json']
+                        if getValue(-2) in ['text', 'module']
                             setValue -2, 'obj'
                             setValue -1, 'punctuation obj'
                             clss = 'property'
-                    
+                            
+            if not clss 
+                if obj.last.endsWith '.'
+                    if obj.ext in ['js', 'coffee']                                               
+                        if getValue(-2) == 'property'
+                            setValue -1, 'punctuation property'
+                            clss = 'property'
+                        else
+                            log 'obj.last', obj.last
+                            if obj.last.length > 1 and obj.last[obj.last.length-2] in [')', ']']
+                                setValue -1, 'punctuation property'
+                                clss = 'property'
             clss ?= 'text'
 
             lastStart = last(obj.rgs)?.start
@@ -95,11 +120,9 @@ class Syntax
                 start: obj.index - word.length
                 match: word
                 value: clss
-            # log 'pushed', str obj
                 
             if popped 
                 obj.rgs.push popped
-                # log 'popped', str obj
         null
                               
     # 00000000  000   000  0000000                   
@@ -113,7 +136,6 @@ class Syntax
         bot = first obj.stack
         
         if bot?.type == 'comment'
-            # log 'obj', obj
             obj.rgs.push
                 start: bot.index
                 match: bot.match
@@ -252,11 +274,11 @@ class Syntax
                     wordEnd = false
                     
             if wordEnd 
-                Syntax.endWord obj, char
                 obj.rest += char
+                Syntax.endWord obj, char
             else
-                Syntax.endRest obj
                 obj.word += char
+                Syntax.endRest obj
                     
             if stackChar
                 Syntax.stackChar obj, char

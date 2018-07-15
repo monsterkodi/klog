@@ -192,7 +192,6 @@ class Lines
     appendLog: (msg) -> 
         
         line = @lineForLog msg
-        line.info = msg
         
         @cache.push line
         
@@ -216,6 +215,13 @@ class Lines
     
     lineForLog: (info) ->
         
+        info ?= {}
+        info.id ?= ''
+        info.file ?= ''
+        info.source ?= ''
+        info.str ?= ''
+        info.sep ?= ''
+        
         icon =
             if info.icon?
                 if info.icon.startsWith 'file://' then "<img src='#{info.icon}'/>" else info.icon
@@ -229,11 +235,14 @@ class Lines
                     else
                         className = 'file-icon'
                 "<div class=\"#{className} browserFileIcon\"></div>"
-            else
+            else if valid info.id
                 file = slash.join __dirname, "../img/#{info.id}.png"
                 @icons[info.id] = slash.fileUrl if slash.exists file then file else slash.join __dirname, "../img/blank.png"
                 "<img src='#{@icons[info.id]}'/>"
-        
+            else
+                ''
+        info.icon ?= icon
+                
         @num  += 1
         
         fileClss = 'file'
@@ -281,6 +290,7 @@ class Lines
         # icon =$ '.icon', line
         # new tooltip elem:icon, parent:line, html:slash.tilde(info.source)
         
+        line.info = info
         line
     
     # 00000000   0000000   000   000  000000000       0000000  000  0000000  00000000  
