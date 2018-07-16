@@ -90,7 +90,8 @@ body
     flex                    1 1 0
     overflow                visible
     padding-left            6px
-    & div    
+    & div 
+        position            relative
         &.filtered    
             display         none
         width               100%
@@ -162,7 +163,51 @@ body
      
 // .punctuation
     // opacity             0.5
-        
+
+//  0000000   00000000   00000000    0000000   000   000   0000000
+// 000   000  000   000  000   000  000   000  000 0 000  000
+// 000000000  0000000    0000000    000   000  000000000  0000000
+// 000   000  000   000  000   000  000   000  000   000       000
+// 000   000  000   000  000   000   0000000   00     00  0000000
+
+
+.function.tail.bound::before
+    content                     ''
+    position                    absolute
+    border-top                  0.15em solid
+    border-bottom               0.15em solid
+    border-left                 0.0em solid transparent
+    border-right                0.0em solid transparent
+    border-top-left-radius      0.1em
+    border-bottom-left-radius   0.1em
+    height                      0.1em
+    width                       1.08ch
+    top                         0.45em
+
+.function.tail::before
+    content                     ''
+    position                    absolute
+    border-top                  0.15em solid
+    border-bottom               0.15em solid
+    border-left                 0.0em solid transparent
+    border-right                0.0em solid transparent
+    border-top-left-radius      0.1em
+    border-bottom-left-radius   0.1em
+    height                      0.0em
+    width                       1.08ch
+    top                         0.5em
+
+.function.head::before
+    content                     ''
+    position                    absolute
+    height                      0.0em
+    width                       0.0em
+    top                         0.35em
+    border-radius               0.1em
+    border-top                  0.3em solid transparent
+    border-bottom               0.3em solid transparent
+    border-left                 0.8em solid
+    
 // 000   0000000   0000000   000   000  
 // 000  000       000   000  0000  000  
 // 000  000       000   000  000 0 000  

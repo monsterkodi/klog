@@ -222,32 +222,22 @@ textBlurColor  = #444
 // 000       000   000  000  0000  000          000     000  000   000  000  0000  
 // 000        0000000   000   000   0000000     000     000   0000000   000   000  
 
-.func
 .function
-    color           #fa0
-    &.post          
-        color       #bbf
-    &.call
-        color       #f80
-        &.class     
-            color   #fc0
 
-    &.marker
+    &.head
+    &.tail
         opacity     1
         color       #55f
-        
-    &.marker.head
-    &.marker.tail
         color       transparent
         
-    &.marker.tail::before
+    &.tail::before
         border-color        #55f
-    &.marker.head::before
+    &.head::before
         border-left-color   #55f
         
-    &.marker.tail.bound::before
+    &.tail.bound::before
         border-color        #f80
-    &.marker.head.bound::before
+    &.head.bound::before
         border-left-color   #f80
             
     &.bracket

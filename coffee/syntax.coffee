@@ -45,7 +45,7 @@ class Syntax
                     Syntax.endWord   obj
                     Syntax.doStack   obj
                     
-                when '+', '-', '*', '<', '>', '=', '^', '~', '@', '$', '&', '%', '/', '\\', ':', '.', ';', ',', '!', '|', '{', '}', '(', ')', '[', ']'
+                when '+', '-', '*', '<', '>', '=', '^', '~', '@', '$', '&', '%', '/', '\\', ':', '.', ';', ',', '!', '?', '|', '{', '}', '(', ')', '[', ']'
                     
                     Syntax.endWord   obj
                     Syntax.doPunct   obj
@@ -99,6 +99,10 @@ class Syntax
                     value: clss
                 null
             
+            if char == ':'
+                if obj.ext in ['js', 'coffee', 'json']
+                    return setClass 'dictionary key'
+                
             switch obj.ext 
                 
                 #  0000000   0000000   00000000  00000000  00000000  00000000  
@@ -155,11 +159,7 @@ class Syntax
             # 00000000   0000000    000   000  00000000   0000000   0000000       000       00000   
             # 000        000   000  000   000  000        000       000   000     000        000    
             # 000        000   000   0000000   000        00000000  000   000     000        000    
-                  
-            if char == ':'
-                if obj.ext in ['js', 'coffee', 'json']
-                    return setClass 'dictionary key'
-            
+                              
             if obj.last in ['.', ':']
                 if obj.ext in ['js', 'coffee', 'json']
                     if getValue(-2) in ['text', 'module']
@@ -227,10 +227,11 @@ class Syntax
                         value = 'dictionary punctuation'
             when '>'
                 if obj.ext in ['js', 'coffee']
-                    if obj.turd.endsWith '->'
-                        Syntax.substitute obj, -3, ['dictionary key', 'dictionary punctuation'], ['method', 'method punctuation']
-                        setValue -1, 'function tail'
-                        value = 'function head'
+                    for [turd, val] in [['->', ''], ['=>', ' bound']]
+                        if obj.turd.endsWith turd
+                            Syntax.substitute obj, -3, ['dictionary key', 'dictionary punctuation'], ['method', 'method punctuation']
+                            setValue -1, 'function tail' + val
+                            value = 'function head' + val
         
         obj.rgs.push
             start: obj.index
@@ -331,7 +332,7 @@ class Syntax
             for index in [0...oldVals.length]
                 Syntax.setValue obj, back+index, newVals[index]
             return
-        if back > 0
-            Syntax.substitute obj, back-1, oldVal, newVals
+        if obj.rgs.length + back-1 >= 0
+            Syntax.substitute obj, back-1, oldVals, newVals
         
 module.exports = Syntax
