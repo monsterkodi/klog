@@ -6,7 +6,7 @@
 000  000   000  000         0000000      000   
 ###
 
-{ post, prefs, elem, keyinfo, stopEvent, log, $ } = require 'kxk'
+{ post, keyinfo, prefs, stopEvent, elem, _ } = require 'kxk'
 
 Highlight = require './highlight'
 
@@ -62,7 +62,7 @@ class Input
             
             @cfg = []
             for t in texts
-                @cfg.push [new RegExp(t), "highlight-#{@name}"]
+                @cfg.push [new RegExp(_.escapeRegExp t), "highlight-#{@name}"]
   
             Highlight.lines()
         

@@ -31,6 +31,24 @@ describe 'klog', ->
                 start: 0
                 match: "f"
                 value: 'function call'
+
+            rgs = Syntax.ranges "f [1]", 'coffee'
+            expect(rgs).to.deep.include
+                start: 0
+                match: "f"
+                value: 'function call'
+                
+            rgs = Syntax.ranges "f {1}", 'coffee'
+            expect(rgs).to.deep.include
+                start: 0
+                match: "f"
+                value: 'function call'
+
+            rgs = Syntax.ranges "switch a", 'coffee'
+            expect(rgs).to.deep.include
+                start: 0
+                match: "switch"
+                value: 'keyword'
                 
             rgs = Syntax.ranges "pos: (item, p) -> ", 'coffee'
             expect(rgs).to.deep.include
@@ -41,7 +59,13 @@ describe 'klog', ->
                 start: 3
                 match: ":"
                 value: 'method punctuation'
-            
+
+            rgs = Syntax.ranges "pos= (item, p) -> ", 'coffee'
+            expect(rgs).to.deep.include
+                start: 0
+                match: "pos"
+                value: 'function'
+                
             rgs = Syntax.ranges " a: =>", 'coffee'
             expect(rgs).to.deep.include
                 start: 1

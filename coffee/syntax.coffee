@@ -196,11 +196,14 @@ class Syntax
                 # log 'immediate function call', str obj
                 Syntax.setValue obj, -2, 'function call'
             else if obj.turd.length > 1 and obj.turd.trim().length == 1
-                if last(obj.turd) in '([{\'"'
-                    log 'args function call'
+                if last(obj.turd) in '@+-\'"([{'
+                    val = Syntax.getValue obj, -2
+                    if val in ['text']
+                        # log 'args function call', str obj
+                        Syntax.setValue obj, -2, 'function call'
             else if empty obj.turd
                 if Syntax.getValue(obj, -1)?.indexOf('punctuation') < 0
-                    if last(obj.rgs).match not in ['if', 'is', 'and', 'then']
+                    if last(obj.rgs).value in ['text']
                         # log 'word arg function call', str obj
                         Syntax.setValue obj, -1, 'function call'
             # function.call
@@ -259,6 +262,7 @@ class Syntax
                     for [turd, val] in [['->', ''], ['=>', ' bound']]
                         if obj.turd.endsWith turd
                             Syntax.substitute obj, -3, ['dictionary key', 'dictionary punctuation'], ['method', 'method punctuation']
+                            Syntax.replace    obj, -3, [{word:true}, {match:'='}], [{value:'function'}]
                             setValue -1, 'function tail' + val
                             value = 'function head' + val
         
@@ -351,17 +355,51 @@ class Syntax
     @getValue: (obj, back)        -> obj.rgs[obj.rgs.length+back]?.value         
     @setValue: (obj, back, value) -> obj.rgs[obj.rgs.length+back]?.value = value
     
+    #  0000000  000   000  0000000     0000000  000000000  000  000000000  000   000  000000000  00000000  
+    # 000       000   000  000   000  000          000     000     000     000   000     000     000       
+    # 0000000   000   000  0000000    0000000      000     000     000     000   000     000     0000000   
+    #      000  000   000  000   000       000     000     000     000     000   000     000     000       
+    # 0000000    0000000   0000000    0000000      000     000     000      0000000      000     00000000  
+    
     @substitute: (obj, back, oldVals, newVals) ->
         
         for index in [0...oldVals.length]
             val = Syntax.getValue obj, back+index
             if val != oldVals[index]
                 break
+                
         if index == oldVals.length
             for index in [0...oldVals.length]
                 Syntax.setValue obj, back+index, newVals[index]
             return
+            
         if obj.rgs.length + back-1 >= 0
             Syntax.substitute obj, back-1, oldVals, newVals
+            
+    # 00000000   00000000  00000000   000       0000000    0000000  00000000  
+    # 000   000  000       000   000  000      000   000  000       000       
+    # 0000000    0000000   00000000   000      000000000  000       0000000   
+    # 000   000  000       000        000      000   000  000       000       
+    # 000   000  00000000  000        0000000  000   000   0000000  00000000  
+    
+    @replace: (obj, back, oldObjs, newObjs) ->
         
+        advance = ->
+            if obj.rgs.length + back-1 >= 0
+                Syntax.replace obj, back-1, oldObjs, newObjs
+        
+        for index in [0...oldObjs.length]
+            backObj = obj.rgs[obj.rgs.length+back+index]
+            for key in Object.keys oldObjs[index]
+                if key == 'word' 
+                    if backObj.value.indexOf('punctuation') >= 0
+                        return advance()
+                else if oldObjs[index][key] != backObj[key]
+                    return advance()
+                    
+        for index in [0...newObjs.length]
+            backObj = obj.rgs[obj.rgs.length+back+index]
+            for key in Object.keys newObjs[index]
+                backObj[key] = newObjs[index][key]
+           
 module.exports = Syntax
