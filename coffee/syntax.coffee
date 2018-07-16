@@ -90,8 +90,8 @@ class Syntax
             obj.words.push word
             obj.word = ''
 
-            getValue = (back=-1)     -> obj.rgs[obj.rgs.length+back]?.value 
-            setValue = (back, value) -> obj.rgs[obj.rgs.length+back]?.value = value
+            getValue = (back=-1)     -> Syntax.getValue obj, back 
+            setValue = (back, value) -> Syntax.setValue obj, back, value  
             setClass = (clss) ->
                 obj.rgs.push
                     start: obj.index - word.length
@@ -213,6 +213,9 @@ class Syntax
     
     @doPunct: (obj) ->
         
+        getValue = (back=-1)     -> Syntax.getValue obj, back 
+        setValue = (back, value) -> Syntax.setValue obj, back, value  
+        
         char = obj.char
         
         value = 'punctuation'
@@ -222,6 +225,12 @@ class Syntax
                 if obj.turd.length == 1 and obj.ext in ['js', 'coffee', 'json', 'yml', 'yaml']
                     if last(obj.rgs).value == 'dictionary key'
                         value = 'dictionary punctuation'
+            when '>'
+                if obj.ext in ['js', 'coffee']
+                    if obj.turd.endsWith '->'
+                        Syntax.substitute obj, -3, ['dictionary key', 'dictionary punctuation'], ['method', 'method punctuation']
+                        setValue -1, 'function tail'
+                        value = 'function head'
         
         obj.rgs.push
             start: obj.index
@@ -308,5 +317,21 @@ class Syntax
             item.match += obj.char
             
         null
-                
+      
+    @getValue: (obj, back)        -> obj.rgs[obj.rgs.length+back]?.value         
+    @setValue: (obj, back, value) -> obj.rgs[obj.rgs.length+back]?.value = value
+    
+    @substitute: (obj, back, oldVals, newVals) ->
+        
+        for index in [0...oldVals.length]
+            val = Syntax.getValue obj, back+index
+            if val != oldVals[index]
+                break
+        if index == oldVals.length
+            for index in [0...oldVals.length]
+                Syntax.setValue obj, back+index, newVals[index]
+            return
+        if back > 0
+            Syntax.substitute obj, back-1, oldVal, newVals
+        
 module.exports = Syntax
