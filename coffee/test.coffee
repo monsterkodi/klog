@@ -20,16 +20,56 @@ describe 'klog', ->
         
         it 'coffee', ->
             
-            rgs = Syntax.ranges "f 1", 'coffee'
+            rgs = Syntax.ranges "a and b", 'coffee'
+            expect(rgs).to.deep.include
+                start: 0
+                match: "a"
+                value: 'text'
+            expect(rgs).to.deep.include
+                start: 2
+                match: "and"
+                value: 'keyword'
+
+            rgs = Syntax.ranges "if a then b", 'coffee'
+            expect(rgs).to.deep.include
+                start: 0
+                match: "if"
+                value: 'keyword'
+            expect(rgs).to.deep.include
+                start: 3
+                match: "a"
+                value: 'text'
+            expect(rgs).to.deep.include
+                start: 5
+                match: "then"
+                value: 'keyword'
+            expect(rgs).to.deep.include
+                start: 10
+                match: "b"
+                value: 'text'
+                
+            rgs = Syntax.ranges "f 'a'", 'coffee'
             expect(rgs).to.deep.include
                 start: 0
                 match: "f"
                 value: 'function call'
 
-            rgs = Syntax.ranges "f -1", 'coffee'
+            rgs = Syntax.ranges "ff 'b'", 'coffee'
             expect(rgs).to.deep.include
                 start: 0
-                match: "f"
+                match: "ff"
+                value: 'function call'
+
+            rgs = Syntax.ranges "fff 1", 'coffee'
+            expect(rgs).to.deep.include
+                start: 0
+                match: "fff"
+                value: 'function call'
+
+            rgs = Syntax.ranges "ffff -1", 'coffee'
+            expect(rgs).to.deep.include
+                start: 0
+                match: "ffff"
                 value: 'function call'
 
             rgs = Syntax.ranges "f [1]", 'coffee'
@@ -38,10 +78,10 @@ describe 'klog', ->
                 match: "f"
                 value: 'function call'
                 
-            rgs = Syntax.ranges "f {1}", 'coffee'
+            rgs = Syntax.ranges "fffff {1}", 'coffee'
             expect(rgs).to.deep.include
                 start: 0
-                match: "f"
+                match: "fffff"
                 value: 'function call'
 
             rgs = Syntax.ranges "switch a", 'coffee'

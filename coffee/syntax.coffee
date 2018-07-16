@@ -106,6 +106,12 @@ class Syntax
                 if obj.ext in ['js', 'coffee', 'json']
                     return setClass 'dictionary key'
                 
+            if obj.ext == 'coffee'
+                if Syntax.getValue(obj, -1)?.indexOf('punctuation') < 0
+                    if word not in ['else', 'then', 'and', 'or', 'in']
+                        if last(obj.rgs).value not in ['keyword', 'function head']
+                            Syntax.setValue obj, -1, 'function call'
+                
             switch obj.ext 
                 
                 #  0000000   0000000   00000000  00000000  00000000  00000000  
@@ -128,8 +134,8 @@ class Syntax
                         when 'undefined', 'null', 'false'
                             return setClass 'nil'
                         when 'require'
-                            return setClass 'require'
-                    
+                            return setClass 'require'            
+                            
             # 000   000  000   000  00     00  0000000    00000000  00000000   
             # 0000  000  000   000  000   000  000   000  000       000   000  
             # 000 0 000  000   000  000000000  0000000    0000000   0000000    
@@ -193,19 +199,13 @@ class Syntax
         if obj.ext == 'coffee'
             
             if obj.turd.length == 1 and obj.turd == '('
-                # log 'immediate function call', str obj
                 Syntax.setValue obj, -2, 'function call'
             else if obj.turd.length > 1 and obj.turd.trim().length == 1
                 if last(obj.turd) in '@+-\'"([{'
                     val = Syntax.getValue obj, -2
-                    if val in ['text']
-                        # log 'args function call', str obj
+                    if val not in ['keyword', 'function head']
                         Syntax.setValue obj, -2, 'function call'
-            else if empty obj.turd
-                if Syntax.getValue(obj, -1)?.indexOf('punctuation') < 0
-                    if last(obj.rgs).value in ['text']
-                        # log 'word arg function call', str obj
-                        Syntax.setValue obj, -1, 'function call'
+                        
             # function.call
             # (@?[a-zA-Z]\w*)
             # (?!\s+or|\s+i[fs]|\s+and|\s+then)
