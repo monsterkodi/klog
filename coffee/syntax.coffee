@@ -79,7 +79,7 @@ class Syntax
     
     @endWord: (obj) ->
         
-        obj.turd += obj.char
+        obj.turd += obj.char # use = here?
         
         char = obj.char
         
@@ -91,7 +91,7 @@ class Syntax
             obj.word = ''
 
             getValue = (back=-1)     -> obj.rgs[obj.rgs.length+back]?.value 
-            setValue = (back, value) -> obj.rgs[obj.rgs.length+back].value = value
+            setValue = (back, value) -> obj.rgs[obj.rgs.length+back]?.value = value
             setClass = (clss) ->
                 obj.rgs.push
                     start: obj.index - word.length
@@ -142,7 +142,7 @@ class Syntax
                             
                     if getValue(-2) == 'number'
                         setValue -2, 'number float'
-                        setValue -1, 'punctuation float'
+                        setValue -1, 'number float punctuation'
                         return setClass 'number float'
                         
                 return setClass 'number'
@@ -158,23 +158,23 @@ class Syntax
                   
             if char == ':'
                 if obj.ext in ['js', 'coffee', 'json']
-                    return setClass 'property'
+                    return setClass 'dictionary key'
             
             if obj.last in ['.', ':']
                 if obj.ext in ['js', 'coffee', 'json']
                     if getValue(-2) in ['text', 'module']
                         setValue -2, 'obj'
-                        setValue -1, 'punctuation obj'
+                        setValue -1, 'obj punctuation'
                         return setClass 'property'
                             
             if obj.last.endsWith '.'
                 if obj.ext in ['js', 'coffee']                                               
                     if getValue(-2) == 'property'
-                        setValue -1, 'punctuation property'
+                        setValue -1, 'property punctuation'
                         return setClass 'property'
                     else
                         if obj.last.length > 1 and obj.last[obj.last.length-2] in [')', ']']
-                            setValue -1, 'punctuation property'
+                            setValue -1, 'property punctuation'
                             return setClass 'property'
             return setClass 'text'
         null
@@ -215,10 +215,18 @@ class Syntax
         
         char = obj.char
         
+        value = 'punctuation'
+        
+        switch char
+            when ':'
+                if obj.turd.length == 1 and obj.ext in ['js', 'coffee', 'json', 'yml', 'yaml']
+                    if last(obj.rgs).value == 'dictionary key'
+                        value = 'dictionary punctuation'
+        
         obj.rgs.push
             start: obj.index
             match: char
-            value: 'punctuation'
+            value: value
 
         switch char 
             when '{' 
@@ -232,7 +240,7 @@ class Syntax
                             match: '//'
                             value: "comment punctuation"
                         obj.stack.push type:'comment', index:obj.index, match:''
-            
+                        
         null
                         
     # 0000000     0000000    0000000  000000000   0000000    0000000  000   000  

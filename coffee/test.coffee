@@ -25,6 +25,10 @@ describe 'klog', ->
                 start: 1
                 match: "a"
                 value: 'dictionary key'
+            expect(rgs).to.deep.include
+                start: 2
+                match: ":"
+                value: 'dictionary punctuation'
             
             rgs = Syntax.ranges "obj.value = obj.another.value", 'coffee'
             expect(rgs).to.deep.include 
@@ -86,7 +90,7 @@ describe 'klog', ->
             expect(rgs).to.deep.include
                 start: 2
                 match: "."
-                value: 'punctuation float'
+                value: 'number float punctuation'
             expect(rgs).to.deep.include
                 start: 3
                 match: "700"
