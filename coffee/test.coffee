@@ -26,6 +26,12 @@ describe 'klog', ->
                 match: "f"
                 value: 'function call'
 
+            rgs = Syntax.ranges "f -1", 'coffee'
+            expect(rgs).to.deep.include
+                start: 0
+                match: "f"
+                value: 'function call'
+                
             rgs = Syntax.ranges "pos: (item, p) -> ", 'coffee'
             expect(rgs).to.deep.include
                 start: 0
