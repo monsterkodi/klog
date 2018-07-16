@@ -21,7 +21,6 @@ describe 'klog', ->
         it 'coffee', ->
             
             rgs = Syntax.ranges " a: b", 'coffee'
-            log rgs
             expect(rgs).to.deep.include
                 start: 1
                 match: "a"

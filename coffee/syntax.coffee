@@ -12,9 +12,64 @@ log = console.log
 
 class Syntax
 
-    @noCommentExt      = ['txt', 'md']
-    @hashCommentExt    = ['coffee', 'sh', 'yml', 'yaml', 'noon']
-    @noSlashCommentExt = Syntax.noCommentExt.concat Syntax.hashCommentExt
+    @noComment      = ['txt', 'md']
+    @hashComment    = ['coffee', 'sh', 'yml', 'yaml', 'noon']
+    @noSlashComment = Syntax.noComment.concat Syntax.hashComment
+    
+    # 00000000    0000000   000   000   0000000   00000000   0000000  
+    # 000   000  000   000  0000  000  000        000       000       
+    # 0000000    000000000  000 0 000  000  0000  0000000   0000000   
+    # 000   000  000   000  000  0000  000   000  000            000  
+    # 000   000  000   000  000   000   0000000   00000000  0000000   
+    
+    @ranges: (string, ext) ->
+        
+        obj =
+            ext:    ext ? 'txt' 
+            rgs:    []   # list of ranges (result)
+            words:  []   # encountered words
+            stack:  []   # unclosed strings 
+            word:   ''   # currently parsed word
+            turd:   ''   # currently parsed stuff inbetween words 
+            last:   ''   # the turd before the current/last-completed word
+            index:  0    
+        
+        for char in string
+            
+            obj.char = char
+            
+            switch char
+                
+                when "'", '"', '`', '#'
+                    
+                    Syntax.endWord   obj
+                    Syntax.doStack   obj
+                    
+                when '+', '-', '*', '<', '>', '=', '^', '~', '@', '$', '&', '%', '/', '\\', ':', '.', ';', ',', '!', '|', '{', '}', '(', ')', '[', ']'
+                    
+                    Syntax.endWord   obj
+                    Syntax.doPunct   obj
+                    Syntax.stackChar obj
+                            
+                when ' ', '\t' 
+                    
+                    Syntax.endWord   obj
+                    Syntax.stackChar obj
+                    
+                else # continue the current word
+                    
+                    Syntax.endTurd   obj
+                    Syntax.stackChar obj
+                                        
+            obj.index++
+          
+        obj.char = null
+        Syntax.endWord    obj
+        Syntax.endComment obj
+            
+        # log 'Syntax', str obj
+        
+        obj.rgs
     
     # 00000000  000   000  0000000    000   000   0000000   00000000   0000000    
     # 000       0000  000  000   000  000 0 000  000   000  000   000  000   000  
@@ -22,7 +77,11 @@ class Syntax
     # 000       000  0000  000   000  000   000  000   000  000   000  000   000  
     # 00000000  000   000  0000000    00     00   0000000   000   000  0000000    
     
-    @endWord: (obj, char) ->
+    @endWord: (obj) ->
+        
+        obj.turd += obj.char
+        
+        char = obj.char
         
         if valid obj.word
             
@@ -31,100 +90,95 @@ class Syntax
             obj.words.push word
             obj.word = ''
 
-            log "@endWord #{word}"
-            
-            getValue = (back=-1) ->
-                if char not in [' ', undefined] # punctuation that triggered addWord is already on stack!
-                    back -= 1                   # therefore adjust back index
-                obj.rgs[obj.rgs.length+back]?.value 
-                
-            setValue = (back, value) ->
-                if char not in [' ', undefined] # punctuation that triggered addWord is already on stack!
-                    back -= 1                   # therefore adjust back index
-                obj.rgs[obj.rgs.length+back].value = value
+            getValue = (back=-1)     -> obj.rgs[obj.rgs.length+back]?.value 
+            setValue = (back, value) -> obj.rgs[obj.rgs.length+back].value = value
+            setClass = (clss) ->
+                obj.rgs.push
+                    start: obj.index - word.length
+                    match: word
+                    value: clss
+                null
             
             switch obj.ext 
+                
+                #  0000000   0000000   00000000  00000000  00000000  00000000  
+                # 000       000   000  000       000       000       000       
+                # 000       000   000  000000    000000    0000000   0000000   
+                # 000       000   000  000       000       000       000       
+                #  0000000   0000000   000       000       00000000  00000000  
+                
                 when 'js', 'coffee'
-                    clss = switch word
-                        when 'first', 'last', 'valid', 'empty', 'clamp', 'watch', 'str', 'pos', 'elem', 'stopEvent', 'if', 'else', 'then', 'for', 'of', 'in', 'is', 'while', 'do', 'unless', 'not', 'or', 'and', 'try', 'catch', 'return', 'break', 'continue', 'new', 'switch', 'when', 'super', 'extends', 'by', 'true'
-                            'keyword'
-                        when 'post', 'childp', 'matchr', 'prefs', 'slash', 'noon', 'args', 'console','process','global','module','exports','fs','os'
-                            'module'                    
-                        when 'log'
-                            'function'
-                        when 'err', 'error'
-                            'function call'
-                        when 'undefined', 'null', 'false'
-                            'nil'
-                        when 'require'
-                            'require'
-                        when 'dirname', 'filename'
-                            if obj.last.endsWith '__'
-                                setValue -2, 'keyword punctuation'
-                                setValue -1, 'keyword punctuation'
-                                'keyword' 
                     
-            if not clss
-                if /^\d+$/.test word
-                    if obj.last == '.'                        
-                        if getValue(-4) == 'number float' and getValue(-2) == 'number float'
-                            setValue -4, 'semver'
-                            setValue -3, 'semver punctuation'
-                            setValue -2, 'semver'
-                            setValue -1, 'semver punctuation'
-                            clss = 'semver'
-                                
-                        if not clss 
-                            if getValue(-2) == 'number'
-                                setValue -2, 'number float'
-                                setValue -1, 'punctuation float'
-                                clss = 'number float'
-                    clss ?= 'number'
-                                
-                else if /^[a-fA-F\d][a-fA-F\d][a-fA-F\d]+$/.test word
-                    clss = 'number hex'
-                  
-            log "@endWord2 #{word}", str obj
+                    switch word
+                        when 'first', 'last', 'valid', 'empty', 'clamp', 'watch', 'str', 'pos', 'elem', 'stopEvent', 'if', 'else', 'then', 'for', 'of', 'in', 'is', 'while', 'do', 'unless', 'not', 'or', 'and', 'try', 'catch', 'return', 'break', 'continue', 'new', 'switch', 'when', 'super', 'extends', 'by', 'true', '__dirname', '__filename'
+                            return setClass 'keyword'
+                        when 'post', 'childp', 'matchr', 'prefs', 'slash', 'noon', 'args', 'console','process','global','module','exports','fs','os'
+                            return setClass 'module'                    
+                        when 'log'
+                            return setClass 'function'
+                        when 'err', 'error'
+                            return setClass 'function call'
+                        when 'undefined', 'null', 'false'
+                            return setClass 'nil'
+                        when 'require'
+                            return setClass 'require'
+                    
+            # 000   000  000   000  00     00  0000000    00000000  00000000   
+            # 0000  000  000   000  000   000  000   000  000       000   000  
+            # 000 0 000  000   000  000000000  0000000    0000000   0000000    
+            # 000  0000  000   000  000 0 000  000   000  000       000   000  
+            # 000   000   0000000   000   000  0000000    00000000  000   000  
             
-            if not clss
-                if char == ':'
-                    if obj.ext in ['js', 'coffee', 'json']
-                        clss = 'property'
-            
-            if not clss
-                if obj.last in ['.', ':']
-                    if obj.ext in ['js', 'coffee', 'json']
-                        if getValue(-2) in ['text', 'module']
-                            setValue -2, 'obj'
-                            setValue -1, 'punctuation obj'
-                            clss = 'property'
+            if /^\d+$/.test word
+                
+                if obj.last == '.'                        
+                    
+                    if getValue(-4) == 'number float' and getValue(-2) == 'number float'
+                        setValue -4, 'semver'
+                        setValue -3, 'semver punctuation'
+                        setValue -2, 'semver'
+                        setValue -1, 'semver punctuation'
+                        return setClass 'semver'
                             
-            if not clss 
-                if obj.last.endsWith '.'
-                    if obj.ext in ['js', 'coffee']                                               
-                        if getValue(-2) == 'property'
+                    if getValue(-2) == 'number'
+                        setValue -2, 'number float'
+                        setValue -1, 'punctuation float'
+                        return setClass 'number float'
+                        
+                return setClass 'number'
+                            
+            if /^[a-fA-F\d][a-fA-F\d][a-fA-F\d]+$/.test word
+                return setClass 'number hex'
+                    
+            # 00000000   00000000    0000000   00000000   00000000  00000000   000000000  000   000 
+            # 000   000  000   000  000   000  000   000  000       000   000     000      000 000  
+            # 00000000   0000000    000   000  00000000   0000000   0000000       000       00000   
+            # 000        000   000  000   000  000        000       000   000     000        000    
+            # 000        000   000   0000000   000        00000000  000   000     000        000    
+                  
+            if char == ':'
+                if obj.ext in ['js', 'coffee', 'json']
+                    return setClass 'property'
+            
+            if obj.last in ['.', ':']
+                if obj.ext in ['js', 'coffee', 'json']
+                    if getValue(-2) in ['text', 'module']
+                        setValue -2, 'obj'
+                        setValue -1, 'punctuation obj'
+                        return setClass 'property'
+                            
+            if obj.last.endsWith '.'
+                if obj.ext in ['js', 'coffee']                                               
+                    if getValue(-2) == 'property'
+                        setValue -1, 'punctuation property'
+                        return setClass 'property'
+                    else
+                        if obj.last.length > 1 and obj.last[obj.last.length-2] in [')', ']']
                             setValue -1, 'punctuation property'
-                            clss = 'property'
-                        else
-                            log 'obj.last', obj.last
-                            if obj.last.length > 1 and obj.last[obj.last.length-2] in [')', ']']
-                                setValue -1, 'punctuation property'
-                                clss = 'property'
-            clss ?= 'text'
-
-            lastStart = last(obj.rgs)?.start
-            if lastStart and lastStart > obj.index - word.length
-                popped = obj.rgs.pop()
-                
-            obj.rgs.push
-                start: obj.index - word.length
-                match: word
-                value: clss
-                
-            if popped 
-                obj.rgs.push popped
+                            return setClass 'property'
+            return setClass 'text'
         null
-                              
+            
     # 00000000  000   000  0000000                   
     # 000       0000  000  000   000                 
     # 0000000   000 0 000  000   000                 
@@ -142,11 +196,12 @@ class Syntax
                 value: 'comment'
         null
                     
-    @endRest: (obj) ->
+    @endTurd: (obj) ->
         
-        if valid obj.rest
-            obj.last = obj.rest
-            obj.rest = ''
+        obj.word += obj.char
+        if valid obj.turd
+            obj.last = obj.turd
+            obj.turd = ''
             
         null
 
@@ -156,12 +211,27 @@ class Syntax
     # 000        000   000  000  0000  000          000     
     # 000         0000000   000   000   0000000     000     
     
-    @doPunctuation: (obj, char) ->
+    @doPunct: (obj) ->
+        
+        char = obj.char
         
         obj.rgs.push
             start: obj.index
             match: char
             value: 'punctuation'
+
+        switch char 
+            when '{' 
+                if obj.ext == 'coffee' and last(obj.turd) == '#' and first(obj.stack).type == 'comment' and first(obj.stack).index == obj.index
+                    obj.stack = []
+            when '/' 
+                if obj.ext not in @noSlashComment
+                    if last(obj.turd) == '/' and empty obj.stack
+                        obj.rgs.push
+                            start: obj.index-1
+                            match: '//'
+                            value: "comment punctuation"
+                        obj.stack.push type:'comment', index:obj.index, match:''
             
         null
                         
@@ -171,7 +241,9 @@ class Syntax
     # 000   000  000   000       000     000     000   000  000       000  000   
     # 0000000     0000000   0000000      000     000   000   0000000  000   000  
     
-    @doStack: (obj, char) ->
+    @doStack: (obj) ->
+        
+        char = obj.char
         
         stringType = switch char
             when "'" then 'string single'
@@ -179,14 +251,14 @@ class Syntax
             when '`' then 'string backtick'
             when "#" 
                 if obj.ext in ['noon']
-                    if empty(obj.words) and empty obj.rest.trim()
+                    if empty(obj.words) and empty obj.turd.trim()
                         'comment'
                     else
-                        Syntax.doPunctuation obj, char
-                else if obj.ext in Syntax.hashCommentExt 
+                        Syntax.doPunct obj
+                else if obj.ext in Syntax.hashComment 
                     'comment'
                 else
-                    Syntax.doPunctuation obj, char
+                    Syntax.doPunct obj
             
         if not stringType
             Syntax.stackChar obj, char
@@ -198,14 +270,12 @@ class Syntax
                 match: char
                 value: "#{stringType} punctuation"
             
-        if last(obj.rest) == '\\'
-            # log 'escaped'
-            Syntax.stackChar obj, char
+        if last(obj.turd) == '\\'
+            Syntax.stackChar obj
             return
             
         if last(obj.stack)?.type == stringType and stringType != 'comment'
             top = obj.stack.pop()
-            # log 'pop', stringType, top
             obj.rgs.push
                 start: top.index
                 match: top.match
@@ -218,78 +288,17 @@ class Syntax
                 
         null
 
-    @stackChar: (obj, char) -> 
+    #  0000000  000000000   0000000    0000000  000   000   0000000  000   000   0000000   00000000   
+    # 000          000     000   000  000       000  000   000       000   000  000   000  000   000  
+    # 0000000      000     000000000  000       0000000    000       000000000  000000000  0000000    
+    #      000     000     000   000  000       000  000   000       000   000  000   000  000   000  
+    # 0000000      000     000   000   0000000  000   000   0000000  000   000  000   000  000   000  
+    
+    @stackChar: (obj) -> 
         
         for item in obj.stack
-            item.match += char
+            item.match += obj.char
             
         null
                 
-    # 00000000    0000000   000   000   0000000   00000000   0000000  
-    # 000   000  000   000  0000  000  000        000       000       
-    # 0000000    000000000  000 0 000  000  0000  0000000   0000000   
-    # 000   000  000   000  000  0000  000   000  000            000  
-    # 000   000  000   000  000   000   0000000   00000000  0000000   
-    
-    @ranges: (string, ext) ->
-        
-        obj =
-            ext:    ext ? 'txt'
-            rgs:    []
-            words:  []
-            stack:  []
-            word:   ''
-            rest:   ''
-            last:   ''
-            index:  0
-        
-        for char in string
-            
-            wordEnd   = true
-            stackChar = true
-            
-            switch char
-                
-                when "'", '"', '`', '#'
-                    Syntax.doStack obj, char
-                    stackChar = false
-                when '_', '+', '-', '*', '<', '>', '=', '^', '~', '@', '$', '%', '/', '\\', ':', '.', ';', ',', '!', '|', '{', '}', '(', ')', '[', ']'
-                    Syntax.doPunctuation obj, char
-                        
-                    switch char 
-                        when '{' 
-                            if obj.ext == 'coffee' and last(obj.rest) == '#' and first(obj.stack).type == 'comment' and first(obj.stack).index == obj.index
-                                obj.stack = []
-                        when '/' 
-                            if obj.ext not in @noSlashCommentExt
-                                if last(obj.rest) == '/' and empty obj.stack
-                                    obj.rgs.push
-                                        start: obj.index-1
-                                        match: '//'
-                                        value: "comment punctuation"
-                                    obj.stack.push type:'comment', index:obj.index, match:''
-                            
-                when ' ' then
-                else
-                    wordEnd = false
-                    
-            if wordEnd 
-                obj.rest += char
-                Syntax.endWord obj, char
-            else
-                obj.word += char
-                Syntax.endRest obj
-                    
-            if stackChar
-                Syntax.stackChar obj, char
-                
-            obj.index++
-            
-        Syntax.endWord obj
-        Syntax.endComment obj
-            
-        # log 'Syntax', str obj
-        
-        obj.rgs
-
 module.exports = Syntax
