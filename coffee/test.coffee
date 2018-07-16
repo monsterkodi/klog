@@ -20,6 +20,25 @@ describe 'klog', ->
         
         it 'coffee', ->
             
+            rgs = Syntax.ranges " a: ->", 'coffee'
+            log rgs
+            expect(rgs).to.deep.include
+                start: 1
+                match: "a"
+                value: 'method'
+            expect(rgs).to.deep.include
+                start: 2
+                match: ":"
+                value: 'method punctuation'
+            expect(rgs).to.deep.include
+                start: 4
+                match: ":"
+                value: 'function tail'
+            expect(rgs).to.deep.include
+                start: 5
+                match: ":"
+                value: 'function head'
+                
             rgs = Syntax.ranges " a: b", 'coffee'
             expect(rgs).to.deep.include
                 start: 1
