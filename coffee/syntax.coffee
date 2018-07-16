@@ -56,11 +56,14 @@ class Syntax
                     Syntax.endWord   obj
                     Syntax.stackChar obj
                     
-                else # continue the current word
+                else # start a new word / continue the current word
                     
                     Syntax.endTurd   obj
                     Syntax.stackChar obj
-                                        
+                    
+            if char not in [' ', '\t']
+                Syntax.nonSpace obj
+                    
             obj.index++
           
         obj.char = null
@@ -79,7 +82,7 @@ class Syntax
     
     @endWord: (obj) ->
         
-        obj.turd += obj.char # use = here?
+        obj.turd += obj.char # don't use = here!
         
         char = obj.char
         
@@ -178,6 +181,32 @@ class Syntax
                             return setClass 'property'
             return setClass 'text'
         null
+          
+    # 000   000   0000000   000   000   0000000  00000000    0000000    0000000  00000000  
+    # 0000  000  000   000  0000  000  000       000   000  000   000  000       000       
+    # 000 0 000  000   000  000 0 000  0000000   00000000   000000000  000       0000000   
+    # 000  0000  000   000  000  0000       000  000        000   000  000       000       
+    # 000   000   0000000   000   000  0000000   000        000   000   0000000  00000000  
+    
+    @nonSpace: (obj) ->
+        
+        if obj.ext == 'coffee'
+            
+            if obj.turd.length == 1 and obj.turd == '('
+                # log 'immediate function call', str obj
+                Syntax.setValue obj, -2, 'function call'
+            else if obj.turd.length > 1 and obj.turd.trim().length == 1
+                if last(obj.turd) in '([{\'"'
+                    log 'args function call'
+            else if empty obj.turd
+                if Syntax.getValue(obj, -1)?.indexOf('punctuation') < 0
+                    if last(obj.rgs).match not in ['if', 'is', 'and', 'then']
+                        # log 'word arg function call', str obj
+                        Syntax.setValue obj, -1, 'function call'
+            # function.call
+            # (@?[a-zA-Z]\w*)
+            # (?!\s+or|\s+i[fs]|\s+and|\s+then)
+            # (?=\(|\s+[@\w\d\"\'\(\[\{])    
             
     # 00000000  000   000  0000000                   
     # 000       0000  000  000   000                 
@@ -215,7 +244,7 @@ class Syntax
         
         getValue = (back=-1)     -> Syntax.getValue obj, back 
         setValue = (back, value) -> Syntax.setValue obj, back, value  
-        
+                
         char = obj.char
         
         value = 'punctuation'

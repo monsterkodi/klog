@@ -19,6 +19,12 @@ describe 'klog', ->
     describe 'syntax', ->
         
         it 'coffee', ->
+            
+            rgs = Syntax.ranges "f 1", 'coffee'
+            expect(rgs).to.deep.include
+                start: 0
+                match: "f"
+                value: 'function call'
 
             rgs = Syntax.ranges "pos: (item, p) -> ", 'coffee'
             expect(rgs).to.deep.include
@@ -100,6 +106,10 @@ describe 'klog', ->
                 
             rgs = Syntax.ranges "if args.rights", 'coffee'
             expect(rgs).to.deep.include
+                start: 0
+                match: "if"
+                value: 'keyword'
+            expect(rgs).to.deep.include
                 start: 3
                 match: "args"
                 value: 'obj'
@@ -109,6 +119,10 @@ describe 'klog', ->
                 value: 'property'
                 
             rgs = Syntax.ranges "a(b).length", 'coffee'
+            expect(rgs).to.deep.include
+                start: 0
+                match: "a"
+                value: 'function call'
             expect(rgs).to.deep.include
                 start: 5
                 match: "length"
