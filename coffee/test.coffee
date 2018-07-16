@@ -24,7 +24,7 @@ describe 'klog', ->
             expect(rgs).to.deep.include
                 start: 1
                 match: "a"
-                value: 'property'
+                value: 'dictionary key'
             
             rgs = Syntax.ranges "obj.value = obj.another.value", 'coffee'
             expect(rgs).to.deep.include 
