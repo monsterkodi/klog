@@ -82,9 +82,9 @@ class Syntax
     
     @endWord: (obj) ->
         
-        obj.turd += obj.char # don't use = here!
+        char = obj.char ? ''
         
-        char = obj.char
+        obj.turd += obj.char # don't use = here!
         
         obj.rest += char
         
@@ -104,6 +104,8 @@ class Syntax
                     value: clss
                 null
             
+            return if empty char
+                
             if char == ':'
                 if obj.ext in ['js', 'coffee', 'json']
                     return setClass 'dictionary key'
@@ -286,6 +288,11 @@ class Syntax
                 start: bot.index
                 match: bot.match
                 value: 'comment'
+        else if bot?
+            obj.rgs.push
+                start: bot.index
+                match: bot.match
+                value: bot.type
         null
                     
     @endTurd: (obj) ->
@@ -372,7 +379,7 @@ class Syntax
                     Syntax.doPunct obj
             
         if not stringType
-            Syntax.stackChar obj, char
+            Syntax.stackChar obj
             return
                 
         if empty(obj.stack) or last(obj.stack)?.type == stringType        
@@ -390,12 +397,12 @@ class Syntax
             obj.rgs.push
                 start: top.index
                 match: top.match
-                value: "#{stringType}"
+                value: stringType
         else
             if empty obj.stack
                 obj.stack.push type:stringType, index:obj.index+1, match:''
             else
-                Syntax.stackChar obj, char
+                Syntax.stackChar obj
                 
         null
 

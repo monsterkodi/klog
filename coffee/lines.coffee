@@ -47,7 +47,25 @@ class Lines
         log 'onClearLines'
         @num = 0  
         @lines.innerHTML = ''
-                
+        
+    # 000   000  00000000   0000000     0000000   000000000  00000000  00000000    0000000    0000000  
+    # 000   000  000   000  000   000  000   000     000     000       000   000  000   000  000       
+    # 000   000  00000000   000   000  000000000     000     0000000   00000000   000   000  0000000   
+    # 000   000  000        000   000  000   000     000     000       000        000   000       000  
+    #  0000000   000        0000000    000   000     000     00000000  000         0000000   0000000   
+    
+    updatePositions: =>
+        
+        li = 0
+        
+        # log 'updatePositions:', @lines.children.length
+                    
+        for div in @lines.children
+            y = @scroll.lineHeight * li
+            div.style.transform = "translate3d(0,#{y}px, 0)"
+            div.style.zIndex = li
+            li++
+        
     #  0000000   00000000   00000000   00000000  000   000  0000000    
     # 000   000  000   000  000   000  000       0000  000  000   000  
     # 000000000  00000000   00000000   0000000   000 0 000  000   000  
@@ -65,7 +83,7 @@ class Lines
         Highlight.line line
         # window.filter.apply line
         # log 'append line', line
-        @lines.appendChild  line
+        @lines.appendChild  line        
         
     # 00000000   00000000   00000000  00000000   00000000  000   000  0000000    
     # 000   000  000   000  000       000   000  000       0000  000  000   000  
@@ -120,6 +138,8 @@ class Lines
             # log 'onShowLines delayedFontSize'
             @onFontSize prefs.get 'fontSize', 16
         
+        @updatePositions()
+        
     #  0000000  000   000   0000000   000   000   0000000   00000000  
     # 000       000   000  000   000  0000  000  000        000       
     # 000       000000000  000000000  000 0 000  000  0000  0000000   
@@ -134,6 +154,8 @@ class Lines
         while newLines < oldLines
             @popLine oldLines
             oldLines--
+            
+        @updatePositions()            
             
     #  0000000  000   000  000  00000000  000000000  
     # 000       000   000  000  000          000     
@@ -153,6 +175,8 @@ class Lines
                 # log 'onShiftLines prepend', top-num-n-1, 'pop', bot-num-n, top-num-n-1
                 @popLine     bot-num-n
                 @prependLine top-num-n-1
+                
+        @updatePositions()
     
     # 00000000   00000000   0000000  000  0000000  00000000  
     # 000   000  000       000       000     000   000       
@@ -201,6 +225,7 @@ class Lines
         
         if @lines.children.length <= @scroll.bot-@scroll.top
             @appendLine @cache.length-1
+            @updatePositions()
         
     clear: -> 
     
@@ -215,12 +240,13 @@ class Lines
     
     lineForLog: (info) ->
         
-        info ?= sep:''
-        info.id ?= ''
-        info.str ?= ''
-        info.sep ?= '⯈ '
+        info        ?= sep:''
+        info.sep    ?= '⯈ '
+        info.id     ?= ''
+        info.str    ?= ''
         info.source ?= ''
-        info.file ?= slash.base info.source
+        info.type   ?= ''
+        info.file   ?= slash.base info.source
         
         icon =
             if info.icon?

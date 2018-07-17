@@ -48,6 +48,7 @@ class Find extends Input
                 window.lines.appendLog()
         else if message.type == 'file'
             window.lines.appendLog()
+            
         @lastMessage = message
         window.lines.appendLog message
                 

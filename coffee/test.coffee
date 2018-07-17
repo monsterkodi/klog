@@ -19,8 +19,15 @@ describe 'klog', ->
     describe 'syntax', ->
         
         it 'cpp float', ->
-             
+
+            rgs = Syntax.ranges "'abc"            
+            expect(rgs).to.deep.include
+                start: 1
+                match: "abc"
+                value: 'string single'
+            
             rgs = Syntax.ranges "1.0f", 'cpp'
+            log rgs
             expect(rgs).to.deep.include
                 start: 0
                 match: "1"
