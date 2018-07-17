@@ -28,9 +28,12 @@ class Highlight
     @line: (line) ->
         
         info  = line.info
-        
         div   =$ '.log', line
         
+        if info.highlighted and info.highlightSearch == window.search.text() and info.highlightFind = window.find.text()
+            div.innerHTML = info.highlighted
+            return
+            
         cfg  = []
         
         if info.id == 'find'
@@ -57,5 +60,9 @@ class Highlight
             div.innerHTML = spans.join ''
         else
             div.innerHTML = str.encode line
+            
+        info.highlighted     = div.innerHTML
+        info.highlightSearch = window.search.text()
+        info.highlightFind   = window.find.text()
         
 module.exports = Highlight

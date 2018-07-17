@@ -84,9 +84,8 @@ class Syntax
         
         char = obj.char ? ''
         
-        obj.turd += obj.char # don't use = here!
         
-        obj.rest += char
+        obj.turd += char # don't use = here!
         
         if valid obj.word
             
@@ -104,14 +103,12 @@ class Syntax
                     value: clss
                 null
             
-            return if empty char
-                
             if char == ':'
                 if obj.ext in ['js', 'coffee', 'json']
                     return setClass 'dictionary key'
                 
             if obj.ext == 'coffee'
-                if Syntax.getValue(obj, -1)?.indexOf('punctuation') < 0
+                if getValue(-1)?.indexOf('punctuation') < 0
                     if word not in ['else', 'then', 'and', 'or', 'in']
                         if last(obj.rgs).value not in ['keyword', 'function head']
                             Syntax.setValue obj, -1, 'function call'
@@ -177,7 +174,7 @@ class Syntax
                             return setClass 'nil'
                         when 'once'
                             return setClass 'define'
-                                            
+                                    
                     if /^[\\_A-Z]+$/.test word
                         return setClass 'macro'
 
@@ -197,6 +194,12 @@ class Syntax
                             setValue -3, getValue(-3) + ' punctuation'
                             setValue -2, getValue(-3) + ' punctuation'
                             setValue -1, getValue(-3) + ' punctuation'
+                            
+                    if obj.last == '.' and /^\d+f$/.test(word)
+                        if getValue(-2) == 'number'
+                            setValue -2, 'number float'
+                            setValue -1, 'number float punctuation'
+                            return setClass 'number float'
                             
             # 000   000  000   000  00     00  0000000    00000000  00000000   
             # 0000  000  000   000  000   000  000   000  000       000   000  

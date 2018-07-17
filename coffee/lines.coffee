@@ -75,15 +75,12 @@ class Lines
     appendLine: (lineIndex) ->
         
         if lineIndex > @cache.length-1
-            # log "skip append #{lineIndex}"
             return
         
         line = @cache[lineIndex]
-        
         Highlight.line line
-        # window.filter.apply line
-        # log 'append line', line
-        @lines.appendChild  line        
+
+        @lines.appendChild line        
         
     # 00000000   00000000   00000000  00000000   00000000  000   000  0000000    
     # 000   000  000   000  000       000   000  000       0000  000  000   000  
@@ -92,16 +89,14 @@ class Lines
     # 000        000   000  00000000  000        00000000  000   000  0000000    
     
     prependLine: (lineIndex) ->
-        # log "Lines.prependLine lineIndex:#{lineIndex}"
         
         if lineIndex < 0 or lineIndex > @cache.length-1
             log "skip prepend #{lineIndex}"
             return 
         
         line = @cache[lineIndex]
-        
-        # log 'prepend line', line
         Highlight.line line
+        
         @lines.insertBefore line, @lines.firstChild
     
     shiftLine: (lineIndex) ->

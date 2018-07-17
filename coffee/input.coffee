@@ -30,6 +30,8 @@ class Input
         
         post.on 'focus', @onFocus
         
+    text: -> @input.value
+        
     onFocus: (name) => 
         if name == @name 
             @show()

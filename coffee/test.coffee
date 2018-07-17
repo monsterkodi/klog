@@ -27,7 +27,6 @@ describe 'klog', ->
                 value: 'string single'
             
             rgs = Syntax.ranges "1.0f", 'cpp'
-            log rgs
             expect(rgs).to.deep.include
                 start: 0
                 match: "1"
@@ -35,7 +34,7 @@ describe 'klog', ->
             expect(rgs).to.deep.include
                 start: 1
                 match: "."
-                value: 'punctuation float'
+                value: 'number float punctuation'
             expect(rgs).to.deep.include
                 start: 2
                 match: "0f"
