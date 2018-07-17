@@ -6,7 +6,7 @@
 000       000  0000000     000     00000000  000   000
 ###
 
-{ empty, valid, slash, log, $ } = require 'kxk'
+{ valid, empty, slash, str, log, $ } = require 'kxk'
 
 log   = console.log
 Input = require './input'
@@ -17,29 +17,28 @@ class Filter extends Input
         
         super 'filter', '⍛'
         
-    onInput: =>
-        
-        super()
-        
-        lines =$ '#lines'
-        for line in lines.children
-            @apply line
-            
-    terms: -> 
+    terms: => 
         
         text = @input.value.trim()
         if valid text
             text.split /\s+/
         else
             []
+          
+    findPattern: =>
         
-    apply: (line) =>
-        
-        info    = line.info
-        hidden  = false
-        
-        for t in @terms()
+        @terms().filter (t) -> t[0] in ['.', '!']
             
+    submit: =>
+        
+        window.find.submit()
+        
+    shouldLog: (info) =>
+         
+        hidden = false
+         
+        for t in @terms()
+             
             continue if empty t
             if t.startsWith('@') 
                 if slash.base(info.source) == t.substr 1
@@ -49,14 +48,12 @@ class Filter extends Input
                 if info.id == t.substr 1
                     hidden = true
                     break
-            else if t.startsWith('.') 
-                if info.source and slash.ext(info.source) == t.substr 1
-                    hidden = true
-                    break
+            else if t[0] in ['.', '!']
+                continue
             else if info.str.indexOf(t) >= 0
                 hidden = true
                 break
-                
-        line.classList.toggle 'filtered', hidden
+            
+        not hidden
         
 module.exports = Filter

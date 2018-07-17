@@ -460,8 +460,12 @@ class Syntax
         
         for index in [0...oldObjs.length]
             backObj = obj.rgs[obj.rgs.length+back+index]
+            if not backObj
+                log 'dafuk?', str obj
+                log 'dafuk?', obj.rgs.length+back+index, obj.rgs.length, back, index
+                return
             for key in Object.keys oldObjs[index]
-                if key == 'word' 
+                if key == 'word'
                     if backObj.value.indexOf('punctuation') >= 0
                         return advance()
                 else if oldObjs[index][key] != backObj[key]

@@ -17,7 +17,6 @@ class Scanner
 
     constructor: (@dir, @search, exts) ->
         
-        log 'new Scanner', @dir, @search, exts
         @maxLineLength = 400
         
         @chunks = {}
@@ -26,9 +25,6 @@ class Scanner
         
         @whitelist = exts.filter((ext) -> ext[0] == '.').map (ext) -> ext.slice 1
         @blacklist = exts.filter((ext) -> ext[0] == '!').map (ext) -> ext.slice 1
-        
-        # log '@whitelist', str @whitelist
-        # log '@blacklist', str @blacklist
         
         @fileCount = 0
         @scanCount = 0
@@ -138,7 +134,7 @@ class Scanner
                 type:   'file'
                 sep:    ''
                 file:   slash.base file 
-                source: file
+                source: slash.tilde file
                 str:    slash.tilde file 
             
             for chunk in @chunks[file]
@@ -171,7 +167,7 @@ class Scanner
                     type:   'find'
                     line:   @lineno[file]
                     column: column
-                    source: file
+                    source: slash.tilde file
                     str:    data
                     find:   @search
                     sep:    ''
@@ -196,7 +192,7 @@ class Scanner
             file:   'find'
             sep:    '⯅'
             icon:   slash.fileUrl slash.join __dirname, '../img/menu@2x.png'
-            source: slash.path __filename
+            source: slash.tilde __filename
             str:    @stats()
                 
     #  0000000  000000000   0000000   00000000   
@@ -216,7 +212,6 @@ class Scanner
             process.send obj
         else
             log JSON.stringify obj
-            # log noon.stringify obj
         
 process.on 'uncaughtException', (err) ->
     log 'scanner error', err.stack
@@ -231,7 +226,6 @@ if not empty process.argv[2]
         dir    = process.argv[2]
         search = process.argv[3]
         exts   = [].slice.call(process.argv).slice 4
-        log 'exts', exts
         
     new Scanner slash.resolve(dir), search, exts
     

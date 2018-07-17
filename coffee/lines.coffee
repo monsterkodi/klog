@@ -209,15 +209,13 @@ class Lines
     # 000   000  000        000        00000000  000   000  0000000    
     
     appendLog: (msg) -> 
-        
+                
         line = @lineForLog msg
         
         @cache.push line
         
         @scroll.setNumLines @cache.length
 
-        # log 'appendLog', @lines.children.length, str @scroll.info()
-        
         if @lines.children.length <= @scroll.bot-@scroll.top
             @appendLine @cache.length-1
             @updatePositions()

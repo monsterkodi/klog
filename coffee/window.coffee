@@ -6,7 +6,7 @@
 00     00  000  000   000  0000000     0000000   00     00  
 ###
 
-{ post, stopEvent, getStyle, setStyle, keyinfo, childp, clamp, prefs, first, slash, empty, open, args, win, udp, fs, error, log, _ } = require 'kxk'
+{ post, stopEvent, getStyle, setStyle, keyinfo, childp, prefs, first, empty, slash, clamp, args, open, win, udp, str, fs, error, log, _ } = require 'kxk'
 
 { Tail } = require 'tail'
 
@@ -102,7 +102,8 @@ loadFile = (file) ->
             data   = buffer.slice 0, index
             buffer = buffer.slice index+1
             try
-               lines.appendLog JSON.parse data
+                # lines.appendLog JSON.parse data
+                onMsg JSON.parse data
             catch err
                 console.log "data:>#{data}<"
             
@@ -221,9 +222,10 @@ toggleDisplay = (column) ->
 # 000 0 000       000  000   000  
 # 000   000  0000000    0000000   
 
-onMsg = (args) ->
-    # log 'onMsg', args
-    lines.appendLog args
+onMsg = (msg) ->
+    
+    if window.filter.shouldLog msg
+        lines.appendLog msg
 
 udpReceiver = new udp onMsg:onMsg #, debug:true
         

@@ -26,6 +26,7 @@ class Find extends Input
     
     submit: (term) =>
         
+        term ?= @text()
         term = term.trim()
         return if empty term
         
@@ -34,7 +35,7 @@ class Find extends Input
 
         post.emit 'menuAction', 'Clear'
         
-        log "find '#{term}' in #{dir}" # don't remove this log!
+        log "find '#{term}' in '#{dir}' using filter '#{window.filter.findPattern()}'" # don't remove this log!
         
         @cp?.kill()
         args = [dir, term].concat window.filter.terms()
