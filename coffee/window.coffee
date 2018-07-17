@@ -102,7 +102,6 @@ loadFile = (file) ->
             data   = buffer.slice 0, index
             buffer = buffer.slice index+1
             try
-                # lines.appendLog JSON.parse data
                 onMsg JSON.parse data
             catch err
                 console.log "data:>#{data}<"

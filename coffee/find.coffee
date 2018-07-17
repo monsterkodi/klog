@@ -41,16 +41,22 @@ class Find extends Input
         args = [dir, term].concat window.filter.terms()
         @cp = childp.fork slash.join(__dirname, 'scanner.js'), args, stdio: ['pipe', 'pipe', 'ignore', 'ipc'], execPath: 'node'
         @cp.on 'message', @onScanner
-        
+     
     onScanner: (message) => 
     
-        if message.type == 'find' 
-            if @lastMessage.type == 'file' or @lastMessage.line < message.line-1
+        if not window.filter.shouldLog message
+            return
+        
+        if message.sep == '⯅'
+            window.lines.appendLog()
+        else if message.type == 'find' 
+            if @lastMessage?.type == 'file' or @lastMessage.line < message.line-1
                 window.lines.appendLog()
         else if message.type == 'file'
-            window.lines.appendLog()
+            if @lastMessage?.type != 'file'
+                window.lines.appendLog()
             
-        @lastMessage = message
+        @lastMessage = message        
         window.lines.appendLog message
                 
 module.exports = Find
