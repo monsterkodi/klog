@@ -247,7 +247,7 @@ tail.on 'line', (line) ->
 prefs.set 'editor',  prefs.get 'editor', 'ko'
 prefs.set 'findDir', prefs.get 'findDir', '~'
 
-klog "editor:  #{prefs.get 'editor'}\nlogFile: #{logFile}\nfindDir: #{prefs.get 'findDir'}"
+klog "editor:  #{prefs.get 'editor'}\nfindDir: #{prefs.get 'findDir'}\nlogFile: #{logFile}"
 
 setFontSize prefs.get 'fontSize', defaultFontSize
 

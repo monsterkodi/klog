@@ -86,6 +86,8 @@ class Syntax
         
         char = obj.char
         
+        obj.rest += char
+        
         if valid obj.word
             
             word = obj.word
@@ -135,6 +137,64 @@ class Syntax
                             return setClass 'nil'
                         when 'require'
                             return setClass 'require'            
+
+                #  0000000  00000000   00000000   
+                # 000       000   000  000   000  
+                # 000       00000000   00000000   
+                # 000       000        000        
+                #  0000000  000        000        
+                
+                when 'cpp', 'hpp', 'c', 'h'
+                    
+                    if obj.last == '::'
+                        if getValue(-3) == 'text'
+                            setValue -3, 'namespace'
+                            setValue -2, 'punctuation namespace'
+                            setValue -1, 'punctuation namespace'
+                    
+                    switch word
+                        when 'include', 'define', 'if', 'ifdef', 'else', 'endif', 'pragma'
+                            if obj.last.endsWith "#"
+                                setValue -1, 'define punctuation'
+                                return setClass 'define'
+                            else
+                                return setClass 'keyword'
+                        when 'for' , 'while', 'switch', 'case', 'break', 'continue', 'return', 'virtual'
+                            return setClass 'keyword'
+                        when 'enum', 'struct', 'class', 'public', 'private'
+                            return setClass 'keyword'
+                        when 'void', 'bool', 'int', 'double', 'float', 'long', 'auto', 'int8', 'int16', 'int32', 'uint8', 'uint16', 'uint32'
+                            return setClass 'keyword type'
+                        when 'this', 'true'
+                            return setClass 'keyword'
+                        when 'const', 'override', 'static'
+                            return setClass 'punctuation keyword'
+                        when 'TMap', 'TArray', 'TSubclassOf'  
+                            return setClass 'template'
+                        when 'NULL', 'nullptr', 'false', 'Error', 'ERROR'
+                            return setClass 'nil'
+                        when 'once'
+                            return setClass 'define'
+                                            
+                    if /^[\\_A-Z]+$/.test word
+                        return setClass 'macro'
+
+                    if     /^[UA][A-Z]\w+$/.test(word) then return setClass 'class'
+                    else if /^[F][A-Z]\w+$/.test(word) then return setClass 'struct'
+                    else if /^[E][A-Z]\w+$/.test(word) then return setClass 'enum'
+                            
+                    if char == '('
+                        return setClass 'function call'
+                        
+                    if 'class' in obj.words 
+                        return setClass 'class'
+                        
+                    if obj.last == '::'
+                        if getValue(-3) in ['enum', 'class', 'struct']
+                            clss = getValue(-3)
+                            setValue -3, getValue(-3) + ' punctuation'
+                            setValue -2, getValue(-3) + ' punctuation'
+                            setValue -1, getValue(-3) + ' punctuation'
                             
             # 000   000  000   000  00     00  0000000    00000000  00000000   
             # 0000  000  000   000  000   000  000   000  000       000   000  

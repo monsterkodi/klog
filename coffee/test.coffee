@@ -18,6 +18,28 @@ describe 'klog', ->
     
     describe 'syntax', ->
         
+        it 'cpp float', ->
+             
+            rgs = Syntax.ranges "1.0f", 'cpp'
+            expect(rgs).to.deep.include
+                start: 0
+                match: "1"
+                value: 'number float'
+            expect(rgs).to.deep.include
+                start: 1
+                match: "."
+                value: 'punctuation float'
+            expect(rgs).to.deep.include
+                start: 2
+                match: "0f"
+                value: 'number float'
+
+            rgs = Syntax.ranges "0.0000f", 'cpp'
+            expect(rgs).to.deep.include
+                start: 2
+                match: "0000f"
+                value: 'number float'
+                
         it 'coffee', ->
             
             rgs = Syntax.ranges "a and b", 'coffee'

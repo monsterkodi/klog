@@ -6,7 +6,7 @@
 0000000  000  000   000  00000000  0000000 
 ###
 
-{ post, setStyle, valid, prefs, slash, empty, elem, str, log, $, _ } = require 'kxk'
+{ post, setStyle, valid, prefs, slash, empty, elem, str, $, _ } = require 'kxk'
 
 log = console.log
 Scroll    = require './scroll'
@@ -215,12 +215,12 @@ class Lines
     
     lineForLog: (info) ->
         
-        info ?= {}
+        info ?= sep:''
         info.id ?= ''
-        info.file ?= ''
-        info.source ?= ''
         info.str ?= ''
-        info.sep ?= ''
+        info.sep ?= '⯈ '
+        info.source ?= ''
+        info.file ?= slash.base info.source
         
         icon =
             if info.icon?
@@ -271,9 +271,9 @@ class Lines
         html += "<span class='num'>#{@num-1}</span>"
         html += "<span class='time'>#{time}</span>"
         html += "<span class='#{iconClss}'>#{icon}</span>"
-        html += "<span class='#{idClss}'>#{info.id ? ''} </span>"            
-        html += "<span class='#{fileClss}'>#{info.file ? slash.base(info.source) ? ''} </span>"
-        html += "<span class='sep'>#{info.sep ? '⯈ '}</span>"
+        html += "<span class='#{idClss}'>#{info.id} </span>"            
+        html += "<span class='#{fileClss}'>#{info.file} </span>"
+        html += "<span class='sep'>#{info.sep}</span>"
     
         logStr = info.str.split('\n').map((s) -> str.encode s).join '<br>'
         html += "<span class='#{logClss}'>#{logStr}</span>"
