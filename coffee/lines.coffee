@@ -12,6 +12,7 @@ log = console.log
 Scroll    = require './scroll'
 ScrollBar = require './scrollbar'
 Highlight = require './highlight'
+Minimap   = require './minimap'
 fileIcons = require 'file-icons-js'
 
 class Lines
@@ -25,6 +26,7 @@ class Lines
         
         @scroll    = new Scroll @lines
         @scrollBar = new ScrollBar @scroll
+        @minimap   = new Minimap @
         
         @lines.addEventListener 'click', @onClick
         

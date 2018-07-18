@@ -41,20 +41,12 @@ findDir = slash.resolve prefs.get 'findDir', '~'
 #  0000000   000        00000000  000   000  
 
 koSend = null
-ueSend = null
 
 openFile = (f) ->
   
     [file, line] = slash.splitFileLine f
     
     log 'openFile', file, line
-    
-    # if file.startsWith '/Game/'
-        # log 'UESEND!', file
-        # if not ueSend 
-            # ueSend = new udp port:9889
-        # ueSend.send file
-        # return
     
     switch prefs.get 'editor', 'Visual Studio'
         when 'VS Code'

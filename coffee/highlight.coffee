@@ -48,6 +48,7 @@ class Highlight
         if valid rgs
             matchr.sortRanges rgs
             dss = matchr.dissect rgs
+            info.highlightDiss = dss
             previ = 0
             spans = []
             for d in dss
@@ -59,6 +60,7 @@ class Highlight
                 spans.push str.encode line.slice previ, line.length
             div.innerHTML = spans.join ''
         else
+            delete info.highlightDiss
             div.innerHTML = str.encode line
             
         info.highlighted     = div.innerHTML
