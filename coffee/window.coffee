@@ -121,7 +121,7 @@ setFontSize = (s) ->
     s = getFontSize() if not _.isFinite s
     s = clamp 8, 44, s
 
-    prefs.set "fontSize", s
+    prefs.set 'fontSize', s
     lines.lines.style.fontSize = "#{s}px"
     iconSize = clamp 4, 44, parseInt s
 
@@ -131,6 +131,8 @@ setFontSize = (s) ->
     
     post.emit 'fontSize', s
 
+window.setFontSize = setFontSize
+    
 changeFontSize = (d) ->
     
     s = getFontSize()
@@ -158,8 +160,6 @@ onWheel = (event) ->
 
     if mod == 'ctrl'
         changeFontSize -event.deltaY/100
-    else
-        lines.onWheel event
         stopEvent event
     
 window.document.addEventListener 'wheel', onWheel    
@@ -242,7 +242,7 @@ prefs.set 'findDir', prefs.get 'findDir', '~'
 
 klog "editor:  #{prefs.get 'editor'}\nfindDir: #{prefs.get 'findDir'}\nlogFile: #{logFile}"
 
-setFontSize prefs.get 'fontSize', defaultFontSize
+# setFontSize prefs.get 'fontSize', defaultFontSize
 
 for column in ['id', 'src', 'icon', 'num', 'time']
     if not prefs.get "display:#{column}", true

@@ -9,6 +9,7 @@
 { post, clamp, str } = require 'kxk'
 
 log = console.log
+Wheel = require './wheel'
 
 class Scroll
 
@@ -18,6 +19,8 @@ class Scroll
                 
         @resetSize()
         @resetLines()
+        
+        @wheel = new Wheel @
         
     resetSize: ->
         
@@ -199,7 +202,6 @@ class Scroll
     setLineHeight: (h) =>
             
         if @lineHeight != h
-            
             @lineHeight = h
             @fullHeight = @numLines * @lineHeight            
             @calc()

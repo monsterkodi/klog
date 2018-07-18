@@ -454,6 +454,8 @@ class Syntax
     
     @replace: (obj, back, oldObjs, newObjs) ->
         
+        return if obj.rgs.length+back < 0
+        
         advance = ->
             if obj.rgs.length + back-1 >= 0
                 Syntax.replace obj, back-1, oldObjs, newObjs

@@ -6,7 +6,7 @@
 000   000  000  000   000  000  000   000  000   000  000
 ###
 
-{ post, getStyle, empty, clamp, elem, drag, log, $ } = require 'kxk'
+{ post, getStyle, empty, clamp, elem, drag, str, log, $ } = require 'kxk'
 
 log = console.log
 MapScroll = require './mapscroll'
@@ -18,8 +18,6 @@ class Minimap
 
         minimapWidth = parseInt getStyle '.minimap', 'width'
 
-        log "minimapWidth #{minimapWidth}"
-        
         @colors = {}
         @width  = 2*minimapWidth
         @height = 8192
@@ -27,7 +25,7 @@ class Minimap
 
         @elem    = elem class: 'minimap'
         @topbot  = elem class: 'topbot'
-        @lines   = elem 'canvas', class: 'minimapLines',      width: @width, height: @height
+        @lines   = elem 'canvas', class: 'minimapLines', width: @width, height: @height
 
         @elem.appendChild @topbot
         @elem.appendChild @lines
@@ -37,13 +35,9 @@ class Minimap
         main =$ '#main'
         main.appendChild  @elem
         
-        # @editor.on 'viewHeight',    @onEditorViewHeight
-        # @editor.on 'numLines',      @onEditorNumLines
-        # @editor.on 'changed',       @onChanged
-        # @editor.on 'highlight',     @drawHighlights
-        post.on 'scroll', @onEditorScroll
+        post.on 'clearLines', @onEditorScroll
+        post.on 'scroll',     @onEditorScroll
 
-        log "height #{@height} #{main.clientHeight}"
         @scroll = new MapScroll
             exposeMax:  @height/4
             lineHeight: 4
@@ -75,20 +69,22 @@ class Minimap
 
     drawLines: (top=@scroll.exposeTop, bot=@scroll.exposeBot) =>
 
-        # log "drawLines top:#{top} bot:#{bot}"
         ctx = @lines.getContext '2d'
         y = parseInt((top-@scroll.exposeTop)*@scroll.lineHeight)
         ctx.clearRect 0, y, @width, ((bot-@scroll.exposeTop)-(top-@scroll.exposeTop)+1)*@scroll.lineHeight
         return if @scroll.exposeBot < 0
-        # log "drawLines bot:#{bot} lines:#{@editor.cache.length-1}"
+
         bot = Math.min bot, @editor.cache.length-1
         return if bot < top
+
         for li in [top..bot]
             y = parseInt((li-@scroll.exposeTop)*@scroll.lineHeight)
             diss = @editor.cache[li].info.highlightDiss
+            
             if empty(diss) and not empty @editor.cache[li].info.str
                 Highlight.line @editor.cache[li]
                 diss = @editor.cache[li].info.highlightDiss
+                
             if diss?.length
                 for r in diss
                     break if 2*r.start >= @width
@@ -188,7 +184,10 @@ class Minimap
         else
             @jumpToLine @lineIndexForEvent(event), event
 
-    onStart: (drag,event) => @jumpToLine @lineIndexForEvent(event), event
+    onStart: (drag,event) => 
+    
+        window.lines.scroll.wheel.accum = 0
+        @jumpToLine @lineIndexForEvent(event), event
 
     jumpToLine: (li, event) ->
 
@@ -213,14 +212,12 @@ class Minimap
     onEditorScroll: (scrollValue, editorScroll) =>
 
         editorScroll ?= @editor.scroll
-        # log 'onEditorScroll', editorScroll.viewHeight
         
         if @scroll.viewHeight != 2*editorScroll.viewHeight
             @scroll.setViewHeight 2*editorScroll.viewHeight
             @onScroll()
             
         if @scroll.numLines != editorScroll.numLines
-            # @onEditorViewHeight @editor.viewHeight() if n and @lines.height <= @scroll.lineHeight
             @scroll.setNumLines editorScroll.numLines    
         
         if @scroll.fullHeight > @scroll.viewHeight

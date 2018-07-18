@@ -6,7 +6,7 @@
 0000000  000  000   000  00000000  0000000 
 ###
 
-{ post, setStyle, valid, prefs, slash, empty, elem, str, $, _ } = require 'kxk'
+{ post, setStyle, prefs, valid, slash, empty, elem, str, log, $, _ } = require 'kxk'
 
 log = console.log
 Scroll    = require './scroll'
@@ -82,8 +82,8 @@ class Lines
         line = @cache[lineIndex]
         Highlight.line line
 
-        @lines.appendChild line        
-        
+        @lines.appendChild line   
+                
     # 00000000   00000000   00000000  00000000   00000000  000   000  0000000    
     # 000   000  000   000  000       000   000  000       0000  000  000   000  
     # 00000000   0000000    0000000   00000000   0000000   000 0 000  000   000  
@@ -131,10 +131,6 @@ class Lines
         for li in [top..bot]
             @appendLine li
             
-        if valid(@cache) and @scroll.lineHeight <= prefs.get 'fontSize'
-            # log 'onShowLines delayedFontSize'
-            @onFontSize prefs.get 'fontSize', 16
-        
         @updatePositions()
         
     #  0000000  000   000   0000000   000   000   0000000   00000000  
@@ -184,25 +180,6 @@ class Lines
     onResize: =>
         
         @scroll.setViewHeight @lines.parentNode.clientHeight
-
-    # 000   000  000   000  00000000  00000000  000      
-    # 000 0 000  000   000  000       000       000      
-    # 000000000  000000000  0000000   0000000   000      
-    # 000   000  000   000  000       000       000      
-    # 00     00  000   000  00000000  00000000  0000000  
-    
-    onWheel: (event) =>
-        
-        scrollFactor = ->
-            f  = 1
-            f *= 1 + 1 * event.shiftKey
-            f *= 1 + 3 * event.ctrlKey
-            f *= 1 + 7 * event.altKey
-        
-        delta = event.deltaY * scrollFactor()
-        
-        # @scroll.by @scroll.lineHeight * delta/200
-        @scroll.by 5 * @scroll.lineHeight * delta/100
         
     #  0000000   00000000   00000000   00000000  000   000  0000000    
     # 000   000  000   000  000   000  000       0000  000  000   000  
@@ -216,11 +193,17 @@ class Lines
         
         @cache.push line
         
+        if @scroll.lineHeight <= 0
+            fontSize = prefs.get 'fontSize', 16
+            window.setFontSize fontSize
+        
         @scroll.setNumLines @cache.length
 
         if @lines.children.length <= @scroll.bot-@scroll.top
             @appendLine @cache.length-1
             @updatePositions()
+            
+        @onFontSize fontSize if fontSize
         
     clear: -> 
     
