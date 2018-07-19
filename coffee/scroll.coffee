@@ -205,5 +205,7 @@ class Scroll
             @lineHeight = h
             @fullHeight = @numLines * @lineHeight            
             @calc()
+            post.emit 'clearLines'
+            post.emit 'showLines', @top, @bot, @bot - @top + 1
                                     
 module.exports = Scroll

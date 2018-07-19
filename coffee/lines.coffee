@@ -304,7 +304,9 @@ class Lines
     # 000        0000000   000   000     000         0000000   000  0000000  00000000  
 
     onFontSize: (size) =>
+        
         return if not @lines?
+        
         if @lines.firstChild
             setStyle '.line', 'height', ''
             lineHeight = @lines.firstChild.clientHeight
