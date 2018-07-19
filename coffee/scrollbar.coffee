@@ -83,7 +83,6 @@ class Scrollbar
         if @scrollX or @scrollY
             window.requestAnimationFrame @wheelScroll
 
-        log 'onWheel', @scrollY
         stopEvent event
 
     wheelScroll: =>
@@ -97,7 +96,6 @@ class Scrollbar
         @handle.style.height  = "0"
         @handle.style.width   = "0"
         
-        
     # 000   000  00000000   0000000     0000000   000000000  00000000
     # 000   000  000   000  000   000  000   000     000     000
     # 000   000  00000000   000   000  000000000     000     0000000
@@ -106,8 +104,6 @@ class Scrollbar
 
     update: =>
 
-        # log 'update', @scroll.numLines, @scroll.lineHeight, @scroll.viewHeight
-        
         if @scroll.numLines * @scroll.lineHeight < @scroll.viewHeight
             
             @clear()

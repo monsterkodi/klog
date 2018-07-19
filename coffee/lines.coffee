@@ -46,7 +46,6 @@ class Lines
     
     onClearLines: =>
         
-        log 'onClearLines'
         @num = 0  
         @lines.innerHTML = ''
         

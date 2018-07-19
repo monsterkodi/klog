@@ -32,7 +32,14 @@ class Syntax
             word:   ''   # currently parsed word
             turd:   ''   # currently parsed stuff inbetween words 
             last:   ''   # the turd before the current/last-completed word
-            index:  0    
+            index:  0  
+            
+        obj.coffee   = true if obj.ext == 'coffee'
+        obj.js       = true if obj.ext == 'js'
+        obj.jslang   = obj.coffee or obj.js
+        obj.cpplang  = obj.ext in ['cpp', 'hpp', 'c', 'h', 'cc', 'cxx']
+        obj.dictlang = obj.jslang or obj.ext in ['json', 'yaml', 'yml']
+        obj.dotlang  = obj.cpplang or obj.jslang
         
         for char in string
             
@@ -97,6 +104,11 @@ class Syntax
             getValue = (back=-1)     -> Syntax.getValue obj, back 
             setValue = (back, value) -> Syntax.setValue obj, back, value  
             setClass = (clss) ->
+                if last(obj.rgs)?.match == '@'
+                    if clss == 'text'
+                        clss = 'member'
+                    last(obj.rgs).value = clss + ' punctuation'
+                
                 obj.rgs.push
                     start: obj.index - word.length
                     match: word
@@ -104,16 +116,14 @@ class Syntax
                 null
             
             if char == ':'
-                if obj.ext in ['js', 'coffee', 'json']
+                if obj.dictlang
                     return setClass 'dictionary key'
                 
-            if obj.ext == 'coffee'
+            if obj.coffee
                 if getValue(-1)?.indexOf('punctuation') < 0
                     if word not in ['else', 'then', 'and', 'or', 'in']
                         if last(obj.rgs).value not in ['keyword', 'function head']
-                            Syntax.setValue obj, -1, 'function call'
-                
-            switch obj.ext 
+                            setValue -1, 'function call'
                 
                 #  0000000   0000000   00000000  00000000  00000000  00000000  
                 # 000       000   000  000       000       000       000       
@@ -121,21 +131,21 @@ class Syntax
                 # 000       000   000  000       000       000       000       
                 #  0000000   0000000   000       000       00000000  00000000  
                 
-                when 'js', 'coffee'
+            if obj.jslang
                     
-                    switch word
-                        when 'first', 'last', 'valid', 'empty', 'clamp', 'watch', 'str', 'pos', 'elem', 'stopEvent', 'if', 'else', 'then', 'for', 'of', 'in', 'is', 'while', 'do', 'unless', 'not', 'or', 'and', 'try', 'catch', 'return', 'break', 'continue', 'new', 'switch', 'when', 'super', 'extends', 'by', 'true', '__dirname', '__filename'
-                            return setClass 'keyword'
-                        when 'post', 'childp', 'matchr', 'prefs', 'slash', 'noon', 'args', 'console','process','global','module','exports','fs','os'
-                            return setClass 'module'                    
-                        when 'log'
-                            return setClass 'function'
-                        when 'err', 'error'
-                            return setClass 'function call'
-                        when 'undefined', 'null', 'false'
-                            return setClass 'nil'
-                        when 'require'
-                            return setClass 'require'            
+                switch word
+                    when 'first', 'last', 'valid', 'empty', 'clamp', 'watch', 'str', 'pos', 'elem', 'stopEvent', 'if', 'else', 'then', 'for', 'of', 'in', 'is', 'while', 'do', 'unless', 'not', 'or', 'and', 'try', 'catch', 'return', 'break', 'continue', 'new', 'switch', 'when', 'super', 'extends', 'by', 'true', '__dirname', '__filename'
+                        return setClass 'keyword'
+                    when 'post', 'childp', 'matchr', 'prefs', 'slash', 'noon', 'args', 'console','process','global','module','exports','fs','os'
+                        return setClass 'module'                    
+                    when 'log'
+                        return setClass 'function'
+                    when 'err', 'error'
+                        return setClass 'function call'
+                    when 'undefined', 'null', 'false'
+                        return setClass 'nil'
+                    when 'require'
+                        return setClass 'require'            
 
                 #  0000000  00000000   00000000   
                 # 000       000   000  000   000  
@@ -143,90 +153,91 @@ class Syntax
                 # 000       000        000        
                 #  0000000  000        000        
                 
-                when 'cpp', 'hpp', 'c', 'h', 'cc'
-                       
-                    if obj.last == '::'
-                        if obj.rgs.length >= 3
-                            setValue -3, 'namespace'
-                            setValue -2, 'punctuation namespace'
-                            setValue -1, 'punctuation namespace'
-                            if char == '('
-                                return setClass 'function call'
-                            return setClass 'property'
-                    
-                    switch word
-                        when 'include', 'define', 'if', 'ifdef', 'ifndef', 'else', 'endif', 'undef', 'pragma'
-                            if obj.last.endsWith "#"
-                                setValue -1, 'define punctuation'
-                                return setClass 'define'
-                            else
-                                return setClass 'keyword'
-                        when 'for' , 'while', 'switch', 'case', 'break', 'continue', 'return', 'virtual', 'static_cast', 'dynamic_cast', 'reinterpret_cast', 'const_cast', 'cast', 'sizeof'
-                            return setClass 'keyword'
-                        when 'enum', 'struct', 'class', 'public', 'private', 'typename', 'typedef', 'namespace', 'using', 'template', 'inline'
-                            return setClass 'keyword'
-                        when 'void', 'bool', 'int', 'double', 'float', 'long', 'auto', 'int8', 'int16', 'int32', 'uint8', 'uint16', 'uint32', 'int64', 'uint64', 'byte', 'size_t', 'unsigned', 'char'
-                            return setClass 'keyword type'
-                        when 'this', 'true'
-                            return setClass 'keyword'
-                        when 'const', 'override', 'static'
-                            return setClass 'punctuation keyword'
-                        when 'TMap', 'TArray', 'TSubclassOf'  
-                            return setClass 'template'
-                        when 'NULL', 'nullptr', 'false', 'Error', 'ERROR'
-                            return setClass 'nil'
-                        when 'once'
-                            return setClass 'define'
-                                    
-                    if /^[\\_A-Z][\\_A-Z0-9]+$/.test word
-                        return setClass 'macro'
 
-                    if      /^[UA][A-Z]\w+$/.test(word) then return setClass 'type class'
-                    else if /^[SF][A-Z]\w+$/.test(word) then return setClass 'type struct'
-                    else if /^[E][A-Z]\w+$/.test(word) then return setClass 'type enum'
-                                                    
-                    if 'class' in obj.words 
-                        return setClass 'class'
-                        
-                    if char == '<'
-                        return setClass 'type template'
-                        
-                    if obj.last == '::'
-                        if getValue(-3) in ['enum', 'class', 'struct']
-                            log 'really?'
-                            clss = getValue(-3)
-                            setValue -3, getValue(-3) + ' punctuation'
-                            setValue -2, getValue(-3) + ' punctuation'
-                            setValue -1, getValue(-3) + ' punctuation'
-                            
-                    if obj.last == '.' and /^\d+f$/.test(word)
-                        if getValue(-2) == 'number'
-                            setValue -2, 'number float'
-                            setValue -1, 'number float punctuation'
-                            return setClass 'number float'
-                            
-                    if obj.last.endsWith "##"
-                        
-                        setValue -2, 'punctuation operator'
-                        setValue -1, 'punctuation operator'
-                        
-                    else if obj.last.endsWith '->'
-                        setValue -3, 'obj'
-                        setValue -2, 'property punctuation'
-                        setValue -1, 'property punctuation'
+            if obj.cpplang
+                
+                if obj.last == '::'
+                    if obj.rgs.length >= 3
+                        setValue -3, 'namespace'
+                        setValue -2, 'punctuation namespace'
+                        setValue -1, 'punctuation namespace'
+                        if char == '('
+                            return setClass 'function call'
                         return setClass 'property'
+                
+                switch word
+                    when 'include', 'define', 'if', 'ifdef', 'ifndef', 'else', 'endif', 'undef', 'pragma'
+                        if obj.last.endsWith "#"
+                            setValue -1, 'define punctuation'
+                            return setClass 'define'
+                        else
+                            return setClass 'keyword'
+                    when 'for' , 'while', 'switch', 'case', 'break', 'continue', 'return', 'virtual', 'static_cast', 'dynamic_cast', 'reinterpret_cast', 'const_cast', 'cast', 'sizeof'
+                        return setClass 'keyword'
+                    when 'enum', 'struct', 'class', 'public', 'private', 'typename', 'typedef', 'namespace', 'using', 'template', 'inline'
+                        return setClass 'keyword'
+                    when 'void', 'bool', 'int', 'double', 'float', 'long', 'auto', 'int8', 'int16', 'int32', 'uint8', 'uint16', 'uint32', 'int64', 'uint64', 'byte', 'size_t', 'unsigned', 'char'
+                        return setClass 'keyword type'
+                    when 'this', 'true'
+                        return setClass 'keyword'
+                    when 'const', 'override', 'static'
+                        return setClass 'punctuation keyword'
+                    when 'TMap', 'TArray', 'TSubclassOf'  
+                        return setClass 'template'
+                    when 'NULL', 'nullptr', 'false', 'Error', 'ERROR'
+                        return setClass 'nil'
+                    when 'once'
+                        return setClass 'define'
                                 
-                    if char == '('
-                        return setClass 'function call'
+                if /^[\\_A-Z][\\_A-Z0-9]+$/.test word
+                    return setClass 'macro'
+
+                if      /^[UA][A-Z]\w+$/.test(word) then return setClass 'type class'
+                else if /^[SF][A-Z]\w+$/.test(word) then return setClass 'type struct'
+                else if /^[E][A-Z]\w+$/.test(word) then return setClass 'type enum'
+                                                
+                if 'class' in obj.words 
+                    return setClass 'class'
+                    
+                if char == '<'
+                    return setClass 'type template'
+                    
+                if obj.last == '::'
+                    if getValue(-3) in ['enum', 'class', 'struct']
+                        log 'really?'
+                        clss = getValue(-3)
+                        setValue -3, getValue(-3) + ' punctuation'
+                        setValue -2, getValue(-3) + ' punctuation'
+                        setValue -1, getValue(-3) + ' punctuation'
                         
-                    if first(obj.words).startsWith('U') and first(obj.rgs).value == 'macro'
-                        if word.startsWith 'Blueprint'
-                            return setClass 'macro punctuation'
-                        if word.toLowerCase() in ['meta', 'displayname', 'category', 'worldcontext', 'editanywhere']
-                            return setClass 'macro punctuation'
-                        if word.toLowerCase() in ['config', 'transient', 'editdefaultsonly', 'visibleanywhere', 'nontransactional', 'interp', 'globalconfig']
-                            return setClass 'macro'
-                                                        
+                if obj.last == '.' and /^\d+f$/.test(word)
+                    if getValue(-2) == 'number'
+                        setValue -2, 'number float'
+                        setValue -1, 'number float punctuation'
+                        return setClass 'number float'
+                        
+                if obj.last.endsWith "##"
+                    
+                    setValue -2, 'punctuation operator'
+                    setValue -1, 'punctuation operator'
+                    
+                else if obj.last.endsWith '->'
+                    setValue -3, 'obj'
+                    setValue -2, 'property punctuation'
+                    setValue -1, 'property punctuation'
+                    return setClass 'property'
+                            
+                if char == '('
+                    return setClass 'function call'
+                    
+                if first(obj.words).startsWith('U') and first(obj.rgs).value == 'macro'
+                    if word.startsWith 'Blueprint'
+                        return setClass 'macro punctuation'
+                    if word.toLowerCase() in ['meta', 'displayname', 'category', 'worldcontext', 'editanywhere']
+                        return setClass 'macro punctuation'
+                    if word.toLowerCase() in ['config', 'transient', 'editdefaultsonly', 'visibleanywhere', 'nontransactional', 'interp', 'globalconfig']
+                        return setClass 'macro'
+                                                    
             # 000   000  000   000  00     00  0000000    00000000  00000000   
             # 0000  000  000   000  000   000  000   000  000       000   000  
             # 000 0 000  000   000  000000000  0000000    0000000   0000000    
@@ -260,15 +271,15 @@ class Syntax
             # 000        000   000  000   000  000        000       000   000     000        000    
             # 000        000   000   0000000   000        00000000  000   000     000        000    
                               
-            if obj.last in ['.', ':']
-                if obj.ext in ['js', 'coffee', 'json', 'cpp', 'hpp', 'h', 'c', 'cc']
+            if obj.dotlang
+                
+                if obj.last in ['.', ':']
                     if getValue(-2) in ['text', 'module']
                         setValue -2, 'obj'
                         setValue -1, 'obj punctuation'
                         return setClass 'property'
                             
-            if obj.last.endsWith '.'
-                if obj.ext in ['js', 'coffee', 'cpp', 'hpp', 'h', 'c', 'cc']
+                if obj.last.endsWith '.'
                     if getValue(-2) == 'property'
                         setValue -1, 'property punctuation'
                         return setClass 'property'
@@ -276,6 +287,7 @@ class Syntax
                         if obj.last.length > 1 and obj.last[obj.last.length-2] in [')', ']']
                             setValue -1, 'property punctuation'
                             return setClass 'property'
+                            
             return setClass 'text'
         null
           
@@ -287,10 +299,11 @@ class Syntax
     
     @nonSpace: (obj) ->
         
-        if obj.ext == 'coffee'
+        if obj.coffee
             
             if obj.turd.length == 1 and obj.turd == '('
                 Syntax.setValue obj, -2, 'function call'
+                
             else if obj.turd.length > 1 and obj.turd.trim().length == 1
                 if last(obj.turd) in '@+-\'"([{'
                     val = Syntax.getValue obj, -2
@@ -350,11 +363,11 @@ class Syntax
         
         switch char
             when ':'
-                if obj.turd.length == 1 and obj.ext in ['js', 'coffee', 'json', 'yml', 'yaml']
+                if obj.turd.length == 1 and obj.dictlang
                     if last(obj.rgs).value == 'dictionary key'
                         value = 'dictionary punctuation'
             when '>'
-                if obj.ext in ['js', 'coffee']
+                if obj.jslang
                     for [turd, val] in [['->', ''], ['=>', ' bound']]
                         if obj.turd.endsWith turd
                             Syntax.substitute obj, -3, ['dictionary key', 'dictionary punctuation'], ['method', 'method punctuation']
@@ -369,7 +382,7 @@ class Syntax
 
         switch char 
             when '{' 
-                if obj.ext == 'coffee' and last(obj.turd) == '#' and first(obj.stack).type == 'comment' and first(obj.stack).index == obj.index
+                if obj.coffee and last(obj.turd) == '#' and first(obj.stack).type == 'comment' and first(obj.stack).index == obj.index
                     obj.stack = []
             when '/' 
                 if obj.ext not in @noSlashComment
@@ -397,7 +410,7 @@ class Syntax
             when '"' then 'string double'
             when '`' then 'string backtick'
             when "#" 
-                if obj.ext in ['noon']
+                if obj.ext == 'noon'
                     if empty(obj.words) and empty obj.turd.trim()
                         'comment'
                     else
@@ -448,8 +461,19 @@ class Syntax
             
         null
       
+    # 000   000   0000000   000      000   000  00000000  
+    # 000   000  000   000  000      000   000  000       
+    #  000 000   000000000  000      000   000  0000000   
+    #    000     000   000  000      000   000  000       
+    #     0      000   000  0000000   0000000   00000000  
+    
     @getValue: (obj, back)        -> obj.rgs[obj.rgs.length+back]?.value         
-    @setValue: (obj, back, value) -> obj.rgs[obj.rgs.length+back]?.value = value
+    @setValue: (obj, back, value) -> 
+        if obj.rgs.length+back < obj.rgs.length and obj.rgs.length+back >= 0
+            obj.rgs[obj.rgs.length+back].value = value
+            if obj.coffee and obj.rgs[obj.rgs.length+back-1]?
+                if obj.rgs[obj.rgs.length+back-1]?.match == '@'
+                    obj.rgs[obj.rgs.length+back-1].value = value + ' punctuation'
     
     #  0000000  000   000  0000000     0000000  000000000  000  000000000  000   000  000000000  00000000  
     # 000       000   000  000   000  000          000     000     000     000   000     000     000       
