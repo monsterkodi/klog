@@ -223,7 +223,7 @@ class Lines
         info.id     ?= ''
         info.str    ?= ''
         info.source ?= ''
-        info.type   ?= ''
+        info.type   ?= 'empty'
         info.file   ?= slash.base info.source
         
         icon =

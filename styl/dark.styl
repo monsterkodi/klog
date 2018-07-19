@@ -10,6 +10,7 @@ bgColor        = #111
 frameColor     = #222
 textFocusColor = #fff
 textBlurColor  = #444
+backColor      = #0d0d0d // source line background
 
 #main
     background          bgColor
@@ -24,10 +25,10 @@ textBlurColor  = #444
 // 000 0 000  000  000  0000  000  000 0 000  000   000  000
 // 000   000  000  000   000  000  000   000  000   000  000
 
-.minimap
+#minimap
     background              bgColor
     border-left-color       frameColor
-
+    
 .topbot
     background-color        #333
 
@@ -84,6 +85,12 @@ textBlurColor  = #444
     border              1px solid frameColor
     border-radius       3px
   
+// 000      000  000   000  00000000   0000000  
+// 000      000  0000  000  000       000       
+// 000      000  000 0 000  0000000   0000000   
+// 000      000  000  0000  000            000  
+// 0000000  000  000   000  00000000  0000000   
+
 .num
     color               frameColor
 .time
@@ -113,6 +120,10 @@ textBlurColor  = #444
 .line.main .file
 .line.main .sep
     color               #c04
+    
+.line.find 
+.line.empty
+    background          backColor
     
 // .line.file span.log
     // color               #66a
@@ -247,7 +258,8 @@ textBlurColor  = #444
     color       #fc0
     
     &.call
-        color       #f80
+        color       #fa0
+        
     &.head
     &.tail
         opacity     1
@@ -276,10 +288,7 @@ textBlurColor  = #444
 //  0000000  0000000  000   000  0000000   0000000   
 
 .obj
-.owner
-.callee
 .dictionary
-.class.object
 .class
     color           #ff8
 
@@ -313,12 +322,6 @@ textBlurColor  = #444
     &.class
     &.call
         color       #ff8
-    &.definition
-    &.template
-        color       #48a
-
-.template
-    color           #48a
 
 .operator
     color           #fa0
@@ -330,18 +333,17 @@ textBlurColor  = #444
 .semver
     color           #f80
 
-.syntax.cond
-.keyword.function.call
 .keyword
     color           #aaf
     &.null
         color       #a00
-
-.enum
-    color           #f8f
-.struct
-    color           #acf
         
+&.type
+    color           #77f
+   
+.template
+    color           #48a
+    
 // 00     00   0000000    0000000  00000000    0000000   
 // 000   000  000   000  000       000   000  000   000  
 // 000000000  000000000  000       0000000    000   000  
@@ -388,9 +390,9 @@ textBlurColor  = #444
 .float
     color           #f08
 
-.keyword.return
-.keyword.return.function.call    
-    color           #c0c
+// .keyword.return
+// .keyword.return.function.call    
+    // color           #c0c
     
 //  0000000   0000000   00     00  00     00  00000000  000   000  000000000
 // 000       000   000  000   000  000   000  000       0000  000     000

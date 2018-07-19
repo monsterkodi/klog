@@ -23,7 +23,7 @@ class Minimap
         @height = 8192
         @offsetLeft = 6
 
-        @elem    = elem class: 'minimap'
+        @elem    = elem class: 'minimap', id: 'minimap'
         @topbot  = elem class: 'topbot'
         @lines   = elem 'canvas', class: 'minimapLines', width: @width, height: @height
 
@@ -89,7 +89,7 @@ class Minimap
                 for r in diss
                     break if 2*r.start >= @width
                     if r.clss?
-                        ctx.fillStyle = @colorForClassnames r.clss + " minimap"
+                        ctx.fillStyle = @colorForClassnames r.clss
                     else
                         ctx.fillStyle = @colorForStyle r.styl
                     ctx.fillRect @offsetLeft+2*r.start, y, 2*r.match.length, @scroll.lineHeight
@@ -100,7 +100,11 @@ class Minimap
 
             div = elem class: clss
             document.body.appendChild div
-            color = window.getComputedStyle(div).color
+            computedStyle = window.getComputedStyle(div)
+            color = computedStyle.color
+            opacity = computedStyle.opacity
+            if opacity != '1'
+                color = 'rgba(' + color.slice(4, color.length-2) + ', ' + opacity + ')' 
             @colors[clss] = color
             div.remove()
 
