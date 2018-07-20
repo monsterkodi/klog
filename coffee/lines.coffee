@@ -13,6 +13,7 @@ Scroll    = require './scroll'
 ScrollBar = require './scrollbar'
 Highlight = require './highlight'
 Minimap   = require './minimap'
+Sizer     = require './sizer'
 fileIcons = require 'file-icons-js'
 
 class Lines
@@ -23,6 +24,7 @@ class Lines
         @lines =$ '#lines'
         @cache = []
         @icons = {}
+        @sizer = new Sizer
         
         @scroll    = new Scroll @lines
         @scrollBar = new ScrollBar @scroll
@@ -81,7 +83,10 @@ class Lines
         line = @cache[lineIndex]
         Highlight.line line
 
-        @lines.appendChild line   
+        @lines.appendChild line
+        
+        if not @sizer.initialized
+            @sizer.init()
                 
     # 00000000   00000000   00000000  00000000   00000000  000   000  0000000    
     # 000   000  000   000  000       000   000  000       0000  000  000   000  

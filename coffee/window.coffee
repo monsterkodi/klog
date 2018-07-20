@@ -25,7 +25,7 @@ w = new win
     pkg:    require '../package.json'
     menu:   '../coffee/menu.noon'
     icon:   '../img/menu@2x.png'
-    onLoad: -> window.lines.onResize()
+    onLoad: -> lines.onResize()
 
 window.find   = new Find
 window.search = new Search
@@ -195,18 +195,8 @@ post.on 'menuAction', (action) ->
             setEditor action
             
         when 'ID', 'Num', 'Src', 'Icon', 'File', 'Time'
-            toggleDisplay action.toLowerCase()
-        
-toggleDisplay = (column) ->
-    
-    key = "#lines div span.#{column}"
-    if 'none' == getStyle key, 'display'
-        prefs.set "display:#{column}", true
-        setStyle key, 'display', 'inline-block'
-    else
-        prefs.set "display:#{column}", false
-        setStyle key, 'display', 'none'
-        
+            lines.sizer.toggleDisplay action.toLowerCase()
+                
 # 00     00   0000000   0000000   
 # 000   000  000       000        
 # 000000000  0000000   000  0000  
@@ -246,5 +236,5 @@ klog "editor:  #{prefs.get 'editor'}\nfindDir: #{prefs.get 'findDir'}\nlogFile: 
 
 for column in ['id', 'src', 'icon', 'num', 'time']
     if not prefs.get "display:#{column}", true
-        toggleDisplay column
+        lines.sizer.toggleDisplay column
     
