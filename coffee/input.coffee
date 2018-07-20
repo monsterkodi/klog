@@ -12,9 +12,9 @@ Highlight = require './highlight'
 
 class Input
 
-    constructor: (@name, text) ->
-
-        @button = elem class:'winbutton gray', text:text, click:@onButton
+    constructor: (@name, html) ->
+        
+        @button = elem class:'winbutton gray', html:html, click:@onButton
         window.titlebar.pushElem @button
         
         @input = elem 'input', class:"input #{@name}", value:'', dblclick:stopEvent, autofocus:true, click:stopEvent

@@ -15,7 +15,17 @@ class Filter extends Input
 
     constructor: ->
         
-        super 'filter', '⍛'
+        svg = """
+            <svg width="100%" height="100%" viewBox="-0 -8 20 30">
+                <line x1="0"  y1="0"  x2="8" y2="10"></line>
+                <line x1="8"  y1="10" x2="8" y2="15"></line>
+                <line x1="8"  y1="15" x2="12" y2="15"></line>
+                <line x1="12" y1="15" x2="12" y2="10"></line>
+                <line x1="12" y1="10" x2="20" y2="0"></line>
+                <line x1="20" y1="0"  x2="0"  y2="0"></line>
+            </svg>
+        """
+        super 'filter', svg #'⍛'
         
     terms: => 
         

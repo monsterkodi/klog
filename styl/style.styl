@@ -36,11 +36,18 @@ body
 
 #main
     display             flex
-    flex-direction      column
+    flex-direction      row
     overflow            hidden
     
+// 000  000   000  00000000   000   000  000000000  
+// 000  0000  000  000   000  000   000     000     
+// 000  000 0 000  00000000   000   000     000     
+// 000  000  0000  000        000   000     000     
+// 000  000   000  000         0000000      000     
+
 .input
     flex                10 1 0
+    width               0
     cursor              text
     -webkit-user-select text
     -webkit-app-region  no-drag
@@ -56,10 +63,11 @@ body
 // 000   000  000  000   000  000  000   000  000   000  000
 
 .minimap
-    position            absolute
-    top                 0
-    bottom              0
-    right               0
+    // position            absolute
+    // top                 0
+    // bottom              0
+    // right               0
+    flex                0 0 minimapWidth
     width               minimapWidth
     overflow            hidden
     cursor              pointer
@@ -129,7 +137,7 @@ body
     flex                    1 1 0
     overflow                visible
     padding-left            6px
-    position            relative
+    position                relative
     & div 
         position            absolute
         width               100%
@@ -294,25 +302,4 @@ unicode(char)
     transform                   scaleY(0)
     transition                  transform 0.2s ease-in, opacity 0.2s ease-in
                 
-// 000  000   000  00000000   000   000  000000000  
-// 000  0000  000  000   000  000   000     000     
-// 000  000 0 000  00000000   000   000     000     
-// 000  000  0000  000        000   000     000     
-// 000  000   000  000         0000000      000     
-
-#input
-    width               100%
-    flex                0 0 100px
-    margin-left         6px
-    margin-top          9px
-    
-.input-text 
-    height              100px
-    width               435px
-    border-radius       10px
-    text-align          right
-    font-size           80px
-    -webkit-user-select auto
-    padding-right       10px
-    white-space         pre
     
