@@ -16,13 +16,14 @@ class Search extends Input
     constructor: () ->
 
         svg = """
-            <svg width="100%" height="100%" viewBox="0 0 20 20">
-                <circle cx="12" cy="9" r="4.5" fill-opacity=0 />
-                <line x1="5" y1="16"  x2="8"  y2="13" stroke-width="1.5" stroke-linecap="round"></line>
+            <svg width="100%" height="100%" viewBox="0 0 30 30" stroke-linecap="round">
+                <line x1="4"  y1="23"  x2="26"  y2="23"></line>
+                <line x1="4"  y1="23"  x2="15"  y2="7"></line>
+                <line x1="26" y1="23"  x2="15"  y2="7"></line>
             </svg>
         """
         
-        super 'search', svg # '⚲'
+        super 'search', svg
         
         @cfg = []
         if @input.value then @onInput()

@@ -15,12 +15,13 @@ class Find extends Input
     constructor: ->
         
         svg = """
-            <svg width="100%" height="100%" viewBox="0 0 20 20">
-                <circle cx="10" cy="10" r="5" fill-opacity=0 />
+            <svg width="100%" height="100%" viewBox="0 0 30 30">
+                <circle cx="17" cy="13" r="7" fill-opacity=0 />
+                <line x1="5" y1="23"  x2="11"  y2="18" stroke-linecap="round"></line>
             </svg>
         """
         
-        super 'find', svg # '☉'
+        super 'find', svg # '⚲'
         @cfg = []
         if @input.value then @onInput()
         

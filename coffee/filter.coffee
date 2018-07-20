@@ -16,13 +16,13 @@ class Filter extends Input
     constructor: ->
         
         svg = """
-            <svg width="100%" height="100%" viewBox="-0 -8 20 30">
-                <line x1="0"  y1="0"  x2="8" y2="10"></line>
-                <line x1="8"  y1="10" x2="8" y2="15"></line>
-                <line x1="8"  y1="15" x2="12" y2="15"></line>
-                <line x1="12" y1="15" x2="12" y2="10"></line>
-                <line x1="12" y1="10" x2="20" y2="0"></line>
-                <line x1="20" y1="0"  x2="0"  y2="0"></line>
+            <svg width="100%" height="100%" viewBox="0 0 30 30">
+                <line x1="4"  y1="7"  x2="13" y2="18" stroke-linecap="round"></line>
+                <line x1="13" y1="18" x2="13" y2="23" stroke-linecap="round"></line>
+                <line x1="13" y1="23" x2="18" y2="23" stroke-linecap="round"></line>
+                <line x1="18" y1="23" x2="18" y2="18" stroke-linecap="round"></line>
+                <line x1="18" y1="18" x2="27" y2="7"  stroke-linecap="round"></line>
+                <line x1="27" y1="7"  x2="4"  y2="7"  stroke-linecap="round"></line>
             </svg>
         """
         super 'filter', svg #'⍛'
