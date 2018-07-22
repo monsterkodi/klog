@@ -19,12 +19,11 @@ bugs
 dependencies
                 file-icons-js   ^1.0.3
                 findit2         ^2.2.3
-                kxk             https://github.com/monsterkodi/kxk.git
+                kxk             ../kxk
                 pretty-ms       ^3.2.0
                 tail            ^1.2.4
+                kork            ../kork
 devDependencies
                 electron        ^2.0.4
                 electron-packager  ^12.1.0
                 electron-rebuild  ^1.8.1
-                assert          ^1.4.1
-                chai            ^4.1.2

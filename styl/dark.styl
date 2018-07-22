@@ -299,21 +299,16 @@ backColor      = #0d0d0d // source line background
 
 .obj
 .dictionary
+.module
 .class
     color           #ff8
 
 .range
     color           #66f
 
-.require
-    color           #0f0
-
-.punctuation
 .marker
+.punctuation
     opacity         0.5
-
-.module
-    color           #ff8
 
 .property
     color           #fa8
@@ -338,15 +333,17 @@ backColor      = #0d0d0d // source line background
     &.negate
         color       #ff0
 
-.regexp
 .keypath
 .semver
+.cssid
     color           #f80
 
 .keyword
     color           #aaf
     &.null
         color       #a00
+    &.function
+        color       #666
         
 &.type
     color           #77f
@@ -369,12 +366,6 @@ backColor      = #0d0d0d // source line background
 .interpolation.marker
         color       #f80
 
-.variable.err
-    color           #f08
-
-.syntax.exists
-    opacity         0.7
-
 //  0000000  000000000  00000000   000  000   000   0000000   
 // 000          000     000   000  000  0000  000  000        
 // 0000000      000     0000000    000  000 0 000  000  0000  
@@ -385,14 +376,12 @@ backColor      = #0d0d0d // source line background
     color           #0a0
     &.double
     &.triple
-        color       #0f0
-    &.interpolation
-        opacity     0.5
+        color       #0d0
     &.dictionary
         color       #0a0
 
 .nil
-    color           #d00
+    color           #808
     
 .number
 .int
@@ -400,9 +389,8 @@ backColor      = #0d0d0d // source line background
 .float
     color           #f08
 
-// .keyword.return
-// .keyword.return.function.call    
-    // color           #c0c
+.regexp
+    color           #f4a
     
 //  0000000   0000000   00     00  00     00  00000000  000   000  000000000
 // 000       000   000  000   000  000   000  000       0000  000     000
@@ -411,31 +399,7 @@ backColor      = #0d0d0d // source line background
 //  0000000   0000000   000   000  000   000  00000000  000   000     000
 
 .comment
-// .comment.text.keyword
-// .comment.string.double
-    color               #4f4f4f !important
-
-.comment.header
-    color               #040 !important
-    background          #040
-    border-left-color   #060
-    border-bottom-color #020
-
-.comment.header.minimap
-    color               #0a0 !important
-    opacity             1
-
-.comment.triple.header
-    color               #060 !important
-    background          #060
-    border-left-color   #080
-    border-bottom-color #040
-
-.comment.triple.header.minimap
-    color               #0f0 !important
-    
-.header.marker.minimap
-    color               #222 !important
+    color           #4f4f4f
 
 .require
     color           #666

@@ -53,12 +53,7 @@ class Scanner
                 return false
             return true
         return true
-            
-    stats: ->
-        
-        time = prettyTime performance.now()-@scanStart
-        "find '#{@search}' in #{slash.tilde @dir} : #{@lineCount} lines in #{@fileCount} files (#{@scanCount} files scanned in #{time})"
-            
+                        
     #  0000000   000   000        00000000  000  000      00000000  
     # 000   000  0000  000        000       000  000      000       
     # 000   000  000 0 000        000000    000  000      0000000   
@@ -190,11 +185,17 @@ class Scanner
             id:     'klog'
             type:   'win'
             file:   'find'
+            ext:    'txt'
             sep:    '⯅'
             icon:   slash.fileUrl slash.join __dirname, '../img/menu@2x.png'
-            source: slash.tilde __filename
             str:    @stats()
-                
+
+    stats: ->
+        
+        time = prettyTime performance.now()-@scanStart
+        time = time.replace 'ms', ' ms'
+        "find '#{@search}' in '#{slash.tilde @dir}': #{@lineCount} lines in #{@fileCount} files (#{@scanCount} files scanned in #{time})"
+            
     #  0000000  000000000   0000000   00000000   
     # 000          000     000   000  000   000  
     # 0000000      000     000   000  00000000   

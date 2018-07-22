@@ -8,8 +8,8 @@
 
 { matchr, slash, valid, str, log, $ } = require 'kxk'
 
-log = console.log
-Syntax = require './syntax'
+log  = console.log
+kork = require 'kork'
 
 class Highlight
 
@@ -44,7 +44,7 @@ class Highlight
             cfg  = window.search.cfg
             
         line = info.str
-        rgs  = matchr.ranges(cfg, line).concat Syntax.ranges line, slash.ext info.source
+        rgs  = matchr.ranges(cfg, line).concat kork.ranges line, info.ext ? slash.ext info.source
         if valid rgs
             matchr.sortRanges rgs
             dss = matchr.dissect rgs

@@ -10,10 +10,10 @@
 
 { Tail } = require 'tail'
 
-Lines     = require './lines'
-Search    = require './search'
-Filter    = require './filter'
-Find      = require './find'
+Lines    = require './lines'
+Search   = require './search'
+Filter   = require './filter'
+Find     = require './find'
   
 log  = console.log
 klog = require('kxk').log
