@@ -56,6 +56,11 @@ openFile = (f) ->
             bat = slash.unslash slash.resolve slash.join __dirname, '../bin/openFile/openVS.bat'
             childp.exec "\"#{bat}\" \"#{file}\" #{line} 0", { cwd:slash.dir(bat) }, (err) -> 
                 error 'vb', err if not empty err
+        when 'Atom'
+            file = slash.unslash slash.resolve file
+            atom = slash.unslash slash.untilde '~/AppData/Local/atom/bin/atom'
+            childp.exec "\"#{atom}\" \"#{file}:#{line}\"", { cwd:slash.dir(file) }, (err) -> 
+                error 'atom', err if not empty err
         else
             if not koSend then koSend = new udp port:9779
             koSend.send slash.resolve f
@@ -191,7 +196,7 @@ post.on 'menuAction', (action) ->
         when 'Search'               then post.emit 'focus', 'search'
         when 'Exclude'              then post.emit 'focus', 'filter'
             
-        when 'Visual Studio', 'VS Code', 'ko'
+        when 'Visual Studio', 'VS Code', 'Atom', 'ko'
             setEditor action
             
         when 'ID', 'Num', 'Src', 'Icon', 'File', 'Time'
