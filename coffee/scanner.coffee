@@ -153,7 +153,10 @@ class Scanner
             if data.length > @maxLineLength
                 data = data.substr 0, @maxLineLength
                 
-            column = data.indexOf(@search)
+            if empty @search
+                column = 0
+            else
+                column = data.indexOf(@search)
             if column >= 0
                 @chunks[file].push 
                     id:     'find' 
@@ -219,14 +222,14 @@ process.on 'uncaughtException', (err) ->
     true
     
 if not empty process.argv[2]
-    if empty process.argv[3]
-        dir    = process.cwd()
-        search = process.argv[2]
-        exts   = []
-    else
-        dir    = process.argv[2]
-        search = process.argv[3]
-        exts   = [].slice.call(process.argv).slice 4
+    # if empty process.argv[3]
+        # dir    = process.cwd()
+        # search = process.argv[2]
+        # exts   = []
+    # else
+    dir    = process.argv[2]
+    search = process.argv[3]
+    exts   = [].slice.call(process.argv).slice 4
         
     new Scanner slash.resolve(dir), search, exts
     

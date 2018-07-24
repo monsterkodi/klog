@@ -35,7 +35,7 @@ class Find extends Input
         
         term ?= @text()
         term = term.trim()
-        return if empty term
+        # return if empty term
         
         dir = prefs.get 'findDir', ''
         return if empty dir
