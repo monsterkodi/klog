@@ -122,7 +122,6 @@ backColor      = #0d0d0d // source line background
     color               #f80
 .log
     color               textFocus
-    // background          bgColor
 .sep
     color               #88f
     
@@ -135,21 +134,13 @@ backColor      = #0d0d0d // source line background
 .line.empty
     background          backColor
     
-// .line.file span.log
-    // color               #66a
-    // background          #777
-    
 #lines div span
-    // background          bgColor
     & .highlight-search
         background          #800
         border-radius       4px
         color               #ff0
     & .highlight-find
         text-decoration     underline
-        // background          #00f
-        // border-radius       4px
-        // color               #ff4
         
 /*
 00000000  000  000      00000000   0000000
@@ -412,31 +403,30 @@ backColor      = #0d0d0d // source line background
 // 000 0 000  000   000
 // 000   000  0000000
 
-.markdown
-    &.h1
-        color       #ff0
-    &.h2
-        color       #ff4
-    &.h3
-        color       #ff8
-    &.h4
-        color       #aaf
-    &.h5
-        color       #88f
-    &.li1
-    &.li1::before
-        color       #0f0
-    &.li2
-        color       #0c0
-    &.li2::before
-        border-left-color  #0a0
-    &.li3
-    &.li3::before
-        color       #080
-    &.bold
-        color       #ff8
-        font-weight bold
-        &.marker
-            opacity 0.3
-    &.italic
-        font-style  italic
+&.h1
+    color               #ff0
+&.h2        
+    color               #ff4
+&.h3        
+    color               #ff8
+&.h4        
+    color               #aaf
+&.h5        
+    color               #88f
+&.li1        
+&.li1::before        
+    color               #0f0
+&.li2        
+    color               #0c0
+&.li2::before
+    border-left-color   #0a0
+&.li3
+&.li3::before
+    color               #080
+&.bold        
+    color               #ff8
+    font-weight         bold
+    &.marker        
+        opacity         0.3
+&.italic        
+    font-style          italic
