@@ -218,15 +218,10 @@ class Scanner
             log JSON.stringify obj
         
 process.on 'uncaughtException', (err) ->
-    log 'scanner error', err.stack
+    log 'scanner error!', err.stack
     true
     
 if not empty process.argv[2]
-    # if empty process.argv[3]
-        # dir    = process.cwd()
-        # search = process.argv[2]
-        # exts   = []
-    # else
     dir    = process.argv[2]
     search = process.argv[3]
     exts   = [].slice.call(process.argv).slice 4

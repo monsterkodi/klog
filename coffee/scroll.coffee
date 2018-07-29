@@ -8,7 +8,7 @@
 
 { post, clamp, str } = require 'kxk'
 
-log = console.log
+log   = console.log
 Wheel = require './wheel'
 
 class Scroll

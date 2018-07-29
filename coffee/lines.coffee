@@ -8,7 +8,7 @@
 
 { post, setStyle, prefs, valid, slash, empty, elem, str, log, $, _ } = require 'kxk'
 
-log = console.log
+log       = console.log
 Scroll    = require './scroll'
 ScrollBar = require './scrollbar'
 Highlight = require './highlight'

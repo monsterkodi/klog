@@ -36,15 +36,17 @@ class Highlight
             
         cfg  = []
         
+        ext  = info.ext ? 'log'
         if info.id == 'find'
             cfg  = window.search.cfg.concat window.find.cfg
             clss = 'find'
+            ext  = slash.ext info.source
         else if info.id != 'file'
             clss = 'search'
             cfg  = window.search.cfg
             
         line = info.str
-        rgs  = matchr.ranges(cfg, line).concat kork.ranges line, info.ext ? slash.ext info.source
+        rgs  = matchr.ranges(cfg, line).concat kork.ranges line, ext
         if valid rgs
             matchr.sortRanges rgs
             dss = matchr.dissect rgs
