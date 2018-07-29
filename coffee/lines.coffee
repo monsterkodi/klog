@@ -253,7 +253,7 @@ class Lines
                 
         @num  += 1
         
-        fileClss = 'file'
+        fileClss = 'file column'
         iconClss = 'icon'
         idClss   = 'id'
         logClss  = 'log'
