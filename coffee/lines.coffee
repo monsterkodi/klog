@@ -223,7 +223,7 @@ class Lines
     lineForLog: (info) ->
         
         info        ?= sep:''
-        info.sep    ?= '⯈ '
+        info.sep    ?= '▶'
         info.id     ?= ''
         info.str    ?= ''
         info.source ?= ''

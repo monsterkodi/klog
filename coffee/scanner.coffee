@@ -189,7 +189,7 @@ class Scanner
             type:   'win'
             file:   'find'
             ext:    'txt'
-            sep:    '⯅'
+            sep:    '▶'
             icon:   slash.fileUrl slash.join __dirname, '../img/menu@2x.png'
             str:    @stats()
 

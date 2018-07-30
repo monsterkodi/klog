@@ -58,7 +58,7 @@ class Find extends Input
         if not window.filter.shouldLog message
             return
         
-        if message.sep == '⯅'
+        if message.sep == '▶'
             window.lines.appendLog()
         else if message.type == 'find' 
             if @lastMessage?.type == 'file' or @lastMessage.line < message.line-1

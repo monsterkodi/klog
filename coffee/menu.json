@@ -1,0 +1,52 @@
+{
+  "klog": {
+    "Open Find Directory": "ctrl+o",
+    "-": null,
+    "Open Log File": null,
+    "Load Log File": null,
+    "Clear Log File": null,
+    "--": null,
+    "About": "ctrl+,",
+    "---": null,
+    "Quit": "ctrl+q"
+  },
+  "Editor": {
+    "Visual Studio": "ctrl+1",
+    "VS Code": "ctrl+2",
+    "Atom": "ctrl+3",
+    "ko": "ctrl+4"
+  },
+  "View": {
+    "Find": "ctrl+f",
+    "Search": "ctrl+s f3",
+    "Exclude": "ctrl+e",
+    "-": null,
+    "Clear": "ctrl+k k",
+    "--": null,
+    "Num": "n ctrl+n",
+    "Time": "t ctrl+t",
+    "ID": "i ctrl+i",
+    "File": "f ctrl+f",
+    "Src": "s ctrl+s",
+    "Icon": null,
+    "---": null,
+    "Font Size": {
+      "Increase": "ctrl+=",
+      "Decrease": "ctrl+-",
+      "Reset": "ctrl+0"
+    }
+  },
+  "Window": {
+    "Close": "ctrl+w w",
+    "-": null,
+    "Toggle Menu": "alt+m m",
+    "Toggle Scheme": "alt+i",
+    "--": null,
+    "Minimize": "alt+ctrl+shift+m",
+    "Maximize": "alt+ctrl+m",
+    "---": null,
+    "Screenshot": "alt+f3",
+    "Reload": "alt+ctrl+l",
+    "DevTools": "alt+ctrl+i"
+  }
+}
