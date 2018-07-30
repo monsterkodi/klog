@@ -37,9 +37,47 @@ class Lines
         post.on 'shiftLines', @onShiftLines
         post.on 'clearLines', @onClearLines
         post.on 'changeLines', @onChangeLines
+        post.on 'selectLine', @onSelectLine
         
+        document.addEventListener 'selectionchange', @onSelectionChange
         window.addEventListener 'resize', @onResize
 
+    #  0000000  00000000  000      00000000   0000000  000000000  
+    # 000       000       000      000       000          000     
+    # 0000000   0000000   000      0000000   000          000     
+    #      000  000       000      000       000          000     
+    # 0000000   00000000  0000000  00000000   0000000     000     
+    
+    onSelectLine: (lineIndex) => 
+        
+        if lineIndex < @scroll.top
+            delta = - @scroll.lineHeight * (@scroll.top - lineIndex + 5)
+            @scroll.by delta
+        else if lineIndex > @scroll.bot
+            delta = @scroll.lineHeight * (lineIndex - @scroll.bot + 5)
+            @scroll.by delta
+        
+        if lineIndex >= @scroll.top and lineIndex <= @scroll.bot
+            $('.selected')?.classList.remove 'selected'
+            @lines.children[lineIndex-@scroll.top].classList.add 'selected'
+        
+    onSelectionChange: =>
+        log 'change'
+        sel = window.getSelection()
+        @selectionText = ''
+        if sel.rangeCount > 0
+            texts = []
+            range = sel.getRangeAt 0
+            contents = range.cloneContents()
+            for node in contents.children
+                if node.classList.contains 'line'
+                    if not node.classList.contains 'file'
+                        texts.push $('.log', node).innerText
+                else 
+                    log 'nope', node.innerHTML
+            @selectionText = texts.join '\n'
+        log 'selectionText', @selectionText
+            
     #  0000000  000      00000000   0000000   00000000   
     # 000       000      000       000   000  000   000  
     # 000       000      0000000   000000000  0000000    

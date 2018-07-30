@@ -8,9 +8,9 @@
 klog
     Open Find Directory     ctrl+o
     -
-    Open Log File
-    Load Log File
-    Clear Log File
+    Open Log File           
+    Load Log File           
+    Clear Log File          
     --
     About                   ctrl+,
     ---
@@ -40,7 +40,7 @@ View
     ID                      i ctrl+i                 
     File                    f ctrl+f
     Src                     s ctrl+s
-    Icon
+    Icon                    
     ---
     Font Size   
         Increase            ctrl+=

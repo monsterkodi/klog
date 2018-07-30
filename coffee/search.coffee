@@ -6,7 +6,7 @@
 0000000   00000000  000   000  000   000   0000000  000   000
 ###
 
-{ valid, reversed, matchr, str, $ } = require 'kxk'
+{ post, empty } = require 'kxk'
 
 log   = console.log
 Input = require './input'
@@ -24,8 +24,39 @@ class Search extends Input
         """
         
         super 'search', svg
+
+        @searchIndex = -1
+        @searchTerm = ''
         
         @cfg = []
         if @input.value then @onInput()
-                        
+          
+    submit: (term, maxIndex=-1) =>
+        
+        if empty term
+            @searchIndex = -1
+            return
+            
+        if term != @searchTerm
+            @searchTerm = term
+            @searchIndex = -1
+            
+        if maxIndex < 0
+            maxIndex = window.lines.cache.length-1
+        else if maxIndex > window.lines.cache.length-1
+            maxIndex = window.lines.cache.length-1
+            
+        if @searchIndex+1 <= maxIndex
+            for index in [@searchIndex+1..maxIndex]
+                line = window.lines.cache[index]
+                if line.info.type != 'file' and 0 <= line.info.str.indexOf term
+                    @searchIndex = index
+                    post.emit 'selectLine', @searchIndex
+                    return
+                
+        if @searchIndex > 0
+            maxIndex = @searchIndex-1
+            @searchIndex = -1
+            @submit term, maxIndex
+        
 module.exports = Search
