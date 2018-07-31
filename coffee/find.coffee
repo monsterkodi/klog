@@ -44,9 +44,9 @@ class Find extends Input
         
         window.lines.appendLog 
             id:     'klog'
-            file:   'find'
+            file:   'find'            
             icon:   slash.fileUrl slash.join __dirname, '..', 'img', 'menu@2x.png'
-            str:    "find '#{term}' in '#{dir}' using filter '#{window.filter.findPattern()}'"
+            str:    "find \"#{term}\" in #{dir}: using filter \"#{window.filter.findPattern()}\""
         
         @cp?.kill()
         args = [dir, term].concat window.filter.terms()
