@@ -35,7 +35,6 @@ class Find extends Input
         
         term ?= @text()
         term = term.trim()
-        # return if empty term
         
         dir = prefs.get 'findDir', ''
         return if empty dir
@@ -50,8 +49,7 @@ class Find extends Input
         
         @cp?.kill()
         args = [dir, term].concat window.filter.terms()
-        # @cp = childp.fork slash.join(__dirname, 'scanner.js'), args, stdio: ['pipe', 'pipe', 'ignore', 'ipc'], execPath: 'node'
-        @cp = childp.fork slash.join(__dirname, 'scanner.js'), args#, stdio: ['pipe', 'pipe', 'ignore', 'ipc'], execPath: 'node'
+        @cp = childp.fork slash.join(__dirname, 'scanner.js'), args
         @cp.on 'message', @onScanner
      
     onScanner: (message) => 
