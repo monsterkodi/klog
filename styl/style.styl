@@ -179,7 +179,7 @@ body
             &.highlight-search
                 padding             0
             
-            &.icon
+            &.icon-column
                 width               1.4em
                 margin              0
                 position            relative
@@ -194,25 +194,29 @@ body
                 min-width           2em
                 width               2em
                 -webkit-user-select none
-            &.log
+            &.log-column
                 flex-grow           1
                 cursor              text
                 white-space         pre
                 padding-left        2px
-            &.num
+            &.num-column
                 min-width           4ex
                 -webkit-user-select none
-            &.time
+            &.time-column
                 min-width           14ex
                 -webkit-user-select none
-            &.id
+            &.id-column
+                overflow            hidden
                 opacity             0.5
                 min-width           8ex
+                flex                0 0 8ex
                 -webkit-user-select none
-            &.file.column
+            &.file-column
+                overflow            hidden
                 min-width           15ex
                 -webkit-user-select none
-            &.src
+                flex                0 0 15ex
+            &.src-column
                 -webkit-user-select none
                 text-align          right
                 padding-left        12px
@@ -223,9 +227,9 @@ body
                 & .col
                     min-width       30px
   
-.src
-.line.file .log
-.file .icon
+.src-column
+.file .log-column
+.file .icon-column
     opacity             0.5
     &:hover
         opacity         1

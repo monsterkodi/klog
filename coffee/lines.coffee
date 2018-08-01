@@ -62,7 +62,6 @@ class Lines
             @lines.children[lineIndex-@scroll.top].classList.add 'selected'
         
     onSelectionChange: =>
-        log 'change'
         sel = window.getSelection()
         @selectionText = ''
         if sel.rangeCount > 0
@@ -72,9 +71,7 @@ class Lines
             for node in contents.children
                 if node.classList.contains 'line'
                     if not node.classList.contains 'file'
-                        texts.push $('.log', node).innerText
-                else 
-                    log 'nope', node.innerHTML
+                        texts.push $('.log-column', node).innerText
             @selectionText = texts.join '\n'
         log 'selectionText', @selectionText
             
@@ -291,11 +288,11 @@ class Lines
                 
         @num  += 1
         
-        fileClss = 'file column'
-        iconClss = 'icon'
-        idClss   = 'id'
-        logClss  = 'log'
-        srcClss  = 'src'
+        fileClss = 'file-column'
+        iconClss = 'icon-column'
+        idClss   = 'id-column'
+        logClss  = 'log-column'
+        srcClss  = 'src-column'
         
         if info.source?
             ext = slash.ext info.source
@@ -314,8 +311,8 @@ class Lines
                 "#{_.padStart(String(d.getSeconds()), 2, '0')}"
                 "#{_.padStart(String(d.getMilliseconds()), 2, '0')}"].join ':' 
                         
-        html += "<span class='num'>#{@num-1}</span>"
-        html += "<span class='time'>#{time}</span>"
+        html += "<span class='num-column'>#{@num-1}</span>"
+        html += "<span class='time-column'>#{time}</span>"
         html += "<span class='#{iconClss}'>#{icon}</span>"
         html += "<span class='#{idClss}'>#{info.id} </span>"            
         html += "<span class='#{fileClss}'>#{info.file} </span>"
@@ -331,10 +328,6 @@ class Lines
         html += "</span>"
         
         line = elem class:"line #{info.type}", html:html
-        # line.info = info
-        
-        # icon =$ '.icon', line
-        # new tooltip elem:icon, parent:line, html:slash.tilde(info.source)
         
         line.info = info
         line
@@ -371,7 +364,7 @@ class Lines
         return if event.target.classList.contains 'line'
         
         if lineElem = elem.upElem event.target, class:'line'
-            file =  $('.src', lineElem).innerText
+            file =  $('.src-column', lineElem).innerText
             if valid file
                 
                 file = file.replace /[\w\-]+\-x64\/resources\/app\//, ''

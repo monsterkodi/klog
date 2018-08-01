@@ -101,32 +101,30 @@ backColor      = #0d0d0d // source line background
 // 000      000  000  0000  000            000  
 // 0000000  000  000   000  00000000  0000000   
 
-.num
+.num-column
     color               frameColor
-.time
+.time-column
     color               textBlurColor
-.icon
+.icon-column
     color               #888
-.id
+.id-column
     color               #aaf
-.file
+.file-column
     color               #aaf
 .find
     color               #ddd
-.src
+.src-column
     & .ln
         color           #88f
     & .col
         color           #44f
-.name
-    color               #f80
-.log
+.log-column
     color               textFocus
 .sep
     color               #88f
     
-.line.main .id 
-.line.main .file
+.line.main .id-column
+.line.main .file-column
 .line.main .sep
     color               #c04
     
@@ -391,15 +389,15 @@ backColor      = #0d0d0d // source line background
         color       #0a0
 
 .nil
-    color           #808
+    color           #f04
     
 .number
 .int
     color           #88f
 .float
-    color           #f08
+    color           #f68
 .hex
-    color           #f88
+    color           #fa8
     
 .regexp
     color           #f4a

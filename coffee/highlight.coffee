@@ -28,7 +28,7 @@ class Highlight
     @line: (line) ->
         
         info  = line.info
-        div   =$ '.log', line
+        div   =$ '.log-column', line
         
         if info.highlighted and info.highlightSearch == window.search.text() and info.highlightFind = window.find.text()
             div.innerHTML = info.highlighted

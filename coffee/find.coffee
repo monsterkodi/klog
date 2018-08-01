@@ -6,7 +6,7 @@
 000       000  000   000  0000000    
 ###
 
-{ post, childp, matchr, empty, prefs, slash, valid, last, str, log, $ } = require 'kxk'
+{ post, childp, matchr, empty, prefs, slash, valid, last, str, log, $, _ } = require 'kxk'
 
 Input = require './input'
 
@@ -50,11 +50,16 @@ class Find extends Input
         
         @cp?.kill()
         args = [dir, term].concat window.filter.terms()
-        @cp = childp.fork slash.join(__dirname, 'scanner.js'), args, stdio: ['pipe', 'pipe', 'ignore', 'ipc'], execPath: 'node'
+        # @cp = childp.fork slash.join(__dirname, 'scanner.js'), args, stdio: ['pipe', 'pipe', 'ignore', 'ipc'], execPath: 'node'
+        @cp = childp.fork slash.join(__dirname, 'scanner.js'), args#, stdio: ['pipe', 'pipe', 'ignore', 'ipc'], execPath: 'node'
         @cp.on 'message', @onScanner
      
     onScanner: (message) => 
-    
+        
+        if _.isString message
+            log "message: '#{message}'"
+            message = JSON.parse message
+        
         if not window.filter.shouldLog message
             return
         

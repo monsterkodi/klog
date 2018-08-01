@@ -130,9 +130,9 @@ setFontSize = (s) ->
     lines.lines.style.fontSize = "#{s}px"
     iconSize = clamp 4, 44, parseInt s
 
-    setStyle '.icon',     'height', "#{iconSize}px"
-    setStyle '.icon img', 'height', "#{iconSize}px"
-    setStyle '.icon .browserFileIcon::before', 'fontSize', "#{s}px"
+    setStyle '.icon-column',     'height', "#{iconSize}px"
+    setStyle '.icon-column img', 'height', "#{iconSize}px"
+    setStyle '.icon-column .browserFileIcon::before', 'fontSize', "#{s}px"
     
     post.emit 'fontSize', s
 
@@ -200,7 +200,7 @@ post.on 'menuAction', (action) ->
             setEditor action
             
         when 'ID', 'Num', 'Src', 'Icon', 'File', 'Time'
-            lines.sizer.toggleDisplay action.toLowerCase()
+            lines.sizer.toggleDisplay action.toLowerCase()+'-column'
                 
 # 00     00   0000000   0000000   
 # 000   000  000       000        
@@ -239,7 +239,7 @@ klog "editor:  #{prefs.get 'editor'}\nfindDir: #{prefs.get 'findDir'}\nlogFile: 
 
 # setFontSize prefs.get 'fontSize', defaultFontSize
 
-for column in ['id', 'src', 'icon', 'num', 'time']
+for column in ['id-column', 'src-column', 'icon-column', 'num-column', 'time-column']
     if not prefs.get "display:#{column}", true
         lines.sizer.toggleDisplay column
     

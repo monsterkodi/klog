@@ -19,7 +19,7 @@ class Sizer
     init: ->
         
         @initialized = true
-        for column in ['id', 'file']
+        for column in ['id-column', 'file-column']
             @columns[column] = elem class:"sizer-handle #{column}"
             @sizer.appendChild @columns[column]
             new drag
@@ -40,7 +40,7 @@ class Sizer
         xoff = drag.lastPos.x
         @columns[@dragColumn].style.transform = "translateX(#{xoff}px)"
         
-        div     =$ ".#{@dragColumn}", window.lines.lines.firstChild
+        div =$ ".#{@dragColumn}", window.lines.lines.firstChild
         
         visible = @isVisible @dragColumn
         @show @dragColumn
@@ -82,13 +82,14 @@ class Sizer
         
         prefs.set "display:#{column}", true
         setStyle @columnKey(column), 'display', 'inline-block'
+        # @updatePositions()
         
     updatePositions: ->
 
         return if not @initialized
         return if not window.lines.lines.firstChild
         wsum = 0
-        for column in ['num', 'time', 'icon', 'id', 'file']
+        for column in ['num-column', 'time-column', 'icon-column', 'id-column', 'file-column']
             div =$ ".#{column}", window.lines.lines.firstChild
             width = div.clientWidth
             wsum += width
@@ -96,7 +97,7 @@ class Sizer
                 xoff = wsum 
             else
                 xoff = 0
-            if column in ['id', 'file']
+            if column in ['id-column', 'file-column']
                 @columns[column].style.transform = "translateX(#{xoff}px)"
         
 module.exports = Sizer
