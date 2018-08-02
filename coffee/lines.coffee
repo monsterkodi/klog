@@ -231,15 +231,18 @@ class Lines
         line = @lineForLog msg
         
         @cache.push line
+
+        atBot = @scroll.top + @scroll.fullLines >= @cache.length-1
         
         if @scroll.lineHeight <= 0
             fontSize = prefs.get 'fontSize', 16
             window.setFontSize fontSize
-        
+
         @scroll.setNumLines @cache.length
 
-        if @lines.children.length <= @scroll.bot-@scroll.top
+        if atBot or @lines.children.length <= @scroll.bot-@scroll.top 
             @appendLine @cache.length-1
+            @scroll.by @scroll.lineHeight
             @updatePositions()
             
         @onFontSize fontSize if fontSize
