@@ -24,11 +24,11 @@ class Minimap
         @offsetLeft = 6
 
         @elem    = elem class: 'minimap', id: 'minimap'
-        @topbot  = elem class: 'topbot'
         @lines   = elem 'canvas', class: 'minimapLines', width: @width, height: @height
+        @topbot  = elem class: 'topbot'
 
-        @elem.appendChild @topbot
         @elem.appendChild @lines
+        @elem.appendChild @topbot
 
         @elem.addEventListener 'wheel', @editor.scrollbar?.onWheel
 
