@@ -33,6 +33,8 @@ class Find extends Input
     
     submit: (term) =>
         
+        return if empty term
+        
         term ?= @text()
         term = term.trim()
         

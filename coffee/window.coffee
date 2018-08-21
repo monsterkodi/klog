@@ -6,7 +6,7 @@
 00     00  000  000   000  0000000     0000000   00     00  
 ###
 
-{ post, stopEvent, getStyle, setStyle, keyinfo, childp, prefs, first, empty, slash, clamp, args, open, win, udp, str, fs, error, log, _ } = require 'kxk'
+{ post, stopEvent, setStyle, keyinfo, childp, slash, clamp, prefs, first, empty, open, udp, win, fs, error, log, _ } = require 'kxk'
 
 { Tail } = require 'tail'
 
