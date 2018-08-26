@@ -27,6 +27,10 @@ class Highlight
     
     @line: (line) ->
         
+        if not line?.info
+            log "no info?", line
+            return
+        
         info  = line.info
         div   =$ '.log-column', line
         
