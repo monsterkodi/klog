@@ -59,8 +59,13 @@ class Input
         prefs.set "input:#{@name}:value", @input.value
         
         if @cfg?
-            text = @input.value
-            texts = text.trim().split(/\s+/).map (s) -> s.trim()
+            text = @input.value.trim()
+            if text.startsWith('"') and text.endsWith('"')
+                texts = [_.trim text, '"']
+            else if text.startsWith("'") and text.endsWith("'")
+                texts = [_.trim text, "'"]
+            else
+                texts = text.split(/\s+/).map (s) -> s.trim()
             
             @cfg = []
             for t in texts

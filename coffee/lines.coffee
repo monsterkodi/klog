@@ -274,7 +274,10 @@ class Lines
             else if @icons[info.id]
                 "<img src='#{@icons[info.id]}'/>"
             else if info.id == 'file'
-                className = fileIcons.getClass slash.removeLinePos info.source
+                try
+                    className = fileIcons.getClass slash.removeLinePos info.source
+                catch e
+                    null
                 if empty className
                     if slash.ext(info.source) == 'noon'
                         className = 'noon-icon'
@@ -366,17 +369,14 @@ class Lines
         return if event.target.classList.contains 'log'
         return if event.target.classList.contains 'line'
         
-        if lineElem = elem.upElem event.target, class:'line'
-            file =  $('.src-column', lineElem).innerText
+        if lineElem = elem.upElem event.target, {class:'line'}
+            file = $('.src-column',lineElem)?.innerText
             if valid file
-                
                 file = file.replace /[\w\-]+\-x64\/resources\/app\//, ''
-                
                 if /\/node\_modules\//.test file
                     upFile = file.replace /[\w\-]+\/node\_modules\//, ''
                     if slash.exists upFile
                         file = upFile
-                    
                 post.emit 'openFile', file
-            
+
 module.exports = Lines
