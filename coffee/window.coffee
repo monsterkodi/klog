@@ -6,7 +6,7 @@
 00     00  000  000   000  0000000     0000000   00     00  
 ###
 
-{ post, stopEvent, setStyle, keyinfo, childp, slash, clamp, prefs, first, empty, open, udp, win, fs, error, log, _ } = require 'kxk'
+{ post, stopEvent, setStyle, keyinfo, childp, slash, clamp, prefs, first, empty, open, udp, win, fs, _ } = require 'kxk'
 
 { Tail } = require 'tail'
 
@@ -15,7 +15,6 @@ Search   = require './search'
 Filter   = require './filter'
 Find     = require './find'
   
-log  = console.log
 klog = require('kxk').log
 
 window.lines = lines = new Lines
@@ -222,7 +221,7 @@ udpReceiver = new udp onMsg:onMsg #, debug:true
 # 0000000      000     000   000  00000000  000   000  000   000    
 
 tail = new Tail slash.untilde logFile
-tail.on 'error', error
+tail.on 'error', console.error
 tail.on 'line', (line) -> 
     onMsg JSON.parse line
     
