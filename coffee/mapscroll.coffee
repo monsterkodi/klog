@@ -6,9 +6,8 @@
 000   000  000   000  000              0000000    0000000  000   000   0000000   0000000  0000000
 ###
 
-{ clamp, log } = require 'kxk'
+{ clamp } = require 'kxk'
 
-log    = console.log 
 events = require 'events'
 
 class MapScroll extends events

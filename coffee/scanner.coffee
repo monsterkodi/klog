@@ -6,9 +6,8 @@
 0000000    0000000  000   000  000   000  000   000  00000000  000   000
 ###
 
-{ valid, slash, first, empty, noon, str, fs, error, _ } = require 'kxk'
+{ valid, slash, first, empty, noon, fs, kerror, _ } = require 'kxk'
 
-log             = console.log
 findit          = require 'findit2'
 prettyTime      = require 'pretty-ms'
 { performance } = require 'perf_hooks'
@@ -42,7 +41,7 @@ class Scanner
             @walker.on 'error', (err) -> log 'error!', err.stack
                 
         catch err
-            error "Scanner.start -- #{err} dir: #{@dir} stack:", err.stack
+            kerror "Scanner.start -- #{err} dir: #{@dir} stack:", err.stack
         
     shouldScan: (file) ->
         

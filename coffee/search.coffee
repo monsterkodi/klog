@@ -8,7 +8,6 @@
 
 { post, empty } = require 'kxk'
 
-log   = console.log
 Input = require './input'
 
 class Search extends Input

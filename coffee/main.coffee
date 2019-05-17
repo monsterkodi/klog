@@ -6,7 +6,7 @@
 000   000  000   000  000  000   000
 ###
 
-{ args, udp, app, log } = require 'kxk'
+{ args, udp, app } = require 'kxk'
 
 new app
     dir:        __dirname

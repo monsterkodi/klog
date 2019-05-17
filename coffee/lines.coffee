@@ -6,9 +6,8 @@
 0000000  000  000   000  00000000  0000000 
 ###
 
-{ post, setStyle, prefs, valid, slash, empty, elem, str, log, $, _ } = require 'kxk'
+{ post, setStyle, prefs, valid, slash, empty, elem, kstr, $, _ } = require 'kxk'
 
-log       = console.log
 Scroll    = require './scroll'
 ScrollBar = require './scrollbar'
 Highlight = require './highlight'
@@ -73,7 +72,7 @@ class Lines
                     if not node.classList.contains 'file'
                         texts.push $('.log-column', node).innerText
             @selectionText = texts.join '\n'
-        log 'selectionText', @selectionText
+        # log 'selectionText', @selectionText
             
     #  0000000  000      00000000   0000000   00000000   
     # 000       000      000       000   000  000   000  
@@ -324,7 +323,7 @@ class Lines
         html += "<span class='#{fileClss}'>#{info.file} </span>"
         html += "<span class='sep'>#{info.sep}</span>"
     
-        logStr = info.str.split('\n').map((s) -> str.encode s).join '<br>'
+        logStr = info.str.split('\n').map((s) -> kstr.encode s).join '<br>'
         html += "<span class='#{logClss}'>#{logStr}</span>"
         html += "<span class='#{srcClss}'>#{info.source ? ''}"
         if info.line

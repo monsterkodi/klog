@@ -6,7 +6,7 @@
 00     00  000  000   000  0000000     0000000   00     00  
 ###
 
-{ post, stopEvent, setStyle, keyinfo, childp, slash, clamp, prefs, first, empty, open, udp, win, fs, _ } = require 'kxk'
+{ post, stopEvent, setStyle, keyinfo, childp, slash, clamp, prefs, first, empty, open, udp, win, kstr, klog, kerror, fs, _ } = require 'kxk'
 
 { Tail } = require 'tail'
 
@@ -15,8 +15,6 @@ Search   = require './search'
 Filter   = require './filter'
 Find     = require './find'
   
-klog = require('kxk').log
-
 window.lines = lines = new Lines
 
 w = new win 
@@ -44,8 +42,6 @@ koSend = null
 openFile = (f) ->
   
     [file, line] = slash.splitFileLine f
-    
-    log 'openFile', file, line
     
     switch prefs.get 'editor', 'Visual Studio'
         when 'VS Code'
@@ -100,7 +96,7 @@ loadFile = (file) ->
             try
                 onMsg JSON.parse data
             catch err
-                console.log "data:>#{data}<"
+                kerror "data:>#{data}<"
             
 clearFile = (file) ->
 
@@ -209,6 +205,7 @@ post.on 'menuAction', (action) ->
 
 onMsg = (msg) ->
     
+    msg.str = kstr.stripansi msg.str
     if window.filter.shouldLog msg
         lines.appendLog msg
 

@@ -6,9 +6,8 @@
 000   000  000  000   000  000  000   000  000   000  000
 ###
 
-{ post, getStyle, empty, clamp, elem, drag, str, log, $ } = require 'kxk'
+{ post, getStyle, empty, clamp, elem, drag, $ } = require 'kxk'
 
-log = console.log
 MapScroll = require './mapscroll'
 Highlight = require './highlight'
 

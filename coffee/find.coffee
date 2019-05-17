@@ -6,7 +6,7 @@
 000       000  000   000  0000000    
 ###
 
-{ post, childp, matchr, empty, prefs, slash, valid, last, str, log, $, _ } = require 'kxk'
+{ post, childp, matchr, empty, prefs, slash, valid, last, $, _ } = require 'kxk'
 
 Input = require './input'
 
@@ -57,7 +57,7 @@ class Find extends Input
     onScanner: (message) => 
         
         if _.isString message
-            log "message: '#{message}'"
+            # log "message: '#{message}'"
             message = JSON.parse message
         
         if not window.filter.shouldLog message

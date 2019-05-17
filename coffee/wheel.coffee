@@ -6,9 +6,7 @@
 00     00  000   000  00000000  00000000  0000000
 ###
 
-{ stopEvent, keyinfo, clamp, log } = require 'kxk'
-
-log = console.log
+{ stopEvent, keyinfo, clamp } = require 'kxk'
 
 class Wheel
 

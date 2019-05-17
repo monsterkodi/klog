@@ -6,10 +6,9 @@
 000   000  000   0000000   000   000  0000000  000   0000000   000   000     000   
 ###
 
-{ matchr, slash, valid, str, log, $ } = require 'kxk'
+{ matchr, slash, valid, kstr, kerror, $ } = require 'kxk'
 
-log  = console.log
-kork = require 'kork'
+klor = require 'klor'
 
 class Highlight
 
@@ -28,11 +27,11 @@ class Highlight
     @line: (line) ->
         
         if not line?.info
-            log "no info?", line
+            kerror "no info?", line
             return
         
-        info  = line.info
-        div   =$ '.log-column', line
+        info = line.info
+        div  =$ '.log-column', line
         
         if info.highlighted and info.highlightSearch == window.search.text() and info.highlightFind = window.find.text()
             div.innerHTML = info.highlighted
@@ -50,7 +49,7 @@ class Highlight
             cfg  = window.search.cfg
             
         line = info.str
-        rgs  = matchr.ranges(cfg, line).concat kork.ranges line, ext
+        rgs  = matchr.ranges(cfg, line).concat klor.ranges line, ext
         if valid rgs
             matchr.sortRanges rgs
             dss = matchr.dissect rgs
@@ -59,15 +58,15 @@ class Highlight
             spans = []
             for d in dss
                 if d.start > previ
-                    spans.push str.encode line.slice previ, d.start 
+                    spans.push kstr.encode line.slice previ, d.start 
                 previ = d.start+d.match.length
-                spans.push "<span class='#{clss} #{d.clss}'>" + str.encode(d.match) + "</span>"
+                spans.push "<span class='#{clss} #{d.clss}'>" + kstr.encode(d.match) + "</span>"
             if previ < line.length
-                spans.push str.encode line.slice previ, line.length
+                spans.push kstr.encode line.slice previ, line.length
             div.innerHTML = spans.join ''
         else
             delete info.highlightDiss
-            div.innerHTML = str.encode line
+            div.innerHTML = kstr.encode line
             
         info.highlighted     = div.innerHTML
         info.highlightSearch = window.search.text()

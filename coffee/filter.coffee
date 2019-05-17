@@ -6,9 +6,8 @@
 000       000  0000000     000     00000000  000   000
 ###
 
-{ valid, empty, slash, str, log, $ } = require 'kxk'
+{ valid, empty, slash, str, $ } = require 'kxk'
 
-log   = console.log
 Input = require './input'
 
 class Filter extends Input
