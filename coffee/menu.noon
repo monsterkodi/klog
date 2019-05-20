@@ -12,7 +12,7 @@ klog
     Load Log File           
     Clear Log File          
     --
-    About                   cmdctrl+,
+    About                   cmdctrl+shift+/
     ---
     Quit                    cmdctrl+q
 
