@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
-cd `dirname $0`/..
+DIR=`dirname $0`
+BIN=$DIR/../node_modules/.bin
+cd $DIR/..
 
 if rm -rf klog-win32-x64; then
     
-    konrad
+    $BIN/konrad
 
-    node_modules/.bin/electron-rebuild
+    $BIN/electron-rebuild
 
     node_modules/electron-packager/cli.js . --overwrite --icon=img/app.ico
     

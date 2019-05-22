@@ -42,7 +42,7 @@ koSend = null
 openFile = (f) ->
   
     [file, line] = slash.splitFileLine f
-    
+  
     switch prefs.get 'editor', 'Visual Studio'
         when 'VS Code'
             open "vscode://file/" + slash.resolve f

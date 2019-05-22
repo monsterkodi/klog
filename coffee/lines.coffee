@@ -6,7 +6,7 @@
 0000000  000  000   000  00000000  0000000 
 ###
 
-{ post, setStyle, prefs, valid, slash, empty, elem, kstr, $, _ } = require 'kxk'
+{ post, setStyle, prefs, valid, slash, empty, elem, kstr, klog, $, _ } = require 'kxk'
 
 Scroll    = require './scroll'
 ScrollBar = require './scrollbar'
