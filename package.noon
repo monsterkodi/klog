@@ -20,11 +20,11 @@ dependencies
                 file-icons-js   ^1.0.3
                 findit2         ^2.2.3
                 klor            ^0.15.0
-                kxk             ^0.288.0
+                kxk             ^0.290.0
                 pretty-ms       ^5.0.0
                 tail            ^2.0.2
 devDependencies
                 electron        ^5.0.1
                 electron-packager  ^13.1.1
                 electron-rebuild  ^1.8.4
-                konrad          ^0.118.0
+                konrad          ^0.122.0
