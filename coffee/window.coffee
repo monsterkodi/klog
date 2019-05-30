@@ -205,7 +205,7 @@ post.on 'menuAction', (action) ->
 
 onMsg = (msg) ->
     
-    msg.str = kstr.stripansi msg.str
+    msg.str = kstr.stripAnsi msg.str
     if window.filter.shouldLog msg
         lines.appendLog msg
 

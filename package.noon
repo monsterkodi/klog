@@ -5,7 +5,7 @@ description     log and search tool
 main            js/main.js
 repository
                 type  git
-                url   git+https://github.com/monsterkodi/klog.git
+                url   https://github.com/monsterkodi/klog.git
 scripts
                 mac   bash ./bin/buildmac.sh
                 win   bash ./bin/buildwin.sh
@@ -19,12 +19,12 @@ bugs
 dependencies
                 file-icons-js   ^1.0.3
                 findit2         ^2.2.3
-                klor            ^0.15.0
-                kxk             ^0.290.0
+                klor            ^0.45.0
+                kxk             ^0.298.0
                 pretty-ms       ^5.0.0
                 tail            ^2.0.2
 devDependencies
-                electron        ^5.0.1
+                electron        ^5.0.2
                 electron-packager  ^13.1.1
-                electron-rebuild  ^1.8.4
-                konrad          ^0.122.0
+                electron-rebuild  ^1.8.5
+                konrad          ^0.129.0
