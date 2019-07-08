@@ -61,6 +61,7 @@ Window
     --
     Minimize                alt+ctrl+shift+m
     Maximize                alt+ctrl+m
+    Hide                    command+h h
     ---
     Screenshot              alt+f3
     Reload                  alt+cmdctrl+l

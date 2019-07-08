@@ -28,8 +28,8 @@ window.find   = new Find
 window.search = new Search
 window.filter = new Filter
     
-logFile = slash.tilde slash.join w.userData, '..', 'klog.txt' 
-findDir = slash.resolve prefs.get 'findDir', '~'
+logFile = slash.tilde slash.join w.userData, '..' 'klog.txt' 
+findDir = slash.resolve prefs.get 'findDir' '~'
 
 #  0000000   00000000   00000000  000   000  
 # 000   000  000   000  000       0000  000  
@@ -43,7 +43,7 @@ openFile = (f) ->
   
     [file, line] = slash.splitFileLine f
   
-    switch prefs.get 'editor', 'Visual Studio'
+    switch prefs.get 'editor' 'Visual Studio'
         when 'VS Code'
             open "vscode://file/" + slash.resolve f
         when 'Visual Studio'
@@ -60,7 +60,7 @@ openFile = (f) ->
             if not koSend then koSend = new udp port:9779
             koSend.send slash.resolve f
     
-post.on 'openFile', openFile
+post.on 'openFile' openFile
 
 openDir = (dir) ->
     
@@ -77,8 +77,8 @@ openDir = (dir) ->
 setFindDir = (dir) ->
     
     findDir = slash.tilde dir
-    prefs.set 'findDir', findDir
-    klog 'findDir', findDir
+    prefs.set 'findDir' findDir
+    klog 'findDir' findDir
     
 loadFile = (file) ->
     
@@ -119,15 +119,15 @@ getFontSize = -> prefs.get 'fontSize', defaultFontSize
 setFontSize = (s) ->
         
     s = getFontSize() if not _.isFinite s
-    s = clamp 8, 44, s
+    s = clamp 8 44 s
 
     prefs.set 'fontSize', s
     lines.lines.style.fontSize = "#{s}px"
-    iconSize = clamp 4, 44, parseInt s
+    iconSize = clamp 4 44 parseInt s
 
-    setStyle '.icon-column',     'height', "#{iconSize}px"
-    setStyle '.icon-column img', 'height', "#{iconSize}px"
-    setStyle '.icon-column .browserFileIcon::before', 'fontSize', "#{s}px"
+    setStyle '.icon-column'     'height'  "#{iconSize}px"
+    setStyle '.icon-column img' 'height'  "#{iconSize}px"
+    setStyle '.icon-column .browserFileIcon::before' 'fontSize' "#{s}px"
     
     post.emit 'fontSize', s
 
@@ -145,7 +145,7 @@ changeFontSize = (d) ->
 
 resetFontSize = ->
     
-    prefs.set 'fontSize', defaultFontSize
+    prefs.set 'fontSize' defaultFontSize
     setFontSize defaultFontSize
      
 # 000   000  000   000  00000000  00000000  000      
@@ -175,7 +175,7 @@ setEditor = (editor) ->
     prefs.set 'editor', editor
     klog "editor: #{prefs.get 'editor'}"
 
-post.on 'menuAction', (action) ->
+post.on 'menuAction' (action) ->
     
     switch action
         
@@ -187,14 +187,14 @@ post.on 'menuAction', (action) ->
         when 'Clear Log File'       then clearFile logFile 
         when 'Open Find Directory'  then openDir findDir
         when 'Clear'                then lines.clear()
-        when 'Find'                 then post.emit 'focus', 'find'
-        when 'Search'               then post.emit 'focus', 'search'
-        when 'Exclude'              then post.emit 'focus', 'filter'
+        when 'Find'                 then post.emit 'focus' 'find'
+        when 'Search'               then post.emit 'focus' 'search'
+        when 'Exclude'              then post.emit 'focus' 'filter'
             
-        when 'Visual Studio', 'VS Code', 'Atom', 'ko'
+        when 'Visual Studio' 'VS Code' 'Atom' 'ko'
             setEditor action
             
-        when 'ID', 'Num', 'Src', 'Icon', 'File', 'Time'
+        when 'ID' 'Num' 'Src' 'Icon' 'File' 'Time'
             lines.sizer.toggleDisplay action.toLowerCase()+'-column'
                 
 # 00     00   0000000   0000000   
@@ -218,8 +218,8 @@ udpReceiver = new udp onMsg:onMsg #, debug:true
 # 0000000      000     000   000  00000000  000   000  000   000    
 
 tail = new Tail slash.untilde logFile
-tail.on 'error', console.error
-tail.on 'line', (line) -> 
+tail.on 'error' console.error
+tail.on 'line' (line) -> 
     onMsg JSON.parse line
     
 # 000  000   000  000  000000000    
@@ -228,14 +228,14 @@ tail.on 'line', (line) ->
 # 000  000  0000  000     000       
 # 000  000   000  000     000       
 
-prefs.set 'editor',  prefs.get 'editor', 'ko'
-prefs.set 'findDir', prefs.get 'findDir', '~'
+prefs.set 'editor'  prefs.get 'editor', 'ko'
+prefs.set 'findDir' prefs.get 'findDir', '~'
 
 klog "editor:  #{prefs.get 'editor'}\nfindDir: #{prefs.get 'findDir'}\nlogFile: #{logFile}"
 
 # setFontSize prefs.get 'fontSize', defaultFontSize
 
-for column in ['id-column', 'src-column', 'icon-column', 'num-column', 'time-column']
+for column in ['id-column' 'src-column' 'icon-column' 'num-column' 'time-column']
     if not prefs.get "display:#{column}", true
         lines.sizer.toggleDisplay column
     

@@ -19,12 +19,12 @@ bugs
 dependencies
                 file-icons-js   ^1.0.3
                 findit2         ^2.2.3
-                klor            ^0.45.0
-                kxk             ^0.298.0
+                klor            ^1.2.0
+                kxk             ^0.322.0
                 pretty-ms       ^5.0.0
                 tail            ^2.0.2
 devDependencies
-                electron        ^5.0.2
-                electron-packager  ^13.1.1
+                electron        ^5.0.6
+                electron-packager  ^14.0.1
                 electron-rebuild  ^1.8.5
-                konrad          ^0.129.0
+                konrad          ^0.133.0
