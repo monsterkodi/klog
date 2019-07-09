@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-cd `dirname $0`/..
+DIR=`dirname $0`
+BIN=$DIR/../node_modules/.bin
+cd $DIR/..
 
 if rm -rf klog-darwin-x64; then
 
