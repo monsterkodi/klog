@@ -1,6 +1,6 @@
 name            klog
 productName     klog
-version         0.90.0
+version         0.93.0
 description     log and search tool
 main            js/main.js
 repository
@@ -20,7 +20,7 @@ dependencies
                 file-icons-js   ^1.0.3
                 findit2         ^2.2.3
                 klor            ^1.2.0
-                kxk             ^0.322.0
+                kxk             ^0.323.0
                 pretty-ms       ^5.0.0
                 tail            ^2.0.2
 devDependencies

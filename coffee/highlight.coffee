@@ -27,7 +27,7 @@ class Highlight
     @line: (line) ->
         
         if not line?.info
-            kerror "no info?", line
+            kerror "no info?" line
             return
         
         info = line.info

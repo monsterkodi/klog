@@ -113,7 +113,10 @@ class Lines
         
         if lineIndex > @cache.length-1
             return
-        
+
+        if lineIndex < 0
+            return
+            
         line = @cache[lineIndex]
         Highlight.line line
 
