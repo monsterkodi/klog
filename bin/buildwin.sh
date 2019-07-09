@@ -5,12 +5,12 @@ cd $DIR/..
 
 if rm -rf klog-win32-x64; then
     
-    $BIN/konrad
+    if $BIN/konrad; then
 
-    $BIN/electron-rebuild
-
-    node_modules/electron-packager/cli.js . --overwrite --icon=img/app.ico
+        $BIN/electron-rebuild
     
-    rm -rf klog-win32-x64/resources/app/inno
-
+        $BIN/electron-packager . --overwrite --icon=img/app.ico
+        
+        rm -rf klog-win32-x64/resources/app/inno
+    fi
 fi

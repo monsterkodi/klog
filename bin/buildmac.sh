@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
-cd `dirname $0`/..
+DIR=`dirname $0`
+BIN=$DIR/../node_modules/.bin
+cd $DIR/..
 
-konrad --run
+if $BIN/konrad --run; then
 
-IGNORE="/(.*\.dmg$|Icon$|watch$|icons$|.*md$|pug$|styl$|.*\.lock$|img/banner\.png)"
-
-node_modules/.bin/electron-packager . --overwrite --icon=img/app.icns --ignore=$IGNORE
+    IGNORE="/(.*\.dmg$|Icon$|watch$|icons$|.*md$|pug$|styl$|.*\.lock$|img/banner\.png)"
+    
+    $BIN/electron-packager . --overwrite --icon=img/app.icns --ignore=$IGNORE
+fi
