@@ -17,7 +17,7 @@ class Input
         @button = elem class:'winbutton gray', html:html, click:@onButton
         window.titlebar.pushElem @button
         
-        @input = elem 'input', class:"input #{@name}", value:'', dblclick:stopEvent, autofocus:true, click:stopEvent
+        @input = elem 'input', class:"input #{@name}", value:'', dblclick:stopEvent, click:stopEvent #autofocus:true
         @input.style.display = 'none'
         @input.addEventListener 'change',  @onEnter
         @input.addEventListener 'input',   @onInput
@@ -28,13 +28,15 @@ class Input
         
         @show() if prefs.get "input:#{@name}:visible"
         
-        post.on 'focus', @onFocus
+        post.on 'focus' @onFocus
         
     text: -> @input.value
         
     onFocus: (name) => 
+        
         if name == @name 
             @show()
+            @input.focus()
      
     onInputKey: (event) =>
         
@@ -81,10 +83,9 @@ class Input
     
     show: -> 
 
-        prefs.set "input:#{@name}:visible", true
+        prefs.set "input:#{@name}:visible" true
         if @input.style.display == 'none'
             @input.style.display = 'flex'
-        @input.focus()
             
     hide: ->
         
