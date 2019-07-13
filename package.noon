@@ -20,7 +20,7 @@ dependencies
                 file-icons-js   ^1.0.3
                 findit2         ^2.2.3
                 klor            ^1.2.0
-                kxk             ^0.323.0
+                kxk             ^0.325.0
                 pretty-ms       ^5.0.0
                 tail            ^2.0.2
 devDependencies
