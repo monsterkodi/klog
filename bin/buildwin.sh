@@ -12,5 +12,7 @@ if rm -rf klog-win32-x64; then
         $BIN/electron-packager . --overwrite --icon=img/app.ico
         
         rm -rf klog-win32-x64/resources/app/inno
+        
+        start klog-win32-x64/klog.exe
     fi
 fi
