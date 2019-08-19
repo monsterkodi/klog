@@ -9,6 +9,7 @@
 { args, udp, app } = require 'kxk'
 
 new app
+    
     dir:        __dirname
     pkg:        require '../package.json'
     shortcut:   'Alt+K'
