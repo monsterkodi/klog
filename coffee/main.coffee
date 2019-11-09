@@ -6,13 +6,14 @@
 000   000  000   000  000  000   000
 ###
 
-{ args, udp, app } = require 'kxk'
+{ post, args, app, udp } = require 'kxk'
 
 new app
     
     dir:        __dirname
     pkg:        require '../package.json'
     shortcut:   'Alt+K'
+    onShortcut: -> post.toWins 'menuAction' 'Clear'
     index:      'index.html'
     icon:       '../img/app.ico'
     tray:       '../img/menu.png'
