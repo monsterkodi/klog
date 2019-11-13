@@ -6,7 +6,7 @@
 000  000   000  000         0000000      000   
 ###
 
-{ post, keyinfo, prefs, stopEvent, elem, _ } = require 'kxk'
+{ post, stopEvent, keyinfo, prefs, elem, _ } = require 'kxk'
 
 Highlight = require './highlight'
 
@@ -23,7 +23,7 @@ class Input
         @input.addEventListener 'input',   @onInput
         @input.addEventListener 'keydown', @onInputKey
         window.titlebar.pushElem @input
-        
+                
         @input.value = prefs.get("input:#{@name}:value") ? ''
         
         @show() if prefs.get "input:#{@name}:visible"
