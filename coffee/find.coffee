@@ -8,9 +8,9 @@
 
 { _, args, childp, empty, filter, post, prefs, slash } = require 'kxk'
 
-Input = require './input'
+Terms = require './terms'
 
-class Find extends Input
+class Find extends Terms
 
     @: ->
         
@@ -23,7 +23,7 @@ class Find extends Input
         
         super 'find' svg # '⚲'
         @cfg = []
-        if @input.value then @onInput()
+        # if @input.value then @onInput()
         
     #  0000000  000   000  0000000    00     00  000  000000000  
     # 000       000   000  000   000  000   000  000     000     
@@ -31,29 +31,25 @@ class Find extends Input
     #      000  000   000  000   000  000 0 000  000     000     
     # 0000000    0000000   0000000    000   000  000     000     
     
-    submit: (term) =>
+    submit: =>
         
-        term ?= @text()
-        
-        return if empty term
-        
-        term = term.trim()
-        
-        dir = prefs.get 'findDir', ''
+        dir = prefs.get 'findDir' ''
         return if empty dir
 
-        post.emit 'menuAction', 'Clear'
+        post.emit 'menuAction' 'Clear'
+        
+        terms = @texts().map (t) -> new Buffer(t).toString 'base64'
         
         window.lines.appendLog 
             id:     'klog'
             file:   'find'            
-            icon:   slash.fileUrl slash.join __dirname, '..', 'img', 'menu@2x.png'
-            str:    "find \"#{term}\" in #{dir}: using filter \"#{window.filter.findPattern()}\""
+            icon:   slash.fileUrl slash.join __dirname, '..' 'img' 'menu@2x.png'
+            str:    "find \"#{@texts().join(',')}\" din #{dir}: using filter \"#{window.filter.findPattern()}\""
         
         @cp?.kill()
-        args = [dir, term].concat window.filter.terms()
+        args = [dir, window.filter.terms().join(','), terms]
         @cp = childp.fork slash.join(__dirname, 'scanner.js'), args
-        @cp.on 'message', @onScanner
+        @cp.on 'message' @onScanner
      
     onScanner: (message) => 
         

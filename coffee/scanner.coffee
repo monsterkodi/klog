@@ -13,7 +13,7 @@ findit          = require 'findit2'
 
 class Scanner
 
-    @: (@dir, @search, exts) ->
+    @: (@dir, exts, @search) ->
         
         @maxLineLength = 400
         
@@ -27,17 +27,17 @@ class Scanner
         @fileCount = 0
         @scanCount = 0
         @lineCount = 0
-        
+                
         @scanStart = performance.now()
         
         try
             @walker = findit @dir
                                 
-            @walker.on 'directory', @onDir            
-            @walker.on 'file',      @onFile            
-            @walker.on 'end',       @onEnd               
-            @walker.on 'stop',      @onEnd               
-            @walker.on 'error', (err) -> log 'error!', err.stack
+            @walker.on 'directory' @onDir            
+            @walker.on 'file'      @onFile            
+            @walker.on 'end'       @onEnd               
+            @walker.on 'stop'      @onEnd               
+            @walker.on 'error' (err) -> log 'error!' err.stack
                 
         catch err
             kerror "Scanner.start -- #{err} dir: #{@dir} stack:", err.stack
@@ -73,7 +73,7 @@ class Scanner
     onDir: (dir, stat, stop) =>
         
         dirName = slash.file dir
-        if dirName in ['node_modules', '.git']
+        if dirName in ['node_modules' '.git']
             stop()
         if dirName.endsWith '-x64'
             stop()
@@ -108,9 +108,9 @@ class Scanner
         fileEnd   = (f) =>      () => @onFileEnd f
         
         stream = fs.createReadStream file, encoding:'utf8'
-        stream.on 'error', @dequeue
-        stream.on 'end',   fileEnd   file
-        stream.on 'data',  fileChunk file
+        stream.on 'error' @dequeue
+        stream.on 'end'   fileEnd   file
+        stream.on 'data'  fileChunk file
         
     # 00000000  000  000      00000000  00000000  000   000  0000000    
     # 000       000  000      000       000       0000  000  000   000  
@@ -144,6 +144,8 @@ class Scanner
     
     onFileChunk: (file, chunk) -> 
         
+        return if empty @search # needed?
+        
         for data in chunk.split /\r?\n/
             
             @lineno[file]++
@@ -151,23 +153,27 @@ class Scanner
             if data.length > @maxLineLength
                 data = data.substr 0, @maxLineLength
                 
-            if empty @search
-                column = 0
-            else
-                column = data.indexOf(@search)
-            if column >= 0
+            matches = true
+            
+            if valid @search
+                for s in @search
+                    if data.indexOf(s) < 0
+                        matches = false
+                        break
+                        
+            if matches
                 @chunks[file].push 
                     id:     'find' 
                     file:   ''
                     icon:   ''
                     type:   'find'
                     line:   @lineno[file]
-                    column: column
+                    # column: column
                     source: slash.tilde file
                     str:    data
-                    find:   @search
+                    find:   @search.join '|'
                     sep:    ''
-
+            
     onEnd: => 
                 
         @walker = null
@@ -194,7 +200,7 @@ class Scanner
     stats: ->
         
         time = parseInt performance.now()-@scanStart
-        "find \"#{@search}\" in #{slash.tilde @dir}: #{@lineCount} lines in #{@fileCount} files, #{@scanCount} files scanned in #{time} ms"
+        "find \"#{@search.join '|'}\" in #{slash.tilde @dir}: #{@lineCount} lines in #{@fileCount} files, #{@scanCount} files scanned in #{time} ms"
             
     #  0000000  000000000   0000000   00000000   
     # 000          000     000   000  000   000  
@@ -214,14 +220,16 @@ class Scanner
         else
             log JSON.stringify obj
         
-process.on 'uncaughtException', (err) ->
-    log 'scanner error!', err.stack
+process.on 'uncaughtException' (err) ->
+    log 'scanner error!' err.stack
     true
     
 if not empty process.argv[2]
+    
     dir    = process.argv[2]
-    search = process.argv[3]
-    exts   = [].slice.call(process.argv).slice 4
-        
-    new Scanner slash.resolve(dir), search, exts
+    exts   = process.argv[3].split ','
+
+    search = process.argv[4].split(',').map (s) -> new Buffer(s, 'base64').toString()
+            
+    new Scanner slash.resolve(dir), exts, search
     
