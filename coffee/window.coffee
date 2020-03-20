@@ -6,7 +6,7 @@
 00     00  000  000   000  0000000     0000000   00     00  
 ###
 
-{ post, stopEvent, setStyle, keyinfo, childp, slash, clamp, prefs, first, empty, open, udp, win, kstr, klog, kerror, fs, _ } = require 'kxk'
+{ _, childp, clamp, empty, first, fs, kerror, keyinfo, klog, kstr, open, post, prefs, setStyle, slash, stopEvent, udp, valid, win } = require 'kxk'
 
 { Tail } = require 'tail'
 
@@ -64,15 +64,14 @@ post.on 'openFile' openFile
 
 openDir = (dir) ->
     
-    opts =
-        title:      'Open'
-        properties: ['openDirectory']
-    
     electron = require 'electron'
-    electron.remote.dialog.showOpenDialog opts, (dirs) =>
-        if dir = first dirs
-            slash.dirExists dir, ->
-                setFindDir dir
+    electron.remote.dialog.showOpenDialog(
+        title: "Open File"
+        defaultPath: prefs.get 'findDir' '~'
+        properties: ['openDirectory']).then (result) =>
+            if not result.cancelled and valid result.filePaths
+                dir = first result.filePaths
+                slash.dirExists dir, -> setFindDir dir
                 
 setFindDir = (dir) ->
     

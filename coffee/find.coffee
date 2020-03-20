@@ -6,13 +6,13 @@
 000       000  000   000  0000000    
 ###
 
-{ post, childp, matchr, empty, prefs, slash, valid, last, $, _ } = require 'kxk'
+{ _, args, childp, empty, filter, post, prefs, slash } = require 'kxk'
 
 Input = require './input'
 
 class Find extends Input
 
-    constructor: ->
+    @: ->
         
         svg = """
             <svg width="100%" height="100%" viewBox="0 0 30 30">
@@ -33,9 +33,10 @@ class Find extends Input
     
     submit: (term) =>
         
+        term ?= @text()
+        
         return if empty term
         
-        term ?= @text()
         term = term.trim()
         
         dir = prefs.get 'findDir', ''

@@ -6,13 +6,13 @@
 0000000   00000000  000   000  000   000   0000000  000   000
 ###
 
-{ post, empty } = require 'kxk'
+{ empty, post } = require 'kxk'
 
 Input = require './input'
 
 class Search extends Input
 
-    constructor: () ->
+    @: ->
 
         svg = """
             <svg width="100%" height="100%" viewBox="0 0 30 30" stroke-linecap="round">
@@ -22,7 +22,7 @@ class Search extends Input
             </svg>
         """
         
-        super 'search', svg
+        super 'search' svg
 
         @searchIndex = -1
         @searchTerm = ''
@@ -50,7 +50,7 @@ class Search extends Input
                 line = window.lines.cache[index]
                 if line.info.type != 'file' and 0 <= line.info.str.indexOf term
                     @searchIndex = index
-                    post.emit 'selectLine', @searchIndex
+                    post.emit 'selectLine' @searchIndex
                     return
                 
         if @searchIndex > 0

@@ -17,7 +17,7 @@ fileIcons = require 'file-icons-js'
 
 class Lines
 
-    constructor: ->
+    @: ->
         
         @num = 0        
         @lines =$ '#lines'

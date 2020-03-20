@@ -13,7 +13,7 @@ Highlight = require './highlight'
 
 class Minimap
 
-    constructor: (@editor) ->
+    @: (@editor) ->
 
         minimapWidth = parseInt getStyle '.minimap', 'width'
 

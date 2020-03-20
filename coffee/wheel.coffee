@@ -10,7 +10,7 @@
 
 class Wheel
 
-    constructor: (@scroll) ->
+    @: (@scroll) ->
         
         @last  = 0
         @accum = 0

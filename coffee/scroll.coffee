@@ -13,7 +13,7 @@ Wheel = require './wheel'
 
 class Scroll
 
-    constructor: (@view) ->
+    @: (@view) ->
 
         post.on 'combo', @onCombo
                 

@@ -6,22 +6,22 @@
 000  000   000  000         0000000      000   
 ###
 
-{ post, stopEvent, keyinfo, prefs, elem, _ } = require 'kxk'
+{ _, elem, keyinfo, post, prefs, stopEvent } = require 'kxk'
 
 Highlight = require './highlight'
 
 class Input
 
-    constructor: (@name, html) ->
+    @: (@name, html) ->
         
-        @button = elem class:'winbutton gray', html:html, click:@onButton
+        @button = elem class:'winbutton gray' html:html, click:@onButton
         window.titlebar.pushElem @button
         
-        @input = elem 'input', class:"input #{@name}", value:'', dblclick:stopEvent, click:stopEvent #autofocus:true
+        @input = elem 'input' class:"input #{@name}" value:'' dblclick:stopEvent, click:stopEvent #autofocus:true
         @input.style.display = 'none'
-        @input.addEventListener 'change',  @onEnter
-        @input.addEventListener 'input',   @onInput
-        @input.addEventListener 'keydown', @onInputKey
+        @input.addEventListener 'change'  @onEnter
+        @input.addEventListener 'input'   @onInput
+        @input.addEventListener 'keydown' @onInputKey
         window.titlebar.pushElem @input
                 
         @input.value = prefs.get("input:#{@name}:value") ? ''
@@ -58,7 +58,7 @@ class Input
     
     onInput: => 
         
-        prefs.set "input:#{@name}:value", @input.value
+        prefs.set "input:#{@name}:value" @input.value
         
         if @cfg?
             text = @input.value.trim()
@@ -89,7 +89,7 @@ class Input
             
     hide: ->
         
-        prefs.set "input:#{@name}:visible", false
+        prefs.set "input:#{@name}:visible" false
         @input.style.display = 'none'
             
     onButton: (event) =>

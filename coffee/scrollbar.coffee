@@ -10,7 +10,7 @@
 
 class Scrollbar
 
-    constructor: (@scroll) ->
+    @: (@scroll) ->
 
         post.on 'scroll',     @update
         post.on 'clearLines', @clear

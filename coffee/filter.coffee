@@ -6,13 +6,13 @@
 000       000  0000000     000     00000000  000   000
 ###
 
-{ valid, empty, slash, str, $ } = require 'kxk'
+{ empty, slash, valid } = require 'kxk'
 
 Input = require './input'
 
 class Filter extends Input
 
-    constructor: ->
+    @: ->
         
         svg = """
             <svg width="100%" height="100%" viewBox="0 0 30 30">

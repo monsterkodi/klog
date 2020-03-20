@@ -10,7 +10,7 @@
 
 class Sizer
 
-    constructor: ->
+    @: ->
         
         @initialized = false
         @sizer =$ '#sizer'

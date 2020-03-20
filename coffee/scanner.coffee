@@ -6,15 +6,14 @@
 0000000    0000000  000   000  000   000  000   000  00000000  000   000
 ###
 
-{ valid, slash, first, empty, noon, fs, kerror, _ } = require 'kxk'
+{ _, empty, first, fs, kerror, slash, valid } = require 'kxk'
 
 findit          = require 'findit2'
-prettyTime      = require 'pretty-ms'
 { performance } = require 'perf_hooks'
 
 class Scanner
 
-    constructor: (@dir, @search, exts) ->
+    @: (@dir, @search, exts) ->
         
         @maxLineLength = 400
         
@@ -194,9 +193,8 @@ class Scanner
 
     stats: ->
         
-        time = prettyTime performance.now()-@scanStart
-        time = time.replace 'ms', ' ms'
-        "find \"#{@search}\" in #{slash.tilde @dir}: #{@lineCount} lines in #{@fileCount} files (#{@scanCount} files scanned in #{time})"
+        time = parseInt performance.now()-@scanStart
+        "find \"#{@search}\" in #{slash.tilde @dir}: #{@lineCount} lines in #{@fileCount} files, #{@scanCount} files scanned in #{time} ms"
             
     #  0000000  000000000   0000000   00000000   
     # 000          000     000   000  000   000  
