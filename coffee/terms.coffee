@@ -36,6 +36,7 @@ class Terms
         
         @terms.splice @terms.indexOf(term), 1
         term.del()
+        @terms[-1].showAddButton()
         
     text: -> @terms[0].input.value # fix me!
     
