@@ -168,7 +168,6 @@ class Scanner
                     icon:   ''
                     type:   'find'
                     line:   @lineno[file]
-                    # column: column
                     source: slash.tilde file
                     str:    data
                     find:   @search.join '|'

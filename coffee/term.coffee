@@ -19,9 +19,14 @@ class Term
         @input.addEventListener 'keydown' @onInputKey
         @input.focus()
            
-        @showDelButton()        
-        @showAddButton()
+        @showDelButton()
         
+    # 0000000    000   000  000000000  000000000   0000000   000   000  
+    # 000   000  000   000     000        000     000   000  0000  000  
+    # 0000000    000   000     000        000     000   000  000 0 000  
+    # 000   000  000   000     000        000     000   000  000  0000  
+    # 0000000     0000000      000        000      0000000   000   000  
+    
     showDelButton: ->
         
         if not @delButton
@@ -41,7 +46,12 @@ class Term
                     <line x1="6"  y1="15"  x2="24"  y2="15"></line>
                 </svg>
             """
+
+    hideAddButton: ->
         
+        @addButton.remove()
+        delete @addButton
+            
     del: ->
         
         @input.remove()
@@ -53,18 +63,21 @@ class Term
         
         post.emit 'focus' @name
         
-    focus: -> @input.focus()
     onDel: => 
+        
         if @terms.terms.length > 1
             @terms.delTerm @
         else
             @input.value = ''
+            @terms.store()
             
     onAdd: => 
-            @addButton.remove()
-            delete @addButton
-            @terms.addTerm()
         
+        @hideAddButton()
+        @terms.addTerm()
+
+    focus: -> @input.focus()
+                
     # 000  000   000  00000000   000   000  000000000  
     # 000  0000  000  000   000  000   000     000     
     # 000  000 0 000  00000000   000   000     000     
@@ -91,6 +104,8 @@ class Term
     onInput: =>
         
         if @name in ['find' 'search']
-            post.emit 'highlight' @name        
+            post.emit 'highlight' @name
+            
+        post.emit 'terms' @name
         
 module.exports = Term

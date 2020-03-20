@@ -23,22 +23,31 @@ class Terms
         
         @terms = []
         
-        # prefs.set "terms▸#{@name}▸value" @input.value
-        @addTerm()
-                        
+        if prefTerms = prefs.get "terms▸#{@name}▸texts"
+            for t in prefTerms
+                @terms[-1]?.hideAddButton()
+                @addTerm().input.value = t
+        else
+            @addTerm()
+                              
         @show() if prefs.get "terms▸#{@name}▸visible"
         
         post.on 'focus' @onFocus
+        post.on 'terms' @onTerms
         
     addTerm: ->
         
-        @terms.push new Term @
+        term = new Term @
+        term.showAddButton()
+        @terms.push term
+        term
         
     delTerm: (term) ->
         
         @terms.splice @terms.indexOf(term), 1
         term.del()
         @terms[-1].showAddButton()
+        @store()
             
     texts: -> @terms.map((t) -> t.input.value).filter (t) -> valid t
         
@@ -46,8 +55,12 @@ class Terms
         
         if name == @name 
             @show()
-            @terms[0].focus()
-                     
+            @terms[0].focus()            
+          
+    onTerms: (name) => if name == @name then @store()
+            
+    store: -> prefs.set "terms▸#{@name}▸texts" @texts()
+            
     #  0000000  000   000   0000000   000   000  
     # 000       000   000  000   000  000 0 000  
     # 0000000   000000000  000   000  000000000  
