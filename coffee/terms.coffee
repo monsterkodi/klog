@@ -22,6 +22,8 @@ class Terms
         window.titlebar.pushElem @div
         
         @terms = []
+        
+        # prefs.set "terms▸#{@name}▸value" @input.value
         @addTerm()
                         
         @show() if prefs.get "terms▸#{@name}▸visible"
@@ -37,12 +39,10 @@ class Terms
         @terms.splice @terms.indexOf(term), 1
         term.del()
         @terms[-1].showAddButton()
-        
-    text: -> @terms[0].input.value # fix me!
-    
+            
     texts: -> @terms.map((t) -> t.input.value).filter (t) -> valid t
         
-    onFocus: (name) => 
+    onFocus: (name) =>
         
         if name == @name 
             @show()

@@ -27,7 +27,6 @@ class Search extends Terms
         @searchIndex = -1
         @searchTerm = ''
         @cfg = []
-        # if @input.value then @onInput()
           
     submit: (term, maxIndex=-1) =>
         

@@ -22,8 +22,8 @@ class Find extends Terms
         """
         
         super 'find' svg # '⚲'
+        
         @cfg = []
-        # if @input.value then @onInput()
         
     #  0000000  000   000  0000000    00     00  000  000000000  
     # 000       000   000  000   000  000   000  000     000     
@@ -44,10 +44,10 @@ class Find extends Terms
             id:     'klog'
             file:   'find'            
             icon:   slash.fileUrl slash.join __dirname, '..' 'img' 'menu@2x.png'
-            str:    "find \"#{@texts().join(',')}\" din #{dir}: using filter \"#{window.filter.findPattern()}\""
+            str:    "find \"#{@texts().join(',')}\" in #{dir}: using filter \"#{window.filter.findPattern()}\""
         
         @cp?.kill()
-        args = [dir, window.filter.terms().join(','), terms]
+        args = [dir, window.filter.texts().join(','), terms]
         @cp = childp.fork slash.join(__dirname, 'scanner.js'), args
         @cp.on 'message' @onScanner
      

@@ -6,11 +6,11 @@
 000       000  0000000     000     00000000  000   000
 ###
 
-{ empty, slash, valid } = require 'kxk'
+{ empty, slash } = require 'kxk'
 
-Input = require './input'
+Terms = require './terms'
 
-class Filter extends Input
+class Filter extends Terms
 
     @: ->
         
@@ -24,19 +24,11 @@ class Filter extends Input
                 <line x1="27" y1="7"  x2="4"  y2="7"  stroke-linecap="round"></line>
             </svg>
         """
-        super 'filter', svg #'⍛'
+        super 'filter' svg
         
-    terms: => 
-        
-        text = @input.value.trim()
-        if valid text
-            text.split /\s+/
-        else
-            []
-          
     findPattern: =>
         
-        @terms().filter (t) -> t[0] in ['.', '!']
+        @texts().filter (t) -> t[0] in ['.' '!']
             
     submit: =>
         
@@ -46,7 +38,7 @@ class Filter extends Input
          
         hidden = false
          
-        for t in @terms()
+        for t in @texts()
              
             continue if empty t
             if t.startsWith('@') 
@@ -57,7 +49,7 @@ class Filter extends Input
                 if info.id == t.substr 1
                     hidden = true
                     break
-            else if t[0] in ['.', '!']
+            else if t[0] in ['.' '!']
                 continue
             else if info.str.indexOf(t) >= 0
                 hidden = true

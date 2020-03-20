@@ -22,8 +22,6 @@ class Term
         @showDelButton()        
         @showAddButton()
         
-        # @input.value = prefs.get("terms▸#{@name}▸value") ? ''
-
     showDelButton: ->
         
         if not @delButton
@@ -81,7 +79,7 @@ class Term
             event.stopPropagation()
             
         switch info.combo
-            when 'enter'      then @terms.submit? @input.value
+            when 'enter'      then if @name in ['find' 'search'] then @terms.submit? @input.value
             when 'esc'        then @input.blur()
             when 'ctrl+enter' then @onAdd()
             when 'delete'     then if empty @input.value then @onDel()
@@ -93,8 +91,6 @@ class Term
     onInput: =>
         
         if @name in ['find' 'search']
-            post.emit 'highlight' @name
-        
-        # prefs.set "terms▸#{@name}▸value" @input.value
+            post.emit 'highlight' @name        
         
 module.exports = Term
