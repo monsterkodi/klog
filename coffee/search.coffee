@@ -8,9 +8,9 @@
 
 { empty, post } = require 'kxk'
 
-Input = require './input'
+Terms = require './terms'
 
-class Search extends Input
+class Search extends Terms
 
     @: ->
 
@@ -26,9 +26,8 @@ class Search extends Input
 
         @searchIndex = -1
         @searchTerm = ''
-        
         @cfg = []
-        if @input.value then @onInput()
+        # if @input.value then @onInput()
           
     submit: (term, maxIndex=-1) =>
         

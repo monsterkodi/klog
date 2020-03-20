@@ -24,9 +24,9 @@ class Input
         @input.addEventListener 'keydown' @onInputKey
         window.titlebar.pushElem @input
                 
-        @input.value = prefs.get("input:#{@name}:value") ? ''
+        @input.value = prefs.get("input▸#{@name}▸value") ? ''
         
-        @show() if prefs.get "input:#{@name}:visible"
+        @show() if prefs.get "input▸#{@name}▸visible"
         
         post.on 'focus' @onFocus
         
@@ -58,7 +58,7 @@ class Input
     
     onInput: => 
         
-        prefs.set "input:#{@name}:value" @input.value
+        prefs.set "input▸#{@name}▸value" @input.value
         
         if @cfg?
             text = @input.value.trim()
@@ -83,13 +83,13 @@ class Input
     
     show: -> 
 
-        prefs.set "input:#{@name}:visible" true
+        prefs.set "input▸#{@name}▸visible" true
         if @input.style.display == 'none'
             @input.style.display = 'flex'
             
     hide: ->
         
-        prefs.set "input:#{@name}:visible" false
+        prefs.set "input▸#{@name}▸visible" false
         @input.style.display = 'none'
             
     onButton: (event) =>

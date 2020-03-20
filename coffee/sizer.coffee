@@ -6,7 +6,7 @@
 0000000   000  0000000  00000000  000   000
 ###
 
-{ setStyle, getStyle, prefs, elem, drag, log, $ } = require 'kxk'
+{ $, drag, elem, getStyle, prefs, setStyle } = require 'kxk'
 
 class Sizer
 
@@ -19,7 +19,7 @@ class Sizer
     init: ->
         
         @initialized = true
-        for column in ['id-column', 'file-column']
+        for column in ['id-column' 'file-column']
             @columns[column] = elem class:"sizer-handle #{column}"
             @sizer.appendChild @columns[column]
             new drag
@@ -40,7 +40,7 @@ class Sizer
         xoff = drag.lastPos.x
         @columns[@dragColumn].style.transform = "translateX(#{xoff}px)"
         
-        div =$ ".#{@dragColumn}", window.lines.lines.firstChild
+        div =$ ".#{@dragColumn}" window.lines.lines.firstChild
         
         visible = @isVisible @dragColumn
         @show @dragColumn
@@ -55,7 +55,7 @@ class Sizer
             if width > 20
                 if not visible
                     @show @dragColumn
-                setStyle "#lines div span.#{@dragColumn}", 'flex', "0 0 #{width}px"
+                setStyle "#lines div span.#{@dragColumn}" 'flex' "0 0 #{width}px"
         
     onStop: (drag, event) =>
         
@@ -75,29 +75,28 @@ class Sizer
 
     hide: (column) ->
         
-        prefs.set "display:#{column}", false
-        setStyle @columnKey(column), 'display', 'none'
+        prefs.set "display▸#{column}" false
+        setStyle @columnKey(column), 'display' 'none'
     
     show: (column) ->
         
-        prefs.set "display:#{column}", true
-        setStyle @columnKey(column), 'display', 'inline-block'
-        # @updatePositions()
+        prefs.set "display▸#{column}" true
+        setStyle @columnKey(column), 'display' 'inline-block'
         
     updatePositions: ->
 
         return if not @initialized
         return if not window.lines.lines.firstChild
         wsum = 0
-        for column in ['num-column', 'time-column', 'icon-column', 'id-column', 'file-column']
-            div =$ ".#{column}", window.lines.lines.firstChild
+        for column in ['num-column' 'time-column' 'icon-column' 'id-column' 'file-column']
+            div =$ ".#{column}" window.lines.lines.firstChild
             width = div.clientWidth
             wsum += width
             if width
                 xoff = wsum 
             else
                 xoff = 0
-            if column in ['id-column', 'file-column']
+            if column in ['id-column' 'file-column']
                 @columns[column].style.transform = "translateX(#{xoff}px)"
         
 module.exports = Sizer

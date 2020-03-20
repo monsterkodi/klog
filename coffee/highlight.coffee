@@ -6,7 +6,7 @@
 000   000  000   0000000   000   000  0000000  000   0000000   000   000     000   
 ###
 
-{ matchr, slash, valid, kstr, kerror, $ } = require 'kxk'
+{ $, kerror, klor, kstr, matchr, slash, valid } = require 'kxk'
 
 klor = require 'klor'
 
@@ -31,11 +31,11 @@ class Highlight
             return
         
         info = line.info
-        div  =$ '.log-column', line
+        div  =$ '.log-column' line
         
-        if info.highlighted and info.highlightSearch == window.search.text() and info.highlightFind = window.find.text()
-            div.innerHTML = info.highlighted
-            return
+        # if info.highlighted and info.highlightSearch == window.search.text() and info.highlightFind = window.find.text()
+            # div.innerHTML = info.highlighted
+            # return
             
         cfg  = []
         
@@ -68,8 +68,8 @@ class Highlight
             delete info.highlightDiss
             div.innerHTML = kstr.encode line
             
-        info.highlighted     = div.innerHTML
-        info.highlightSearch = window.search.text()
-        info.highlightFind   = window.find.text()
+        # info.highlighted     = div.innerHTML
+        # info.highlightSearch = window.search.text()
+        # info.highlightFind   = window.find.text()
         
 module.exports = Highlight

@@ -204,11 +204,11 @@ post.on 'menuAction' (action) ->
 
 onMsg = (msg) ->
     
-    msg.str = kstr.stripAnsi msg.str
+    msg.str = kstr.stripAnsi msg.str ? ''
     if window.filter.shouldLog msg
         lines.appendLog msg
 
-udpReceiver = new udp onMsg:onMsg #, debug:true
+udpReceiver = new udp onMsg:onMsg, debug:true
         
 #  0000000  000000000  00000000   00000000   0000000   00     00    
 # 000          000     000   000  000       000   000  000   000    
@@ -227,14 +227,14 @@ tail.on 'line' (line) ->
 # 000  000  0000  000     000       
 # 000  000   000  000     000       
 
-prefs.set 'editor'  prefs.get 'editor', 'ko'
-prefs.set 'findDir' prefs.get 'findDir', '~'
+prefs.set 'editor'  prefs.get 'editor' 'ko'
+prefs.set 'findDir' prefs.get 'findDir' '~'
 
 klog "editor:  #{prefs.get 'editor'}\nfindDir: #{prefs.get 'findDir'}\nlogFile: #{logFile}"
 
 # setFontSize prefs.get 'fontSize', defaultFontSize
 
 for column in ['id-column' 'src-column' 'icon-column' 'num-column' 'time-column']
-    if not prefs.get "display:#{column}", true
+    if not prefs.get "display▸#{column}", true
         lines.sizer.toggleDisplay column
     

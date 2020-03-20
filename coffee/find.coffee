@@ -21,7 +21,7 @@ class Find extends Input
             </svg>
         """
         
-        super 'find', svg # '⚲'
+        super 'find' svg # '⚲'
         @cfg = []
         if @input.value then @onInput()
         

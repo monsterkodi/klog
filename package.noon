@@ -1,5 +1,5 @@
 name            klog
-version         0.99.0
+version         0.100.0
 description     log and search tool
 main            js/main.js
 repository
@@ -18,12 +18,12 @@ bugs
 dependencies
                 file-icons-js   ^1.0.3
                 findit2         ^2.2.3
-                klor            ^2.1.0
-                kxk             ^0.370.0
+                klor            ^2.8.0
+                kxk             ^0.387.0
                 tail            ^2.0.3
 devDependencies
-                electron        ^7.1.2
-                electron-packager  ^14.1.0
-                electron-rebuild  ^1.8.8
-                konrad          ^0.169.0
-                node-abi        ^2.12.0
+                electron        ^8.1.1
+                electron-packager  ^14.2.1
+                electron-rebuild  ^1.10.1
+                konrad          ^0.176.0
+                node-abi        ^2.15.0

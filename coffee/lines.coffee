@@ -6,7 +6,7 @@
 0000000  000  000   000  00000000  0000000 
 ###
 
-{ post, setStyle, prefs, valid, slash, empty, elem, kstr, klog, $, _ } = require 'kxk'
+{ $, _, elem, empty, kstr, post, prefs, setStyle, slash, valid } = require 'kxk'
 
 Scroll    = require './scroll'
 ScrollBar = require './scrollbar'
@@ -29,18 +29,25 @@ class Lines
         @scrollBar = new ScrollBar @scroll
         @minimap   = new Minimap @
         
-        @lines.addEventListener 'click', @onClick
+        @lines.addEventListener 'click' @onClick
         
-        post.on 'fontSize', @onFontSize
-        post.on 'showLines', @onShowLines 
-        post.on 'shiftLines', @onShiftLines
-        post.on 'clearLines', @onClearLines
-        post.on 'changeLines', @onChangeLines
-        post.on 'selectLine', @onSelectLine
+        post.on 'fontSize'    @onFontSize
+        post.on 'showLines'   @onShowLines 
+        post.on 'shiftLines'  @onShiftLines
+        post.on 'clearLines'  @onClearLines
+        post.on 'changeLines' @onChangeLines
+        post.on 'selectLine'  @onSelectLine
+        post.on 'highlight'   @onHighlight
         
-        document.addEventListener 'selectionchange', @onSelectionChange
-        window.addEventListener 'resize', @onResize
+        document.addEventListener 'selectionchange' @onSelectionChange
+        window.addEventListener 'resize' @onResize
 
+    onHighlight: (name) =>
+        
+        window[name].cfg = window[name].texts().map (t) -> 
+            [new RegExp(_.escapeRegExp t), "highlight-#{name}"]
+        Highlight.lines()
+        
     #  0000000  00000000  000      00000000   0000000  000000000  
     # 000       000       000      000       000          000     
     # 0000000   0000000   000      0000000   000          000     
@@ -70,9 +77,9 @@ class Lines
             for node in contents.children
                 if node.classList.contains 'line'
                     if not node.classList.contains 'file'
-                        texts.push $('.log-column', node).innerText
+                        texts.push $('.log-column' node).innerText
             @selectionText = texts.join '\n'
-        # log 'selectionText', @selectionText
+        # log 'selectionText' @selectionText
             
     #  0000000  000      00000000   0000000   00000000   
     # 000       000      000       000   000  000   000  
@@ -95,7 +102,7 @@ class Lines
         
         li = 0
         
-        # log 'updatePositions:', @lines.children.length
+        # log 'updatePositions:' @lines.children.length
                     
         for div in @lines.children
             y = @scroll.lineHeight * li
@@ -198,15 +205,15 @@ class Lines
     # 0000000   000   000  000  000          000     
     
     onShiftLines: (top, bot, num) =>
-        # log 'onShiftLines', top, bot, num
+        # log 'onShiftLines' top, bot, num
         if num > 0
             for n in [0...num]
-                # log 'onShiftLines shift', top-num+n, 'append', bot-num+n+1, @cache.length
+                # log 'onShiftLines shift' top-num+n, 'append' bot-num+n+1, @cache.length
                 @shiftLine  top-num+n
                 @appendLine bot-num+n+1
         else
             for n in [0...-num]
-                # log 'onShiftLines prepend', top-num-n-1, 'pop', bot-num-n, top-num-n-1
+                # log 'onShiftLines prepend' top-num-n-1, 'pop' bot-num-n, top-num-n-1
                 @popLine     bot-num-n
                 @prependLine top-num-n-1
                 
@@ -237,7 +244,7 @@ class Lines
         atBot = @scroll.top + @scroll.fullLines >= @cache.length-1
         
         if @scroll.lineHeight <= 0
-            fontSize = prefs.get 'fontSize', 16
+            fontSize = prefs.get 'fontSize' 16
             window.setFontSize fontSize
 
         @scroll.setNumLines @cache.length
@@ -351,14 +358,14 @@ class Lines
         return if not @lines?
         
         if @lines.firstChild
-            setStyle '.line', 'height', ''
+            setStyle '.line' 'height' ''
             lineHeight = @lines.firstChild.clientHeight
             if lineHeight > 0
                 @scroll?.setLineHeight lineHeight
-                setStyle '.line', 'height', "#{lineHeight}px"
+                setStyle '.line' 'height' "#{lineHeight}px"
         else if size > 0
             @scroll?.setLineHeight size
-            setStyle '.line', 'height', "#{lineHeight}px"
+            setStyle '.line' 'height' "#{lineHeight}px"
 
     #  0000000  000      000   0000000  000   000  
     # 000       000      000  000       000  000   
@@ -372,13 +379,13 @@ class Lines
         return if event.target.classList.contains 'line'
         
         if lineElem = elem.upElem event.target, {class:'line'}
-            file = $('.src-column',lineElem)?.innerText
+            file = $('.src-column'lineElem)?.innerText
             if valid file
                 file = file.replace /[\w\-]+\-x64\/resources\/app\//, ''
                 if /\/node\_modules\//.test file
                     upFile = file.replace /[\w\-]+\/node\_modules\//, ''
                     if slash.exists upFile
                         file = upFile
-                post.emit 'openFile', file
+                post.emit 'openFile' file
 
 module.exports = Lines
