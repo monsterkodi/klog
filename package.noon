@@ -19,7 +19,7 @@ dependencies
                 file-icons-js   ^1.0.3
                 findit2         ^2.2.3
                 klor            ^2.8.0
-                kxk             ^0.387.0
+                kxk             ^0.389.0
                 tail            ^2.0.3
 devDependencies
                 electron        ^8.1.1

@@ -26,35 +26,51 @@ class Filter extends Terms
         """
         super 'filter' svg
         
-    findPattern: =>
-        
-        @texts().filter (t) -> t[0] in ['.' '!']
+    findPattern: => @texts().filter (t) -> t[0] in ['.' '!']
             
-    submit: =>
-        
-        window.find.submit()
+    submit: (term) => if term[0] in ['.' '!'] then window.find.submit()
         
     shouldLog: (info) =>
          
         hidden = false
+        positive = []
          
         for t in @texts()
              
             continue if empty t
-            if t.startsWith('@') 
-                if slash.base(info.source) == t.substr 1
+            continue if t[0] in ['.' '!']
+            if t[0] == '-'
+                if t.startsWith('-@') 
+                    if slash.base(info.source) == t.substr 2
+                        hidden = true
+                        break
+                else if t.startsWith('-#') 
+                    if info.id == t.substr 2
+                        hidden = true
+                        break
+                else if info.str.indexOf(t.substr 1) >= 0
                     hidden = true
                     break
-            else if t.startsWith('#') 
-                if info.id == t.substr 1
-                    hidden = true
-                    break
-            else if t[0] in ['.' '!']
-                continue
-            else if info.str.indexOf(t) >= 0
-                hidden = true
-                break
+            else positive.push t
             
-        not hidden
+        return false if hidden
+                
+        if positive.length
+            hidden = true
+            for t in positive
+                if t[0] == '@'
+                    if slash.base(info.source) == t.substr 1
+                        hidden = false
+                        break
+                else if t[0] == '#'
+                    if info.id == t.substr 1
+                        hidden = false
+                        break
+                else if info.str.indexOf(t) >= 0
+                    hidden = false
+                    break
+                    
+            return not hidden
+        true
         
 module.exports = Filter

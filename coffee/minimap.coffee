@@ -6,7 +6,7 @@
 000   000  000  000   000  000  000   000  000   000  000
 ###
 
-{ post, getStyle, empty, clamp, elem, drag, $ } = require 'kxk'
+{ $, clamp, drag, elem, empty, getStyle, post } = require 'kxk'
 
 MapScroll = require './mapscroll'
 Highlight = require './highlight'
@@ -15,27 +15,27 @@ class Minimap
 
     @: (@editor) ->
 
-        minimapWidth = parseInt getStyle '.minimap', 'width'
+        minimapWidth = parseInt getStyle '.minimap' 'width'
 
         @colors = {}
         @width  = 2*minimapWidth
         @height = 8192
         @offsetLeft = 6
 
-        @elem    = elem class: 'minimap', id: 'minimap'
-        @lines   = elem 'canvas', class: 'minimapLines', width: @width, height: @height
-        @topbot  = elem class: 'topbot'
+        @elem    = elem class:'minimap' id:'minimap'
+        @lines   = elem 'canvas' class:'minimapLines' width:@width, height:@height
+        @topbot  = elem class:'topbot'
 
         @elem.appendChild @lines
         @elem.appendChild @topbot
 
-        @elem.addEventListener 'wheel', @editor.scrollbar?.onWheel
+        @elem.addEventListener 'wheel' @editor.scrollbar?.onWheel
 
         main =$ '#main'
-        main.appendChild  @elem
+        main.appendChild @elem
         
-        post.on 'clearLines', @onEditorScroll
-        post.on 'scroll',     @onEditorScroll
+        post.on 'clearLines' @onEditorScroll
+        post.on 'scroll'     @onEditorScroll
 
         @scroll = new MapScroll
             exposeMax:  @height/4
@@ -50,11 +50,11 @@ class Minimap
             onMove:  @onDrag
             cursor: 'pointer'
 
-        @scroll.on 'clearLines',  @clearAll
-        @scroll.on 'scroll',      @onScroll
-        @scroll.on 'exposeLines', @onExposeLines
-        @scroll.on 'vanishLines', @onVanishLines
-        @scroll.on 'exposeLine',  @exposeLine
+        @scroll.on 'clearLines'  @clearAll
+        @scroll.on 'scroll'      @onScroll
+        @scroll.on 'exposeLines' @onExposeLines
+        @scroll.on 'vanishLines' @onVanishLines
+        @scroll.on 'exposeLine'  @exposeLine
 
         @onScroll()
         @drawLines()
@@ -103,7 +103,7 @@ class Minimap
             color = computedStyle.color
             opacity = computedStyle.opacity
             if opacity != '1'
-                color = 'rgba(' + color.slice(4, color.length-2) + ', ' + opacity + ')' 
+                color = 'rgba(' + color.slice(4, color.length-2) + ' ' + opacity + ')' 
             @colors[clss] = color
             div.remove()
 
@@ -164,7 +164,7 @@ class Minimap
 
         for change in changeInfo.changes
             li = change.oldIndex
-            break if not change.change in ['deleted', 'inserted']
+            break if not change.change in ['deleted' 'inserted']
             @drawLines li, li
 
         if li <= @scroll.exposeBot

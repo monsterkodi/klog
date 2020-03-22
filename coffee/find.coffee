@@ -47,7 +47,7 @@ class Find extends Terms
             str:    "find \"#{@texts().join(',')}\" in #{dir}: using filter \"#{window.filter.findPattern()}\""
         
         @cp?.kill()
-        args = [dir, window.filter.texts().join(','), terms]
+        args = [dir, window.filter.findPattern().join(','), terms]
         @cp = childp.fork slash.join(__dirname, 'scanner.js'), args
         @cp.on 'message' @onScanner
      

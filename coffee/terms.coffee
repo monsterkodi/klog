@@ -6,7 +6,7 @@
    000     00000000  000   000  000   000  0000000   
 ###
 
-{ elem, post, prefs, valid } = require 'kxk'
+{ elem, empty, post, prefs, valid } = require 'kxk'
 
 Term = require './term'
 
@@ -23,12 +23,11 @@ class Terms
         
         @terms = []
         
-        if prefTerms = prefs.get "terms▸#{@name}▸texts"
-            for t in prefTerms
-                @terms[-1]?.hideAddButton()
-                @addTerm().input.value = t
-        else
-            @addTerm()
+        prefTerms = prefs.get "terms▸#{@name}▸texts"
+        if empty prefTerms then prefTerms = ['']
+        for t in prefTerms
+            @terms[-1]?.hideAddButton()
+            @addTerm().input.value = t
                               
         @show() if prefs.get "terms▸#{@name}▸visible"
         
@@ -49,7 +48,11 @@ class Terms
         @terms[-1].showAddButton()
         @store()
             
-    texts: -> @terms.map((t) -> t.input.value).filter (t) -> valid t
+    texts: -> 
+        
+        t = @terms.map (t) -> t.input.value
+        t = t.filter (t) -> valid t
+        t ? ['']
         
     onFocus: (name) =>
         

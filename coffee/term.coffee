@@ -51,16 +51,17 @@ class Term
         
         @addButton.remove()
         delete @addButton
-            
+        
+    emitHighlight: ->
+        if @name in ['find' 'search']
+            post.emit 'highlight' @name
+        
     del: ->
         
         @input.remove()
         @delButton?.remove()
         @addButton?.remove()
-        
-        if @name in ['find' 'search']
-            post.emit 'highlight' @name
-        
+        @emitHighlight()        
         post.emit 'focus' @name
         
     onDel: => 
@@ -69,6 +70,7 @@ class Term
             @terms.delTerm @
         else
             @input.value = ''
+            @emitHighlight()
             @terms.store()
             
     onAdd: => 
@@ -92,7 +94,7 @@ class Term
             event.stopPropagation()
             
         switch info.combo
-            when 'enter'      then if @name in ['find' 'search'] then @terms.submit? @input.value
+            when 'enter'      then @terms.submit? @input.value
             when 'esc'        then @input.blur()
             when 'ctrl+enter' then @onAdd()
             when 'delete'     then if empty @input.value then @onDel()
@@ -103,9 +105,7 @@ class Term
     
     onInput: =>
         
-        if @name in ['find' 'search']
-            post.emit 'highlight' @name
-            
+        @emitHighlight()            
         post.emit 'terms' @name
         
 module.exports = Term
