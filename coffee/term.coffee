@@ -54,6 +54,7 @@ class Term
         
     emitHighlight: ->
         if @name in ['find' 'search']
+            log "emitHighlight #{@name}"
             post.emit 'highlight' @name
         
     del: ->

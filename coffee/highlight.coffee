@@ -44,7 +44,7 @@ class Highlight
             cfg  = window.search.cfg.concat window.find.cfg
             clss = 'find'
             ext  = slash.ext info.source
-        else if info.id != 'file'
+        else
             clss = 'search'
             cfg  = window.search.cfg
             

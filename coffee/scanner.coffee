@@ -6,7 +6,7 @@
 0000000    0000000  000   000  000   000  000   000  00000000  000   000
 ###
 
-{ _, empty, first, fs, kerror, slash, valid } = require 'kxk'
+{ _, empty, first, fs, kerror, kstr, slash, valid } = require 'kxk'
 
 findit          = require 'findit2'
 { performance } = require 'perf_hooks'
@@ -152,7 +152,9 @@ class Scanner
             
             if data.length > @maxLineLength
                 data = data.substr 0, @maxLineLength
-                
+
+            data = kstr.detab data
+                            
             matches = true
             
             if valid @search

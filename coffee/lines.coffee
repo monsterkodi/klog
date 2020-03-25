@@ -46,6 +46,7 @@ class Lines
         
         window[name].cfg = window[name].texts().map (t) -> 
             [new RegExp(_.escapeRegExp t), "highlight-#{name}"]
+            
         Highlight.lines()
         
     #  0000000  00000000  000      00000000   0000000  000000000  

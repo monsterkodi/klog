@@ -37,6 +37,7 @@ class Find extends Terms
         return if empty dir
 
         post.emit 'menuAction' 'Clear'
+        post.emit 'highlight' 'find'
         
         terms = @texts().map (t) -> new Buffer(t).toString 'base64'
         
