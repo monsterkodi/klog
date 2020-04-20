@@ -90,7 +90,7 @@ loadFile = (file) ->
         buffer += chunk
         while buffer.indexOf('\n') >= 0
             index  = buffer.indexOf('\n')
-            data   = buffer.slice 0, index
+            data   = buffer.slice 0 index
             buffer = buffer.slice index+1
             try
                 onMsg JSON.parse data
@@ -128,7 +128,7 @@ setFontSize = (s) ->
     setStyle '.icon-column img' 'height'  "#{iconSize}px"
     setStyle '.icon-column .browserFileIcon::before' 'fontSize' "#{s}px"
     
-    post.emit 'fontSize', s
+    post.emit 'fontSize' s
 
 window.setFontSize = setFontSize
     
